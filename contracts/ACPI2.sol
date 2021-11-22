@@ -13,8 +13,18 @@ contract ACPITwo is IACPI {
 
     mapping(address => uint256) public pendingWins;
 
+    uint256 public currentRound;
+
+    uint256 private _roundTime;
+    uint256 private _totalRound;
+
     constructor() {
         realtERC20 = RealT(msg.sender);
+    }
+
+    modifier onlyAcpiTwo() {
+        require(realtERC20.getACPI() == 2, "Current ACPI is not ACPI 2");
+        _;
     }
 
     modifier onlyModerator() {
@@ -28,15 +38,41 @@ contract ACPITwo is IACPI {
     }
 
     /**
-     * @dev Returns the amount of rounds per ACPI.
+     * @dev Set time between two consecutive round in seconds
      */
-    function totalRound() external view override returns (uint256) {}
+    function setRoundTime(uint256 newValue)
+        external
+        override
+        onlyModerator
+        returns (uint256)
+    {
+        return _roundTime = newValue;
+    }
 
     /**
-     * @dev Returns the amount of blocks per ACPI.
+     * @dev Set totalRound value
      */
-    function roundTime() external pure override returns (uint256) {
-        return 16;
+    function setTotalRound(uint256 newValue)
+        external
+        override
+        onlyModerator
+        returns (uint256)
+    {
+        return _totalRound = newValue;
+    }
+
+    /**
+     * @dev Returns the amount of rounds per ACPI.
+     */
+    function totalRound() external view override returns (uint256) {
+        return _roundTime;
+    }
+
+    /**
+     * @dev Returns the time between two consecutive round in seconds
+     */
+    function roundTime() external view override returns (uint256) {
+        return _roundTime;
     }
 
     /**

@@ -46,6 +46,7 @@ contract ACPIOne is IACPI {
         require(realtERC20.hasRole(realtERC20.ACPI_MODERATOR(), msg.sender));
         _;
     }
+
     /**
      * @dev Returns the amount of rounds per ACPI.
      */
@@ -54,17 +55,18 @@ contract ACPIOne is IACPI {
     }
 
     /**
-     * @dev Returns the amount of blocks per ACPI.
+     * @dev Returns the time between two consecutive round in seconds
      */
     function roundTime() external view override returns (uint256) {
         return _roundTime;
     }
 
     /**
-     * @dev Set roundTime value
+     * @dev Set time between two consecutive round in seconds
      */
     function setRoundTime(uint256 newValue)
         external
+        override
         onlyModerator
         returns (uint256)
     {
@@ -76,6 +78,7 @@ contract ACPIOne is IACPI {
      */
     function setTotalRound(uint256 newValue)
         external
+        override
         onlyModerator
         returns (uint256)
     {
@@ -156,11 +159,7 @@ contract ACPIOne is IACPI {
     /**
      * @dev Set pendingReturns and pendingWins to 0 {onlyTokenContract}
      */
-    function resetAccount(address account)
-        external
-        override
-        onlyTokenContract
-    {
+    function resetAccount(address account) external override onlyTokenContract {
         pendingReturns[account] = 0;
         pendingWins[account] = 0;
     }

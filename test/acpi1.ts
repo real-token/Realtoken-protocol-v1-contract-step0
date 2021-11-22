@@ -216,9 +216,11 @@ describe("ACPI One", function () {
 
     expect(await ACPIOne.roundTime()).to.equal(1);
 
-    await ACPIOne.connect(ACPI_MODERATOR).setTotalRound(12);
+    await ACPIOne.connect(ACPI_MODERATOR).setTotalRound(6);
 
-    expect(await ACPIOne.totalRound()).to.equal(12);
+    expect(
+      await ACPIOne.connect(ACPI_MODERATOR).callStatic.setTotalRound(12)
+    ).to.equal(12);
 
     await ACPIOne.connect(ACPI_MODERATOR).setBidIncrement(
       ethers.utils.parseUnits("3", "gwei")

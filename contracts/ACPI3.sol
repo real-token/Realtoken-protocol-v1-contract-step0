@@ -9,12 +9,24 @@ contract ACPIThree is IACPI {
     uint256 private _acpiPrice;
     RealT private realtERC20;
 
+    uint256 public currentRound;
+
+    uint256 private _roundTime;
+    uint256 private _totalRound;
+
     mapping(address => uint256) public pendingReturns;
 
     mapping(address => uint256) public pendingWins;
 
     constructor() {
         realtERC20 = RealT(msg.sender);
+        _roundTime = 60 * 60;
+        _totalRound = 100;
+    }
+
+    modifier onlyAcpiThree() {
+        require(realtERC20.getACPI() == 3, "Current ACPI is not ACPI 3");
+        _;
     }
 
     modifier onlyModerator() {
@@ -30,13 +42,39 @@ contract ACPIThree is IACPI {
     /**
      * @dev Returns the amount of rounds per ACPI.
      */
-    function totalRound() external view override returns (uint256) {}
+    function totalRound() external view override returns (uint256) {
+        return _totalRound;
+    }
 
     /**
-     * @dev Returns the amount of blocks per ACPI.
+     * @dev Returns the time between two consecutive round in seconds
      */
-    function roundTime() external pure override returns (uint256) {
-        return 17;
+    function roundTime() external view override returns (uint256) {
+        return _roundTime;
+    }
+
+    /**
+     * @dev Set time between two consecutive round in seconds
+     */
+    function setRoundTime(uint256 newValue)
+        external
+        override
+        onlyModerator
+        returns (uint256)
+    {
+        return _roundTime = newValue;
+    }
+
+    /**
+     * @dev Set totalRound value
+     */
+    function setTotalRound(uint256 newValue)
+        external
+        override
+        onlyModerator
+        returns (uint256)
+    {
+        return _totalRound = newValue;
     }
 
     /**
@@ -54,11 +92,7 @@ contract ACPIThree is IACPI {
     /**
      * @dev Set pendingReturns and pendingWins to 0 {onlyTokenContract}
      */
-    function resetAccount(address account)
-        external
-        override
-        onlyTokenContract
-    {
+    function resetAccount(address account) external override onlyTokenContract {
         pendingReturns[account] = 0;
         pendingWins[account] = 0;
     }

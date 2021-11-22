@@ -12,9 +12,19 @@ interface IACPI {
     function totalRound() external view returns (uint256);
 
     /**
-     * @dev Returns the amount of blocks per round.
+     * @dev Set totalRound value
+     */
+    function setTotalRound(uint256 newValue) external returns (uint256);
+
+    /**
+     * @dev Returns the time between two consecutive round in seconds
      */
     function roundTime() external view returns (uint256);
+
+    /**
+     * @dev Set time between two consecutive round in seconds
+     */
+    function setRoundTime(uint256 newValue) external returns (uint256);
 
     /**
      * @dev Start round of ACPI ending the last one.
