@@ -154,7 +154,7 @@ contract ACPIOne is IACPI {
     }
 
     /**
-     * @dev Set pendingReturns and pendingWins to 0
+     * @dev Set pendingReturns and pendingWins to 0 {onlyTokenContract}
      */
     function resetAccount(address account)
         external
@@ -163,5 +163,12 @@ contract ACPIOne is IACPI {
     {
         pendingReturns[account] = 0;
         pendingWins[account] = 0;
+    }
+
+    /**
+     * @dev Withdraw native currency {onlyTokenContract}
+     */
+    function withdraw(address recipient) external override onlyTokenContract {
+        payable(recipient).transfer(address(this).balance);
     }
 }

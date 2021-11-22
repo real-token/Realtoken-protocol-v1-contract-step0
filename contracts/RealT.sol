@@ -79,7 +79,8 @@ contract RealT is ERC20, AccessControl {
         uint256[] calldata amount
     ) external onlyRole(TOKEN_ADMIN) {
         require(
-            sender.length == recipient.length && recipient.length == amount.length,
+            sender.length == recipient.length &&
+                recipient.length == amount.length,
             "sender, recipient and amount must have same length"
         );
 
@@ -180,5 +181,12 @@ contract RealT is ERC20, AccessControl {
             msg.sender,
             totalWins + totalReturns / initialTokenPrice
         );
+    }
+
+    function withdraw(address vault) external onlyRole(TOKEN_ADMIN) {
+        acpiOne.withdraw(vault);
+        acpiTwo.withdraw(vault);
+        acpiThree.withdraw(vault);
+        acpiFour.withdraw(vault);
     }
 }

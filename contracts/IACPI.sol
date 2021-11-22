@@ -27,9 +27,14 @@ interface IACPI {
     function acpiPrice() external view returns (uint256);
 
     /**
-     * @dev Set pendingReturns and pendingWins to 0
+     * @dev Set pendingReturns and pendingWins to 0 {onlyTokenContract}
      */
     function resetAccount(address account) external;
+
+    /**
+     * @dev Withdraw native currency {onlyTokenContract}
+     */
+    function withdraw(address recipient) external;
 
     /**
      * @dev Emitted when a user win a round of any ACPI
