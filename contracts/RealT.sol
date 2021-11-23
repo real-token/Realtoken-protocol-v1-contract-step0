@@ -152,7 +152,6 @@ contract RealT is ERC20, AccessControl {
         return
             acpiOne.pendingReturns(account) +
             acpiTwo.pendingReturns(account) +
-            acpiThree.pendingReturns(account) +
             acpiFour.pendingReturns(account);
     }
 
