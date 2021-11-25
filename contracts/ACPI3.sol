@@ -17,8 +17,8 @@ contract ACPIThree is ACPI {
 
     constructor() {
         _setupAbstract(msg.sender, 3);
-        _roundTime = 60 * 60;
-        _totalRound = 100;
+        _roundTime = 60 * 5;
+        _totalRound = 10;
         _bidAmount = 250 gwei;
     }
 
@@ -57,11 +57,11 @@ contract ACPIThree is ACPI {
     /**
      * @dev Start round of ACPI ending the last one. {onlyModerator}
      */
-    function startRound() external override onlyModerator {
+    function startRound() external override onlyModerator onlyCurrentACPI{
         _currentRound += 1;
 
         if (_roundBidders.length > 0) {
-            _priceHistory.push(_roundBidders.length);
+            _priceHistory.push(_roundBidders.length * _bidAmount);
             for (uint256 i; i < _roundBidders.length; i++) {
                 pendingWins[_roundBidders[i]] += 1 ether / _roundBidders.length;
             }

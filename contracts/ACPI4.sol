@@ -13,6 +13,8 @@ contract ACPIFour is ACPI {
 
     constructor() {
         _setupAbstract(msg.sender, 4);
+        _roundTime = 60 * 5;
+        _totalRound = 10;
     }
 
     /**

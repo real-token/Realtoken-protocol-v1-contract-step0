@@ -20,17 +20,17 @@ abstract contract ACPI {
     uint8 internal _acpiNumber;
 
    modifier onlyCurrentACPI() {
-        require(_realtERC20.getACPI() == _acpiNumber);
+        require(_realtERC20.getACPI() == _acpiNumber, "Only Current ACPI Method");
         _;
     }
 
    modifier onlyTokenContract() {
-        require(_realtERC20.hasRole(_realtERC20.TOKEN_CONTRACT(), msg.sender));
+        require(_realtERC20.hasRole(_realtERC20.TOKEN_CONTRACT(), msg.sender), "Only Token Contract Method");
         _;
     }
 
     modifier onlyModerator() {
-        require(_realtERC20.hasRole(_realtERC20.ACPI_MODERATOR(), msg.sender));
+        require(_realtERC20.hasRole(_realtERC20.ACPI_MODERATOR(), msg.sender), "Only ACPI Moderator Method");
         _;
     }
 
