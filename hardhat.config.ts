@@ -61,6 +61,13 @@ const config: HardhatUserConfig = {
           ? [process.env.TOKEN_ADMIN_PK, process.env.ACPI_MODERATOR]
           : [],
     },
+    rinkeby: {
+      url: process.env.RINKEBY_URL || "",
+      accounts:
+        process.env.ACPI_MODERATOR !== undefined && process.env.TOKEN_ADMIN_PK
+          ? [process.env.TOKEN_ADMIN_PK, process.env.ACPI_MODERATOR]
+          : [],
+    },
   },
   gasReporter: {
     enabled: process.env.REPORT_GAS !== undefined,

@@ -56,7 +56,7 @@ contract ACPIOne is ACPI {
         require(_currentRound < _totalRound, "BID: All rounds have been done");
 
         require(
-            msg.value + _balance[msg.sender][_currentRound] >
+            msg.value + _balance[msg.sender][_currentRound] >=
                 highestBid + bidIncrement,
             "BID: value is to low"
         );
