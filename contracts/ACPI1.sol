@@ -2,6 +2,7 @@
 pragma solidity ^0.8.0;
 
 import "./ACPI.sol";
+import "./Median.sol";
 
 contract ACPIOne is ACPI {
     address public highestBidder;
@@ -50,6 +51,12 @@ contract ACPIOne is ACPI {
         }
 
         if (_currentRound == _totalRound) setAcpiPrice();
+    }
+
+    function setAcpiPrice() internal override {
+        if (_priceHistory.length == 0) return;
+
+        acpiPrice = Median.from(_priceHistory);
     }
 
     function bid() external payable onlyCurrentACPI {

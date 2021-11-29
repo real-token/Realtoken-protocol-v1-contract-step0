@@ -105,9 +105,9 @@ abstract contract ACPI {
         if (_priceHistory.length == 0) return;
         uint256 sum;
         for (uint256 i; i < _priceHistory.length; i++) {
-            sum += _priceHistory[i];
+            sum += _priceHistory[i] / _priceHistory.length;
         }
-        acpiPrice = sum / _priceHistory.length;
+        acpiPrice = sum;
     }
 
     /**

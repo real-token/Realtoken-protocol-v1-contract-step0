@@ -4,8 +4,6 @@ pragma solidity ^0.8.0;
 import "./ACPI.sol";
 
 contract ACPIThree is ACPI {
-    uint256 public _acpiPrice;
-
     uint256 private _bidAmount;
 
     address[] private _roundBidders;

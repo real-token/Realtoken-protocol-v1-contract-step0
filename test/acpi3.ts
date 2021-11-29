@@ -278,6 +278,8 @@ describe("ACPI Three", function () {
 
     await realtToken.connect(TOKEN_ADMIN).setACPI(5);
 
-    expect(await realtToken.initialTokenPrice()).to.equal(_bidAmount.mul(3));
+    expect(await realtToken.initialTokenPrice()).to.equal(
+      _bidAmount.mul(3).div(100).mul(35)
+    );
   });
 });

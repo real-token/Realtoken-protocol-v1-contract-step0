@@ -261,4 +261,116 @@ describe("ACPI One", function () {
       ethers.utils.parseUnits("1.5", "ether")
     );
   });
+
+  it("Test final price median", async function () {
+    const [TOKEN_ADMIN, ACPI_MODERATOR, addr1] = await ethers.getSigners();
+
+    await realtToken.connect(TOKEN_ADMIN).setACPI(1);
+
+    await acpiOne.connect(ACPI_MODERATOR).setTotalRound(100);
+
+    await acpiOne.connect(addr1).bid({
+      value: ethers.utils.parseUnits("9", "ether"),
+    });
+
+    await acpiOne.connect(ACPI_MODERATOR).startRound();
+
+    await acpiOne.connect(addr1).bid({
+      value: ethers.utils.parseUnits("10", "ether"),
+    });
+
+    await acpiOne.connect(ACPI_MODERATOR).startRound();
+
+    await acpiOne.connect(addr1).bid({
+      value: ethers.utils.parseUnits("12", "ether"),
+    });
+
+    await acpiOne.connect(ACPI_MODERATOR).startRound();
+
+    await acpiOne.connect(addr1).bid({
+      value: ethers.utils.parseUnits("13", "ether"),
+    });
+
+    await acpiOne.connect(ACPI_MODERATOR).startRound();
+
+    await acpiOne.connect(addr1).bid({
+      value: ethers.utils.parseUnits("14", "ether"),
+    });
+
+    await acpiOne.connect(ACPI_MODERATOR).startRound();
+
+    await acpiOne.connect(addr1).bid({
+      value: ethers.utils.parseUnits("15", "ether"),
+    });
+
+    await acpiOne.connect(ACPI_MODERATOR).startRound();
+
+    await acpiOne.connect(addr1).bid({
+      value: ethers.utils.parseUnits("16", "ether"),
+    });
+
+    await acpiOne.connect(ACPI_MODERATOR).startRound();
+
+    await acpiOne.connect(addr1).bid({
+      value: ethers.utils.parseUnits("17", "ether"),
+    });
+
+    await acpiOne.connect(ACPI_MODERATOR).startRound();
+
+    await acpiOne.connect(addr1).bid({
+      value: ethers.utils.parseUnits("18", "ether"),
+    });
+
+    await acpiOne.connect(ACPI_MODERATOR).startRound();
+
+    await acpiOne.connect(addr1).bid({
+      value: ethers.utils.parseUnits("22", "ether"),
+    });
+
+    await acpiOne.connect(ACPI_MODERATOR).startRound();
+
+    await acpiOne.connect(addr1).bid({
+      value: ethers.utils.parseUnits("23", "ether"),
+    });
+
+    await acpiOne.connect(ACPI_MODERATOR).startRound();
+
+    await acpiOne.connect(addr1).bid({
+      value: ethers.utils.parseUnits("24", "ether"),
+    });
+
+    await acpiOne.connect(ACPI_MODERATOR).startRound();
+
+    await acpiOne.connect(addr1).bid({
+      value: ethers.utils.parseUnits("24", "ether"),
+    });
+
+    await acpiOne.connect(ACPI_MODERATOR).startRound();
+
+    await acpiOne.connect(addr1).bid({
+      value: ethers.utils.parseUnits("25", "ether"),
+    });
+
+    await acpiOne.connect(ACPI_MODERATOR).startRound();
+
+    await acpiOne.connect(addr1).bid({
+      value: ethers.utils.parseUnits("30", "ether"),
+    });
+
+    await acpiOne.connect(ACPI_MODERATOR).startRound();
+
+    let index = (await acpiOne.currentRound()).toNumber();
+
+    for (; index < (await acpiOne.totalRound()).toNumber(); index++) {
+      await acpiOne.connect(ACPI_MODERATOR).startRound();
+    }
+
+    expect(await acpiOne.totalRound()).to.equal(index);
+
+    await realtToken.connect(TOKEN_ADMIN).setACPI(5);
+
+    expect(await realtToken.initialTokenPrice()).to.equal(
+      ethers.utils.parseUnits("17", "ether").div(100).mul(15)
+    );
+  });
 });

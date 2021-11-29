@@ -9,7 +9,7 @@ import "@openzeppelin/contracts/access/IAccessControl.sol";
  */
 
 interface IRealT is IERC20, IAccessControl {
-    function TOKEN_ADMIN() external view returns (bytes32);
+    function DEFAULT_ADMIN_ROLE() external view returns (bytes32);
 
     function ACPI_MODERATOR() external view returns (bytes32);
 

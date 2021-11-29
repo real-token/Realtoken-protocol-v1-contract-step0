@@ -28,7 +28,6 @@ contract RealT is ERC20, AccessControl {
 
     uint256 public initialTokenPrice;
 
-    bytes32 public constant TOKEN_ADMIN = keccak256("TOKEN_ADMIN");
     bytes32 public constant ACPI_MODERATOR = keccak256("ACPI_MODERATOR");
     bytes32 public constant ACPI_CONTRACT = keccak256("ACPI_CONTRACT");
     bytes32 public constant TOKEN_CONTRACT = keccak256("TOKEN_CONTRACT");
@@ -38,7 +37,7 @@ contract RealT is ERC20, AccessControl {
         string memory symbol,
         address acpiModerator
     ) ERC20(name, symbol) {
-        _setupRole(TOKEN_ADMIN, msg.sender);
+        _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
 
         acpiOne = new ACPIOne();
         acpiTwo = new ACPITwo();
@@ -61,15 +60,21 @@ contract RealT is ERC20, AccessControl {
         return _currentACPI;
     }
 
-    function setACPI(uint8 currentACPI) external onlyRole(TOKEN_ADMIN) {
-        require(currentACPI < 6, "Allowed value is 0-5");
-        _currentACPI = currentACPI;
-        if (currentACPI == 5) {
-            initialTokenPrice =
-                acpiOne.acpiPrice() +
-                acpiTwo.acpiPrice() +
-                acpiThree.acpiPrice() +
-                acpiFour.acpiPrice();
+    function _generatePrice() private {
+        initialTokenPrice =
+            (acpiOne.acpiPrice() / 100 * 15) +
+            (acpiTwo.acpiPrice() / 100 * 25 ) +
+            (acpiThree.acpiPrice() / 100 * 35 ) +
+            (acpiFour.acpiPrice() / 100 * 25 );
+
+        // TODO Emit event
+    }
+
+    function setACPI(uint8 newACPI) external onlyRole(DEFAULT_ADMIN_ROLE) {
+        require(newACPI < 6, "Allowed value is 0-5");
+        _currentACPI = newACPI;
+        if (newACPI == 5) {
+            _generatePrice();
         }
     }
 
@@ -77,7 +82,7 @@ contract RealT is ERC20, AccessControl {
         address[] calldata sender,
         address[] calldata recipient,
         uint256[] calldata amount
-    ) external onlyRole(TOKEN_ADMIN) {
+    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
         require(
             sender.length == recipient.length &&
                 recipient.length == amount.length,
@@ -93,14 +98,14 @@ contract RealT is ERC20, AccessControl {
 
     function mint(address account, uint256 amount)
         external
-        onlyRole(TOKEN_ADMIN)
+        onlyRole(DEFAULT_ADMIN_ROLE)
     {
         _mint(account, amount);
     }
 
     function batchMint(address[] calldata account, uint256[] calldata amount)
         external
-        onlyRole(TOKEN_ADMIN)
+        onlyRole(DEFAULT_ADMIN_ROLE)
     {
         require(
             account.length == amount.length,
@@ -116,14 +121,14 @@ contract RealT is ERC20, AccessControl {
 
     function burn(address account, uint256 amount)
         external
-        onlyRole(TOKEN_ADMIN)
+        onlyRole(DEFAULT_ADMIN_ROLE)
     {
         return _burn(account, amount);
     }
 
     function batchBurn(address[] calldata account, uint256[] calldata amount)
         external
-        onlyRole(TOKEN_ADMIN)
+        onlyRole(DEFAULT_ADMIN_ROLE)
     {
         require(
             account.length == amount.length,
@@ -182,7 +187,7 @@ contract RealT is ERC20, AccessControl {
         );
     }
 
-    function withdraw(address vault) external onlyRole(TOKEN_ADMIN) {
+    function withdraw(address vault) external onlyRole(DEFAULT_ADMIN_ROLE) {
         acpiOne.withdraw(vault);
         acpiTwo.withdraw(vault);
         acpiThree.withdraw(vault);

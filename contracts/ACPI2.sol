@@ -5,7 +5,6 @@ import "./ACPI.sol";
 
 contract ACPITwo is ACPI {
     mapping(address => uint256) private _balance;
-    uint256 private _acpiPrice;
 
     mapping(address => uint256) public pendingReturns;
 
