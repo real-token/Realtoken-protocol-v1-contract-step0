@@ -38,6 +38,8 @@ contract ACPIOne is ACPI {
      * @dev Start round of ACPI ending the last one.
      */
     function startRound() external override onlyModerator onlyCurrentACPI {
+        require(_currentRound < _totalRound, "All rounds have been done");
+
         if (highestBidder != address(0)) {
             // Award Winner
             pendingWins[highestBidder] += 1 ether;

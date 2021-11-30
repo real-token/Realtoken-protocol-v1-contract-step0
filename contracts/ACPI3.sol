@@ -42,6 +42,7 @@ contract ACPIThree is ACPI {
      * @dev bid to enter the round {onlyCurrentACPI}
      */
     function bid() external payable onlyCurrentACPI {
+        require(_currentRound < _totalRound, "BID: All rounds have been done");
         require(
             msg.value == _bidAmount,
             "Bid value should match exactly bid amount"
@@ -59,6 +60,8 @@ contract ACPIThree is ACPI {
      * @dev Start round of ACPI ending the last one. {onlyModerator}
      */
     function startRound() external override onlyModerator onlyCurrentACPI {
+        require(_currentRound < _totalRound, "All rounds have been done");
+
         if (_roundBidders.length > 0) {
             _priceHistory.push(_roundBidders.length * _bidAmount);
             for (uint256 i = 0; i < _roundBidders.length; i++) {

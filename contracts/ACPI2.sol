@@ -27,7 +27,8 @@ contract ACPITwo is ACPI {
      * @dev bid to enter the round {onlyCurrentACPI}
      */
     function bid() external payable onlyCurrentACPI {
-        require(msg.value > _minBid, "bid have to be higher than minBid");
+        require(_currentRound < _totalRound, "BID: All rounds have been done");
+        require(msg.value >= _minBid, "bid have to be higher than minBid");
 
         if (_balance[msg.sender][_currentRound] == 0)
             _roundBidders.push(msg.sender);
@@ -68,16 +69,19 @@ contract ACPITwo is ACPI {
      * @dev Start round of ACPI ending the last one.
      */
     function startRound() external override onlyModerator onlyCurrentACPI {
+        require(_currentRound < _totalRound, "All rounds have been done");
+
         if (_roundBidders.length > 0) {
             _priceHistory.push(_roundPot);
             for (uint256 i = 0; i < _roundBidders.length; i++) {
                 pendingWins[_roundBidders[i]] +=
-                    _balance[_roundBidders[i]][_currentRound] * _reward / _roundPot;
+                    (_balance[_roundBidders[i]][_currentRound] * _reward) /
+                    _roundPot;
             }
             delete _roundBidders;
 
             _roundPot = 0;
-            _reward += _reward / 2;
+            _reward += _reward / 5;
         }
 
         _currentRound += 1;

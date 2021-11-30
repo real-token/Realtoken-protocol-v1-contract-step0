@@ -28,6 +28,27 @@ describe("ACPI Three", function () {
     await realtToken.connect(TOKEN_ADMIN).setACPI(3);
   });
 
+  it("Going at the end!", async function () {
+    const [, ACPI_MODERATOR, addr1] = await ethers.getSigners();
+
+    let index = 0;
+    for (
+      index = 0;
+      index < (await acpiThree.totalRound()).toNumber();
+      index++
+    ) {
+      await acpiThree.connect(ACPI_MODERATOR).startRound();
+    }
+
+    expect(await acpiThree.totalRound()).to.equal(index);
+
+    await expect(
+      acpiThree.connect(addr1).bid({
+        value: ethers.utils.parseUnits("3", "ether"),
+      })
+    ).to.be.revertedWith("BID: All rounds have been done");
+  });
+
   it("Get bid amount", async function () {
     expect(await acpiThree.bidAmount()).to.equal(
       ethers.utils.parseUnits("250", "gwei")
@@ -145,7 +166,7 @@ describe("ACPI Three", function () {
 
     const _bidAmount = await acpiThree.bidAmount();
 
-    await acpiThree.connect(user1).bid({ value: _bidAmount });
+    acpiThree.connect(user1).bid({ value: _bidAmount });
 
     await expect(
       acpiThree.connect(user1).bid({ value: _bidAmount })
@@ -265,12 +286,8 @@ describe("ACPI Three", function () {
 
     await acpiThree.connect(ACPI_MODERATOR).startRound();
 
-    let index = 0;
-    for (
-      index = 0;
-      index < (await acpiThree.totalRound()).toNumber();
-      index++
-    ) {
+    let index = (await acpiThree.currentRound()).toNumber();
+    for (index; index < (await acpiThree.totalRound()).toNumber(); index++) {
       await acpiThree.connect(ACPI_MODERATOR).startRound();
     }
 
