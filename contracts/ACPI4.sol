@@ -19,7 +19,7 @@ contract ACPIFour is ACPI {
     /**
      * @dev Start round of ACPI ending the last one.
      */
-    function startRound() external override onlyModerator {
+    function startRound() external override onlyModerator onlyCurrentACPI {
         _currentRound += 1;
 
         if (_currentRound == _totalRound) setAcpiPrice();

@@ -141,7 +141,7 @@ contract RealT is ERC20, AccessControl {
         }
     }
 
-    function _getACPIWins(address account) internal view returns (uint256) {
+    function _getACPIWins(address account) private view returns (uint256) {
         return
             acpiOne.pendingWins(account) +
             acpiTwo.pendingWins(account) +
@@ -153,10 +153,9 @@ contract RealT is ERC20, AccessControl {
         return _getACPIWins(msg.sender);
     }
 
-    function _getACPIReturns(address account) internal view returns (uint256) {
+    function _getACPIReturns(address account) private view returns (uint256) {
         return
             acpiOne.pendingReturns(account) +
-            acpiTwo.pendingReturns(account) +
             acpiFour.pendingReturns(account);
     }
 
@@ -173,7 +172,7 @@ contract RealT is ERC20, AccessControl {
         uint256 totalReturns = _getACPIReturns(msg.sender);
         uint256 totalWins = _getACPIWins(msg.sender);
 
-        require(totalReturns > 0 || totalWins > 0);
+        require(totalReturns > 0 || totalWins > 0, "You don't have any tokens to claim");
 
         acpiOne.resetAccount(msg.sender);
         acpiTwo.resetAccount(msg.sender);

@@ -38,7 +38,6 @@ contract ACPIOne is ACPI {
      * @dev Start round of ACPI ending the last one.
      */
     function startRound() external override onlyModerator onlyCurrentACPI {
-        _currentRound += 1;
         if (highestBidder != address(0)) {
             // Award Winner
             pendingWins[highestBidder] += 1;
@@ -49,7 +48,8 @@ contract ACPIOne is ACPI {
             highestBid = 0;
             highestBidder = address(0);
         }
-
+        
+        _currentRound += 1;
         if (_currentRound == _totalRound) setAcpiPrice();
     }
 
