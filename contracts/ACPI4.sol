@@ -4,8 +4,6 @@ pragma solidity ^0.8.0;
 import "./ACPI.sol";
 
 contract ACPIFour is ACPI {
-    mapping(address => uint256) private _balance;
-
     mapping(address => uint256) public pendingReturns;
 
     mapping(address => uint256) public pendingWins;

@@ -201,3 +201,5 @@ describe("Realt Factory", function () {
     ).to.revertedWith("can't process empty array");
   });
 });
+
+// TODO Test claimToken RealT.sol

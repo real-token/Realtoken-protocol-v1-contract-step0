@@ -61,7 +61,7 @@ contract ACPIThree is ACPI {
     function startRound() external override onlyModerator onlyCurrentACPI {
         if (_roundBidders.length > 0) {
             _priceHistory.push(_roundBidders.length * _bidAmount);
-            for (uint256 i; i < _roundBidders.length; i++) {
+            for (uint256 i = 0; i < _roundBidders.length; i++) {
                 pendingWins[_roundBidders[i]] += 1 ether / _roundBidders.length;
             }
             delete _roundBidders;

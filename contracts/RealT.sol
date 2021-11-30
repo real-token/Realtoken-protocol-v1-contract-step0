@@ -62,10 +62,10 @@ contract RealT is ERC20, AccessControl {
 
     function _generatePrice() private {
         initialTokenPrice =
-            (acpiOne.acpiPrice() / 100 * 15) +
-            (acpiTwo.acpiPrice() / 100 * 25 ) +
-            (acpiThree.acpiPrice() / 100 * 35 ) +
-            (acpiFour.acpiPrice() / 100 * 25 );
+            (((acpiOne.acpiPrice() * 15) / 100)) +
+            (((acpiTwo.acpiPrice() * 25) / 100)) +
+            (((acpiThree.acpiPrice() * 35) / 100)) +
+            (((acpiFour.acpiPrice() * 25) / 100));
 
         // TODO Emit event
     }
@@ -91,7 +91,7 @@ contract RealT is ERC20, AccessControl {
 
         require(sender.length > 0, "can't process empty array");
 
-        for (uint256 index; index < sender.length; index++) {
+        for (uint256 index = 0; index < sender.length; index++) {
             _transfer(sender[index], recipient[index], amount[index]);
         }
     }
@@ -114,7 +114,7 @@ contract RealT is ERC20, AccessControl {
 
         require(account.length > 0, "can't process empty array");
 
-        for (uint256 index; index < account.length; index++) {
+        for (uint256 index = 0; index < account.length; index++) {
             _mint(account[index], amount[index]);
         }
     }
@@ -136,7 +136,7 @@ contract RealT is ERC20, AccessControl {
         );
         require(account.length > 0, "can't process empty array");
 
-        for (uint256 index; index < account.length; index++) {
+        for (uint256 index = 0; index < account.length; index++) {
             _burn(account[index], amount[index]);
         }
     }
@@ -155,8 +155,7 @@ contract RealT is ERC20, AccessControl {
 
     function _getACPIReturns(address account) private view returns (uint256) {
         return
-            acpiOne.pendingReturns(account) +
-            acpiFour.pendingReturns(account);
+            acpiOne.pendingReturns(account) + acpiFour.pendingReturns(account);
     }
 
     function getACPIReturns() external view returns (uint256) {
@@ -172,18 +171,24 @@ contract RealT is ERC20, AccessControl {
         uint256 totalReturns = _getACPIReturns(msg.sender);
         uint256 totalWins = _getACPIWins(msg.sender);
 
-        require(totalReturns > 0 || totalWins > 0, "You don't have any tokens to claim");
+        // TODO Check for reentrency
 
-        acpiOne.resetAccount(msg.sender);
-        acpiTwo.resetAccount(msg.sender);
-        acpiThree.resetAccount(msg.sender);
-        acpiFour.resetAccount(msg.sender);
+        require(
+            totalReturns > 0 || totalWins > 0,
+            "You don't have any tokens to claim"
+        );
 
+        // TODO Check if totalReturns > initialTokenPrice
         _transfer(
             address(this),
             msg.sender,
             totalWins + totalReturns / initialTokenPrice
         );
+
+        acpiOne.resetAccount(msg.sender);
+        acpiTwo.resetAccount(msg.sender);
+        acpiThree.resetAccount(msg.sender);
+        acpiFour.resetAccount(msg.sender);
     }
 
     function withdraw(address vault) external onlyRole(DEFAULT_ADMIN_ROLE) {

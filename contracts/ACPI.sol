@@ -19,25 +19,37 @@ abstract contract ACPI {
 
     uint8 internal _acpiNumber;
 
-   modifier onlyCurrentACPI() {
-        require(_realtERC20.getACPI() == _acpiNumber, "Only Current ACPI Method");
+    modifier onlyCurrentACPI() {
+        require(
+            _realtERC20.getACPI() == _acpiNumber,
+            "Only Current ACPI Method"
+        );
         _;
     }
 
-   modifier onlyTokenContract() {
-        require(_realtERC20.hasRole(_realtERC20.TOKEN_CONTRACT(), msg.sender), "Only Token Contract Method");
+    modifier onlyTokenContract() {
+        require(
+            _realtERC20.hasRole(_realtERC20.TOKEN_CONTRACT(), msg.sender),
+            "Only Token Contract Method"
+        );
         _;
     }
 
     modifier onlyModerator() {
-        require(_realtERC20.hasRole(_realtERC20.ACPI_MODERATOR(), msg.sender), "Only ACPI Moderator Method");
+        require(
+            _realtERC20.hasRole(_realtERC20.ACPI_MODERATOR(), msg.sender),
+            "Only ACPI Moderator Method"
+        );
         _;
     }
 
     /**
      * @dev Setup Abstract contract must be called only in the child contract
      */
-    function _setupAbstract(address realtERC20, uint8 acpiNumber) virtual internal {
+    function _setupAbstract(address realtERC20, uint8 acpiNumber)
+        internal
+        virtual
+    {
         _realtERC20 = IRealT(realtERC20);
         _acpiNumber = acpiNumber;
     }
@@ -45,21 +57,21 @@ abstract contract ACPI {
     /**
      * @dev Returns the current round.
      */
-    function currentRound() virtual external view returns (uint256) {
+    function currentRound() external view virtual returns (uint256) {
         return _currentRound;
     }
 
     /**
      * @dev Returns the amount of rounds per ACPI.
      */
-    function totalRound() virtual external view returns (uint256) {
+    function totalRound() external view virtual returns (uint256) {
         return _totalRound;
     }
 
     /**
      * @dev Returns the time between two consecutive round in seconds
      */
-    function roundTime() external virtual view returns (uint256) {
+    function roundTime() external view virtual returns (uint256) {
         return _roundTime;
     }
 
@@ -103,8 +115,8 @@ abstract contract ACPI {
      */
     function setAcpiPrice() internal virtual {
         if (_priceHistory.length == 0) return;
-        uint256 sum;
-        for (uint256 i; i < _priceHistory.length; i++) {
+        uint256 sum = 0;
+        for (uint256 i = 0; i < _priceHistory.length; i++) {
             sum += _priceHistory[i] / _priceHistory.length;
         }
         acpiPrice = sum;
@@ -120,12 +132,17 @@ abstract contract ACPI {
      * @dev Emitted when a user win a round of any ACPI
      * `amount` is the amount of Governance Token RealT awarded
      */
-    event RoundWin(address indexed winner, uint8 indexed acpiNumber, uint256 amount);
+    event RoundWin(
+        address indexed winner,
+        uint8 indexed acpiNumber,
+        uint256 amount
+    );
 
     /**
      * @dev Withdraw native currency {onlyTokenContract}
      */
     function withdraw(address recipient) external virtual onlyTokenContract {
-        payable(recipient).transfer(address(this).balance);
+        if (address(this).balance > 0 && recipient != address(0))
+            payable(recipient).transfer(address(this).balance);
     }
 }
