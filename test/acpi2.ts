@@ -108,7 +108,7 @@ describe("ACPI Two", function () {
 
       expect(await acpiTwo.reward()).to.equal(reward);
 
-      reward = reward.add(reward.div(5));
+      reward = reward.add(reward.div(100));
     }
 
     await acpiTwo.connect(ACPI_MODERATOR).startRound();

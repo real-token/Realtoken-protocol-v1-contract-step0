@@ -1,46 +1,253 @@
-# Advanced Sample Hardhat Project
+<div id="top"></div>
 
-This project demonstrates an advanced Hardhat use case, integrating other tools commonly used alongside Hardhat in the ecosystem.
+[![Contributors][contributors-shield]][contributors-url]
+[![Forks][forks-shield]][forks-url]
+[![Stargazers][stars-shield]][stars-url]
+[![Issues][issues-shield]][issues-url]
+[![MIT License][license-shield]][license-url]
+[![LinkedIn][linkedin-shield]][linkedin-url]
 
-The project comes with a sample contract, a test for that contract, a sample script that deploys that contract, and an example of a task implementation, which simply lists the available accounts. It also comes with a variety of other tools, preconfigured to work with the project code.
+<!-- PROJECT LOGO -->
+<br />
+<div align="center">
+  <a href="https://github.com/real-token/Realtoken-protocol-v1-contract-step0">
+    <img src="images/logo.svg" alt="Logo" width="80" height="80">
+  </a>
 
-Try running some of the following tasks:
+<h3 align="center">Real Estate Governance</h3>
 
-```shell
-npx hardhat accounts
-npx hardhat compile
-npx hardhat clean
+  <p align="center">
+    project_description
+    <br />
+    <a href="https://realt.co/"><strong>Realt.co</strong></a>
+    <br />
+    <br />
+    <a href="https://github.com/real-token/Realtoken-protocol-v1-contract-step0">Live website</a>
+    ·
+    <a href="https://github.com/real-token/Realtoken-protocol-v1-contract-step0/issues">Report Bug</a>
+    ·
+    <a href="https://github.com/real-token/Realtoken-protocol-v1-contract-step0/issues">Request Feature</a>
+  </p>
+</div>
+
+
+
+<!-- TABLE OF CONTENTS -->
+<details>
+  <summary>Table of Contents</summary>
+  <ol>
+    <li>
+      <a href="#about-the-project">About The Project</a>
+      <ul>
+        <li><a href="#built-with">Built With</a></li>
+      </ul>
+    </li>
+    <li>
+      <a href="#getting-started">Getting Started</a>
+      <ul>
+        <li><a href="#prerequisites">Prerequisites</a></li>
+        <li><a href="#installation">Installation</a></li>
+      </ul>
+    </li>
+    <li><a href="#usage">Usage</a></li>
+    <li><a href="#roadmap">Roadmap</a></li>
+    <li><a href="#contributing">Contributing</a></li>
+    <li><a href="#license">License</a></li>
+    <li><a href="#contact">Contact</a></li>
+    <li><a href="#acknowledgments">Acknowledgments</a></li>
+  </ol>
+</details>
+
+
+
+<!-- ABOUT THE PROJECT -->
+## About The Project
+
+[![Product Name Screen Shot][product-screenshot]](https://example.com)
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+
+
+### Built With Hardhat
+
+* [Eslint](https://eslint.org/)
+* [Chai](https://www.chaijs.com/guide/)
+* [Solhint](https://github.com/protofire/solhint)
+* [Prettier](https://github.com/prettier/prettier)
+* [solidity-coverage](https://github.com/sc-forks/solidity-coverage)
+* [dotenv](https://www.npmjs.com/package/dotenv)
+* [Waffle](https://getwaffle.io/)
+* [Typescript](https://www.typescriptlang.org/)
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+
+
+<!-- GETTING STARTED -->
+## Getting Started
+
+
+### Prerequisites
+
+
+* npm
+  ```sh
+  npm install npm@latest -g
+  ```
+
+### Installation
+
+1. Clone the repo
+   ```sh
+   git clone https://github.com/real-token/Realtoken-protocol-v1-contract-step0.git
+   ```
+2. Install NPM packages
+   ```sh
+   npm install
+   ```
+3. Setup a `.env` file, with the following config
+
+   >  CoinMarketCap API Key [here](https://coinmarketcap.com/api/pricing/)
+
+   >  Infura API Key [here](https://infura.io/pricing)
+
+   >  Etherscan API Key [here](https://etherscan.io/apis)
+
+   ```sh
+    ETHERSCAN_API_KEY=API-KEY
+    ROPSTEN_URL=https://ropsten.infura.io/v3/API-KEY
+    RINKEBY_URL=https://rinkeby.infura.io/v3/API-KEY
+    KOVAN_URL=https://kovan.infura.io/v3/API-KEY
+    XDAI_URL=https://rpc.xdaichain.com/
+    XDAITEST_URL=https://sokol.poa.network
+    REPORT_GAS=CoinMarketCap-API-Key
+    TOKEN_ADMIN_PK=Token_Contract_Creator_Private_Key
+    ACPI_MODERATOR=ACPI_Moderator_Private_Key
+   ```
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+
+
+<!-- USAGE EXAMPLES -->
+## Usage
+
+Once you are set, you are ready to run tests, compile, audit and deploy the Real Estate Governance Smart Contract suite.
+
+_For more examples, please refer to the [Documentation](https://example.com)_
+
++ Run tests
+```sh
 npx hardhat test
-npx hardhat node
-npx hardhat help
-REPORT_GAS=true npx hardhat test
+```
++ Check coverage
+```sh
 npx hardhat coverage
-npx hardhat run scripts/deploy.ts
-TS_NODE_FILES=true npx ts-node scripts/deploy.ts
-npx eslint '**/*.{js,ts}'
-npx eslint '**/*.{js,ts}' --fix
-npx prettier '**/*.{json,sol,md}' --check
-npx prettier '**/*.{json,sol,md}' --write
-npx solhint 'contracts/**/*.sol'
-npx solhint 'contracts/**/*.sol' --fix
+```
++ Verify deployed smart contract on Etherscan
+```sh
+npx hardhat verify CONTRACT_ADDRESS --network NETWORK_ID
+```
++ Deploy and verify on network
+```sh
+npx hardhat run scripts/deploy.ts --network NETWORK_ID
 ```
 
-# Etherscan verification
+> NETWORK_ID is specified inside [config](hardhat.config.ts)
+<p align="right">(<a href="#top">back to top</a>)</p>
 
-To try out Etherscan verification, you first need to deploy a contract to an Ethereum network that's supported by Etherscan, such as Ropsten.
+<!-- AUDIT -->
+## Audit
 
-In this project, copy the .env.example file to a file named .env, and then edit it to fill in the details. Enter your Etherscan API key, your Ropsten node URL (eg from Alchemy), and the private key of the account which will send the deployment transaction. With a valid .env file in place, first deploy your contract:
+Auditing the solidity code in an important aspect of this language, we need to be confident with the code we ship to the customer to avoid malicious attacks
 
-```shell
-hardhat run --network ropsten scripts/sample-script.ts
+A lot of the auditing have been done during the contract building phase using the `Solidity static analysis framework ` [**Slither**](https://github.com/crytic/slither)
+
+You can download Slither and use the following command to _audit_ the code
+
+```sh
+slither .
 ```
+<p align="right">(<a href="#top">back to top</a>)</p>
 
-Then, copy the deployment address and paste it in to replace `DEPLOYED_CONTRACT_ADDRESS` in this command:
 
-```shell
-npx hardhat verify --network ropsten DEPLOYED_CONTRACT_ADDRESS "Hello, Hardhat!"
-```
+<!-- ROADMAP -->
+## Roadmap
 
-# Performance optimizations
+- Main contract ✅
+- ACPI 1 ✅
+- ACPI 2 ✅
+- ACPI 3 ✅
+- ACPI 4 🏗️
 
-For faster runs of your tests and scripts, consider skipping ts-node's type checking by setting the environment variable `TS_NODE_TRANSPILE_ONLY` to `1` in hardhat's environment. For more details see [the documentation](https://hardhat.org/guides/typescript.html#performance-optimizations).
+See the [open issues](https://github.com/real-token/Realtoken-protocol-v1-contract-step0/issues) for a full list of proposed features (and known issues).
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+
+
+<!-- CONTRIBUTING -->
+## Contributing
+
+
+If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
+Don't forget to give the project a star! Thanks again!
+
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+
+
+<!-- LICENSE -->
+## License
+
+Distributed under the MIT License. See `LICENSE.txt` for more information.
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+
+
+<!-- CONTACT -->
+## Contact
+
+Support - [@RealTPlatform](https://twitter.com/RealTPlatform) - support@realt.co
+
+Project Link: [https://github.com/real-token/Realtoken-protocol-v1-contract-step0](https://github.com/real-token/Realtoken-protocol-v1-contract-step0)
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+
+
+<!-- ACKNOWLEDGMENTS -->
+## Acknowledgments
+
+* [Hardhat # Good Framework](https://hardhat.org/)
+* [Haytham Allos # Off Chain Oracle](https://www.linkedin.com/in/haythamallos/)
+* [Michael Courvoisier # Guidelines, giving away tasks]()
+* [Bastien Silhol # Solidity Writter](https://github.com/chichke)
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+
+
+<!-- MARKDOWN LINKS & IMAGES -->
+<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+[contributors-shield]: https://img.shields.io/github/contributors/real-token/Realtoken-protocol-v1-contract-step0.svg?style=for-the-badge
+[contributors-url]: https://github.com/real-token/Realtoken-protocol-v1-contract-step0/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/real-token/Realtoken-protocol-v1-contract-step0.svg?style=for-the-badge
+[forks-url]: https://github.com/real-token/Realtoken-protocol-v1-contract-step0/network/members
+[stars-shield]: https://img.shields.io/github/stars/real-token/Realtoken-protocol-v1-contract-step0.svg?style=for-the-badge
+[stars-url]: https://github.com/real-token/Realtoken-protocol-v1-contract-step0/stargazers
+[issues-shield]: https://img.shields.io/github/issues/real-token/Realtoken-protocol-v1-contract-step0.svg?style=for-the-badge
+[issues-url]: https://github.com/real-token/Realtoken-protocol-v1-contract-step0/issues
+[license-shield]: https://img.shields.io/github/license/real-token/Realtoken-protocol-v1-contract-step0.svg?style=for-the-badge
+[license-url]: https://github.com/real-token/Realtoken-protocol-v1-contract-step0/blob/master/LICENSE.txt
+[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
+[linkedin-url]: https://www.linkedin.com/company/realtplatform/
+[product-screenshot]: images/screenshot.png

@@ -83,15 +83,17 @@ describe("ACPI One", function () {
     });
 
     await acpiOne.connect(addr1).bid({
-      value: ethers.utils.parseUnits("2", "ether"),
+      value: ethers.utils.parseUnits("1", "ether"),
     });
 
-    await acpiOne.connect(addr1).bid({
-      value: ethers.utils.parseUnits("3", "ether"),
-    });
+    await expect(
+      acpiOne.connect(addr1).bid({
+        value: ethers.utils.parseUnits("1", "ether"),
+      })
+    ).to.revertedWith("BID: Sender is already winning");
 
     expect(await acpiOne.highestBid()).to.equal(
-      ethers.utils.parseUnits("6", "ether")
+      ethers.utils.parseUnits("2", "ether")
     );
 
     expect(await acpiOne.highestBidder()).to.equal(addr1.address);
