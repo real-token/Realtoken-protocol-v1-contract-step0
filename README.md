@@ -160,7 +160,7 @@ npx hardhat run scripts/deploy.ts --network NETWORK_ID
 
 Auditing the solidity code in an important aspect of this language, we need to be confident with the code we ship to the customer to avoid malicious attacks
 
-A lot of the auditing have been done during the contract building phase using the `Solidity static analysis framework ` [**Slither**](https://github.com/crytic/slither)
+A lot of the auditing have been done during the contract building phase using the `Solidity static analysis framework` [**Slither**](https://github.com/crytic/slither)
 
 You can download Slither and use the following command to _audit_ the code
 
@@ -184,6 +184,19 @@ See the [open issues](https://github.com/real-token/Realtoken-protocol-v1-contra
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 
+<!-- COVERAGE -->
+## Coverage
+
+<img src="images/coverage.png" alt="Coverage">
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+<!-- GAS FEES -->
+## Gas fees
+
+<img src="images/gas.png" alt="Coverage">
+
+<p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- CONTRIBUTING -->
 ## Contributing
