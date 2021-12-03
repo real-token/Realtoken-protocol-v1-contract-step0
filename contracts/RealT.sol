@@ -26,7 +26,7 @@ contract RealT is ERC20, AccessControl {
     ACPIThree public acpiThree;
     ACPIFour public acpiFour;
 
-    uint256 public initialTokenPrice;
+    uint256 private _initialTokenPrice;
 
     bytes32 public constant ACPI_MODERATOR = keccak256("ACPI_MODERATOR");
     bytes32 public constant ACPI_CONTRACT = keccak256("ACPI_CONTRACT");
@@ -56,12 +56,16 @@ contract RealT is ERC20, AccessControl {
         _mint(address(this), 18 * 1000 * 1000 ether);
     }
 
+    function initialTokenPrice() external view returns (uint256) {
+        return _initialTokenPrice;
+    }
+
     function getACPI() external view returns (uint8) {
         return _currentACPI;
     }
 
     function _generatePrice() private {
-        initialTokenPrice =
+        _initialTokenPrice =
             (((acpiOne.acpiPrice() * 15) / 100)) +
             (((acpiTwo.acpiPrice() * 25) / 100)) +
             (((acpiThree.acpiPrice() * 35) / 100)) +
@@ -154,8 +158,10 @@ contract RealT is ERC20, AccessControl {
     }
 
     function _getACPIReturns(address account) private view returns (uint256) {
-        return
-            acpiOne.pendingReturns(account) + acpiFour.pendingReturns(account);
+        uint256 pendingReturns = acpiOne.pendingReturns(account);
+
+        // TODO Gotta be better than this
+        return pendingReturns;
     }
 
     function getACPIReturns() external view returns (uint256) {
@@ -182,7 +188,7 @@ contract RealT is ERC20, AccessControl {
         _transfer(
             address(this),
             msg.sender,
-            totalWins + totalReturns / initialTokenPrice
+            totalWins + totalReturns / _initialTokenPrice
         );
 
         acpiOne.resetAccount(msg.sender);

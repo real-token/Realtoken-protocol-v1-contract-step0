@@ -1,11 +1,13 @@
 import * as dotenv from "dotenv";
 
-import { HardhatUserConfig, task } from "hardhat/config";
+import { extendEnvironment, HardhatUserConfig, task } from "hardhat/config";
 import "@nomiclabs/hardhat-etherscan";
 import "@nomiclabs/hardhat-waffle";
 import "@typechain/hardhat";
 import "hardhat-gas-reporter";
 import "solidity-coverage";
+
+import "./type-extensions";
 
 dotenv.config();
 
@@ -19,8 +21,10 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
   }
 });
 
-// You need to export an object to set up your config
-// Go to https://hardhat.org/config/ to learn more
+extendEnvironment((hre) => {
+  hre.symbol = "REG";
+  hre.name = "Real Easte Governance";
+});
 
 const config: HardhatUserConfig = {
   solidity: {

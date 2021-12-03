@@ -1,9 +1,6 @@
 import { expect } from "chai";
-import { ethers } from "hardhat";
+import { ethers, name, symbol } from "hardhat";
 import { RealT, ACPIThree } from "../typechain";
-
-const name = "Governance Token RealT";
-const symbol = "GTR";
 
 let realtToken: RealT;
 let acpiThree: ACPIThree;

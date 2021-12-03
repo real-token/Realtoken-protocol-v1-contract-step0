@@ -3,10 +3,7 @@
 //
 // When running the script with `npx hardhat run <script>` you'll find the Hardhat
 // Runtime Environment's members available in the global scope.
-import { ethers, run } from "hardhat";
-
-const name = "Governance Token RealT";
-const symbol = "GTR";
+import { ethers, run, name, symbol } from "hardhat";
 
 function sleep(ms: number | undefined) {
   return new Promise((resolve) => setTimeout(resolve, ms));
