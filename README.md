@@ -39,7 +39,7 @@
     <li>
       <a href="#about-the-project">About The Project</a>
       <ul>
-        <li><a href="#built-with">Built With</a></li>
+        <li><a href="#built-with-hardhat">Built With Hardhat</a></li>
       </ul>
     </li>
     <li>
@@ -135,8 +135,6 @@
 
 Once you are set, you are ready to run tests, compile, audit and deploy the Real Estate Governance Smart Contract suite.
 
-_For more examples, please refer to the [Documentation](https://example.com)_
-
 + Run tests
 ```sh
 npx hardhat test
@@ -179,7 +177,7 @@ slither .
 - ACPI 1 ✅
 - ACPI 2 ✅
 - ACPI 3 ✅
-- ACPI 4 🏗️
+- ACPI 4 ✅
 
 See the [open issues](https://github.com/real-token/Realtoken-protocol-v1-contract-step0/issues) for a full list of proposed features (and known issues).
 
