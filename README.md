@@ -240,7 +240,7 @@ Project Link: [https://github.com/real-token/Realtoken-protocol-v1-contract-step
 
 * [Hardhat Team](https://hardhat.org/)
 * [Haytham Allos - CTO # Off Chain Oracle](https://www.linkedin.com/in/haythamallos/)
-* [Michael Courvoisier - COO # Guidelines]()
+* [Michael Courvoisier - COO # Guidelines](https://github.com/Michael-RealT)
 * [Bastien Silhol - Solidity code](https://github.com/chichke)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
