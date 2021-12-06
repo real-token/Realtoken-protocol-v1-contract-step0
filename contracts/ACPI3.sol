@@ -8,10 +8,8 @@ contract ACPIThree is ACPI {
 
     address[] private _roundBidders;
 
-    mapping(address => uint256) public pendingWins;
-
     // Address => _currentRound => didBet
-    mapping(address => mapping(uint256 => bool)) private _hasAlreadyBet;
+    mapping(address => mapping(uint16 => bool)) private _hasAlreadyBet;
 
     constructor() {
         _setupAbstract(msg.sender, 3);
@@ -65,7 +63,7 @@ contract ACPIThree is ACPI {
         if (_roundBidders.length > 0) {
             _priceHistory.push(_roundBidders.length * _bidAmount);
             for (uint256 i = 0; i < _roundBidders.length; i++) {
-                pendingWins[_roundBidders[i]] += 1 ether / _roundBidders.length;
+                _pendingWins[_roundBidders[i]] += 1 ether / _roundBidders.length;
             }
             delete _roundBidders;
         }
@@ -78,6 +76,6 @@ contract ACPIThree is ACPI {
      * note called after a claimTokens from the parent contract
      */
     function resetAccount(address account) external override onlyTokenContract {
-        pendingWins[account] = 0;
+        _pendingWins[account] = 0;
     }
 }

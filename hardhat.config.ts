@@ -37,6 +37,11 @@ const config: HardhatUserConfig = {
     },
   },
   networks: {
+    hardhat: {
+      accounts: {
+        count: 110,
+      },
+    },
     xdai: {
       url: process.env.XDAI_URL || "",
       accounts:

@@ -29,11 +29,7 @@ describe("ACPI Three", function () {
     const [, ACPI_MODERATOR, addr1] = await ethers.getSigners();
 
     let index = 0;
-    for (
-      index = 0;
-      index < (await acpiThree.totalRound()).toNumber();
-      index++
-    ) {
+    for (index = 0; index < (await acpiThree.totalRound()); index++) {
       await acpiThree.connect(ACPI_MODERATOR).startRound();
     }
 
@@ -283,8 +279,8 @@ describe("ACPI Three", function () {
 
     await acpiThree.connect(ACPI_MODERATOR).startRound();
 
-    let index = (await acpiThree.currentRound()).toNumber();
-    for (index; index < (await acpiThree.totalRound()).toNumber(); index++) {
+    let index = await acpiThree.currentRound();
+    for (index; index < (await acpiThree.totalRound()); index++) {
       await acpiThree.connect(ACPI_MODERATOR).startRound();
     }
 

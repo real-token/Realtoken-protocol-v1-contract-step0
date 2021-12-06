@@ -171,7 +171,7 @@ describe("ACPI One", function () {
     await realtToken.connect(TOKEN_ADMIN).setACPI(1);
 
     let index = 0;
-    for (index = 0; index < (await acpiOne.totalRound()).toNumber(); index++) {
+    for (index = 0; index < (await acpiOne.totalRound()); index++) {
       await acpiOne.connect(ACPI_MODERATOR).startRound();
     }
 
@@ -358,9 +358,9 @@ describe("ACPI One", function () {
 
     await acpiOne.connect(ACPI_MODERATOR).startRound();
 
-    let index = (await acpiOne.currentRound()).toNumber();
+    let index = await acpiOne.currentRound();
 
-    for (; index < (await acpiOne.totalRound()).toNumber(); index++) {
+    for (; index < (await acpiOne.totalRound()); index++) {
       await acpiOne.connect(ACPI_MODERATOR).startRound();
     }
 

@@ -5,17 +5,15 @@ import "./ACPI.sol";
 import "./Median.sol";
 
 contract ACPIOne is ACPI {
-    address public highestBidder;
-    uint256 public highestBid;
+    address private _highestBidder;
+    uint256 private _highestBid;
 
-    uint256 public bidIncrement = 250 gwei;
+    uint256 private _bidIncrement = 250 gwei;
 
-    mapping(address => uint256) public pendingReturns;
-
-    mapping(address => uint256) public pendingWins;
+    mapping(address => uint256) private _pendingReturns;
 
     // Address => _currentRound => balance
-    mapping(address => mapping(uint256 => uint256)) private _balance;
+    mapping(address => mapping(uint16 => uint256)) private _balance;
 
     constructor() {
         _setupAbstract(msg.sender, 1);
@@ -31,7 +29,23 @@ contract ACPIOne is ACPI {
         onlyModerator
         returns (uint256)
     {
-        return bidIncrement = newValue;
+        return _bidIncrement = newValue;
+    }
+
+    function pendingReturns(address account) external view returns (uint256) {
+        return _pendingReturns[account];
+    }
+
+    function highestBid() external view returns (uint256) {
+        return _highestBid;
+    }
+
+    function highestBidder() external view returns (address) {
+        return _highestBidder;
+    }
+
+    function bidIncrement() external view returns (uint256) {
+        return _bidIncrement;
     }
 
     /**
@@ -40,15 +54,15 @@ contract ACPIOne is ACPI {
     function startRound() external override onlyModerator onlyCurrentACPI {
         require(_currentRound < _totalRound, "All rounds have been done");
 
-        if (highestBidder != address(0)) {
+        if (_highestBidder != address(0)) {
             // Award Winner
-            pendingWins[highestBidder] += 1 ether;
-            _priceHistory.push(highestBid);
-            emit RoundWin(highestBidder, 1, 1);
+            _pendingWins[_highestBidder] += 1 ether;
+            _priceHistory.push(_highestBid);
+            emit RoundWin(_highestBidder, 1, 1);
 
             // Reset state
-            highestBid = 0;
-            highestBidder = address(0);
+            _highestBid = 0;
+            _highestBidder = address(0);
         }
 
         _currentRound += 1;
@@ -58,7 +72,7 @@ contract ACPIOne is ACPI {
     function setAcpiPrice() internal override {
         if (_priceHistory.length == 0) return;
 
-        acpiPrice = Median.from(_priceHistory);
+        _acpiPrice = Median.from(_priceHistory);
     }
 
     function bid() external payable onlyCurrentACPI {
@@ -66,24 +80,24 @@ contract ACPIOne is ACPI {
 
         require(
             msg.value + _balance[msg.sender][_currentRound] >=
-                highestBid + bidIncrement,
+                _highestBid + _bidIncrement,
             "BID: value is to low"
         );
 
-        require(highestBidder != msg.sender, "BID: Sender is already winning");
+        require(_highestBidder != msg.sender, "BID: Sender is already winning");
 
-        if (highestBidder != address(0)) {
+        if (_highestBidder != address(0)) {
             // Refund the previously highest bidder.
-            pendingReturns[highestBidder] += highestBid;
+            _pendingReturns[_highestBidder] += _highestBid;
         }
 
         if (_balance[msg.sender][_currentRound] > 0)
-            pendingReturns[msg.sender] -= _balance[msg.sender][_currentRound];
+            _pendingReturns[msg.sender] -= _balance[msg.sender][_currentRound];
 
         _balance[msg.sender][_currentRound] += msg.value;
 
-        highestBid = _balance[msg.sender][_currentRound];
-        highestBidder = msg.sender;
+        _highestBid = _balance[msg.sender][_currentRound];
+        _highestBidder = msg.sender;
     }
 
     function getBet(address account)
@@ -100,7 +114,7 @@ contract ACPIOne is ACPI {
      * note called after a claimTokens from the parent contract
      */
     function resetAccount(address account) external override onlyTokenContract {
-        pendingReturns[account] = 0;
-        pendingWins[account] = 0;
+        _pendingReturns[account] = 0;
+        _pendingWins[account] = 0;
     }
 }

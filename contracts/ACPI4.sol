@@ -5,37 +5,65 @@ import "./ACPI.sol";
 import "./Median.sol";
 
 contract ACPIFour is ACPI {
-    mapping(address => uint256) public pendingWins;
+    // Address => _currentRound => _currentTurn => didBet
+    mapping(address => mapping(uint16 => mapping(uint16 => bool)))
+        private _hasAlreadyBet;
 
-    // TODO uin256 is a bit overkill for these 3 ?
-    uint256 private _currentTurn;
-    uint256 private _rewardPerTurn;
-    uint256 private _rewardLeft;
+    uint8 private _priceIncrease;
 
-    uint256 private _turnTime;
+    uint16 private _currentTurn;
+
+    uint56 private _rewardPerTurn;
+    uint56 private _rewardLeft;
+
     uint256 private _price;
     uint256 private _lastPrice;
-
-    // TODO Should we make this a setable veriable ?
-    uint256 constant private _DEFAULT_PRICE = 0.1 ether;
+    uint256 private _defaultPrice;
 
     constructor() {
         _setupAbstract(msg.sender, 4);
-        _roundTime = 60 * 5;
-        _turnTime = 10 * 60;
+        _priceIncrease = 60; // 60% increase
+        _defaultPrice = 0.1 ether;
+        _roundTime = 60 * 5; // seconds between each turn
         _totalRound = 10;
         _rewardPerTurn = 100;
         _rewardLeft = _rewardPerTurn;
-        _price = _DEFAULT_PRICE;
-        _lastPrice = _DEFAULT_PRICE;
+        _price = _defaultPrice;
+        _lastPrice = _defaultPrice;
+    }
+
+    /**
+     * @dev Price per token in native currency
+     */
+    function setDefaultPrice(uint256 newValue) external onlyModerator {
+        _defaultPrice = newValue;
+    }
+
+    /**
+     * @dev Reward for each turn in number of tokens
+     */
+    function setReward(uint56 newValue) external onlyModerator {
+        _rewardPerTurn = newValue;
+        _rewardLeft = newValue;
+    }
+
+    /**
+     * @dev Price increase between each turn in %
+     */
+    function setPriceIncrease(uint8 newValue) external onlyModerator {
+        _priceIncrease = newValue;
+    }
+
+    function defaultPrice() external view returns (uint256) {
+        return _defaultPrice;
     }
 
     function price() external view returns (uint256) {
         return _price;
     }
 
-    function setPrice(uint256 newValue) external onlyModerator {
-        _price = newValue;
+    function priceIncrease() external view returns (uint8) {
+        return _priceIncrease;
     }
 
     function rewardLeft() external view returns (uint256) {
@@ -46,19 +74,6 @@ contract ACPIFour is ACPI {
         return _rewardPerTurn;
     }
 
-    function setReward(uint256 newValue) external onlyModerator {
-        _rewardPerTurn = newValue;
-        _rewardLeft = newValue;
-    }
-
-    function turnTime() external view returns (uint256) {
-        return _roundTime;
-    }
-
-    function setTurnTime(uint256 newValue) external onlyModerator {
-        _turnTime = newValue;
-    }
-
     function currentTurn() external view returns (uint256) {
         return _currentTurn;
     }
@@ -66,41 +81,52 @@ contract ACPIFour is ACPI {
     function buy() external payable onlyCurrentACPI {
         require(_currentRound < _totalRound, "BUY: All rounds have been done");
 
-        require(msg.value > _price, "BUY: value is to low");
+        require(
+            !_hasAlreadyBet[msg.sender][_currentRound][_currentTurn],
+            "You can only bet once per turn"
+        );
 
-        require(msg.value % _price == 0, "BUY: value should be an exact multiple of price");
+        require(msg.value == _price, "BUY: value must match price");
 
-        require(_rewardLeft >= msg.value / _price, "BUY: Too few token to buy this round");
-     
-        // Multiple after to prevent overflow
-        pendingWins[msg.sender] += msg.value / _price * 1 ether;
-        _rewardLeft -= msg.value / _price;
+        require(_rewardLeft > 0, "BUY: All tokens have been sold for this turn");
+
+        _hasAlreadyBet[msg.sender][_currentRound][_currentTurn] = true;
+        _pendingWins[msg.sender] += 1 ether;
+        _rewardLeft -= 1;
     }
 
     /**
      * @dev Start round of ACPI ending the last one.
      */
     function startRound() external override onlyModerator onlyCurrentACPI {
+        require(_currentRound < _totalRound, "All rounds have been done");
+
         if (_rewardLeft > 0) {
-            _priceHistory.push(Math.average(_lastPrice * 100, _price * _rewardPerTurn - _rewardLeft));
+            _priceHistory.push(
+                Math.average(
+                    _lastPrice * _rewardPerTurn,
+                    _price * (_rewardPerTurn - _rewardLeft)
+                )
+            );
             _currentRound += 1;
             _currentTurn = 0;
-            _price = _DEFAULT_PRICE;
-            _lastPrice = _DEFAULT_PRICE;
-            _rewardLeft = _rewardPerTurn;
+            _price = _defaultPrice;
+            _lastPrice = _defaultPrice;
         } else {
             _lastPrice = _price;
             _currentTurn += 1;
-            _price += _price * 60 / 100;
-            _rewardLeft = _rewardPerTurn;
+            _price += (_price * _priceIncrease) / 100;
         }
+
+        _rewardLeft = _rewardPerTurn;
+
         if (_currentRound == _totalRound) setAcpiPrice();
     }
 
     function setAcpiPrice() internal override {
         if (_priceHistory.length == 0) return;
 
-        acpiPrice = Median.from(_priceHistory);
+        _acpiPrice = Median.from(_priceHistory);
     }
 
     /**
@@ -108,6 +134,6 @@ contract ACPIFour is ACPI {
      * note called after a claimTokens from the parent contract
      */
     function resetAccount(address account) external override onlyTokenContract {
-        pendingWins[account] = 0;
+        _pendingWins[account] = 0;
     }
 }

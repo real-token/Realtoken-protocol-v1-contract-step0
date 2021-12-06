@@ -4,10 +4,8 @@ pragma solidity ^0.8.0;
 import "./ACPI.sol";
 
 contract ACPITwo is ACPI {
-    mapping(address => uint256) public pendingWins;
-
     // Address => _currentRound => balance
-    mapping(address => mapping(uint256 => uint256)) private _balance;
+    mapping(address => mapping(uint16 => uint256)) private _balance;
 
     address[] private _roundBidders;
 
@@ -74,7 +72,7 @@ contract ACPITwo is ACPI {
         if (_roundBidders.length > 0) {
             _priceHistory.push(_roundPot);
             for (uint256 i = 0; i < _roundBidders.length; i++) {
-                pendingWins[_roundBidders[i]] +=
+                _pendingWins[_roundBidders[i]] +=
                     (_balance[_roundBidders[i]][_currentRound] * _reward) /
                     _roundPot;
             }
@@ -95,6 +93,6 @@ contract ACPITwo is ACPI {
      * note called after a claimTokens from the parent contract
      */
     function resetAccount(address account) external override onlyTokenContract {
-        pendingWins[account] = 0;
+        _pendingWins[account] = 0;
     }
 }

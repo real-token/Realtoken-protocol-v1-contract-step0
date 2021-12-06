@@ -26,7 +26,7 @@ describe("ACPI Two", function () {
     const [, ACPI_MODERATOR, addr1] = await ethers.getSigners();
 
     let index = 0;
-    for (index; index < (await acpiTwo.totalRound()).toNumber(); index++) {
+    for (index; index < (await acpiTwo.totalRound()); index++) {
       await acpiTwo.connect(ACPI_MODERATOR).startRound();
     }
 
@@ -95,7 +95,7 @@ describe("ACPI Two", function () {
 
     await acpiTwo.connect(ACPI_MODERATOR).setTotalRound(200);
 
-    const totalRound = (await acpiTwo.totalRound()).toNumber();
+    const totalRound = await acpiTwo.totalRound();
     let index = 0;
     for (index; index < totalRound - 1; index++) {
       await acpiTwo.connect(ACPI_MODERATOR).startRound();

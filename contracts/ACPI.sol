@@ -11,11 +11,14 @@ abstract contract ACPI {
     IRealT internal _realtERC20;
     uint256[] internal _priceHistory;
 
-    uint256 internal _currentRound;
-    uint256 internal _totalRound;
+    // User Address => User balance
+    mapping(address => uint256) internal _pendingWins;
+
+    uint16 internal _currentRound;
+    uint16 internal _totalRound;
     uint256 internal _roundTime;
 
-    uint256 public acpiPrice;
+    uint256 internal _acpiPrice;
 
     uint8 internal _acpiNumber;
 
@@ -57,14 +60,14 @@ abstract contract ACPI {
     /**
      * @dev Returns the current round.
      */
-    function currentRound() external view virtual returns (uint256) {
+    function currentRound() external view virtual returns (uint16) {
         return _currentRound;
     }
 
     /**
      * @dev Returns the amount of rounds per ACPI.
      */
-    function totalRound() external view virtual returns (uint256) {
+    function totalRound() external view virtual returns (uint16) {
         return _totalRound;
     }
 
@@ -76,13 +79,28 @@ abstract contract ACPI {
     }
 
     /**
+     * @dev Returns the price of the current ACPI
+     */
+    function acpiPrice() external view virtual returns (uint256) {
+        return _acpiPrice;
+    }
+
+    /**
+     * @dev Returns the pendingWins of {account}
+     * pendingWins can be withdrawed at the end of all APCIs
+     */
+    function pendingWins(address account) external view returns (uint256) {
+        return _pendingWins[account];
+    }
+
+    /**
      * @dev Set totalRound value
      */
-    function setTotalRound(uint256 newValue)
+    function setTotalRound(uint16 newValue)
         external
         virtual
         onlyModerator
-        returns (uint256)
+        returns (uint16)
     {
         return _totalRound = newValue;
     }
@@ -119,7 +137,7 @@ abstract contract ACPI {
         for (uint256 i = 0; i < _priceHistory.length; i++) {
             sum += _priceHistory[i] / _priceHistory.length;
         }
-        acpiPrice = sum;
+        _acpiPrice = sum;
     }
 
     /**
