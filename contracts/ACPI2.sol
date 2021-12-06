@@ -79,7 +79,7 @@ contract ACPITwo is ACPI {
             delete _roundBidders;
 
             _roundPot = 0;
-            
+
             // TODO Incrementation variable
             _reward += _reward / 100;
         }

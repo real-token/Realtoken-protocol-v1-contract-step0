@@ -88,7 +88,10 @@ contract ACPIFour is ACPI {
 
         require(msg.value == _price, "BUY: value must match price");
 
-        require(_rewardLeft > 0, "BUY: All tokens have been sold for this turn");
+        require(
+            _rewardLeft > 0,
+            "BUY: All tokens have been sold for this turn"
+        );
 
         _hasAlreadyBet[msg.sender][_currentRound][_currentTurn] = true;
         _pendingWins[msg.sender] += 1 ether;
