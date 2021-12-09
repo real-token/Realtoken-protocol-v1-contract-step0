@@ -4,6 +4,7 @@ import { ethers, name, symbol } from "hardhat";
 import { ACPIFour, ACPIOne, ACPIThree, ACPITwo, RealT } from "../../typechain";
 import { acpiData1, pendingReturns } from "./acpi1data";
 import { acpiData2 } from "./acpi2data";
+import { acpiData3 } from "./acpi3data";
 import { acpiData4 } from "./acpi4data";
 
 let realtToken: RealT;
@@ -120,24 +121,27 @@ describe("END 2 END Testing", function () {
     let total = BigNumber.from(0);
 
     for (let j = 0; j < testUserNumber; j++) {
-      const pendinWins = await acpiTwo.pendingWins(
+      const pendingWins = await acpiTwo.pendingWins(
         getSigners[j + signersOffset].address
       );
 
-      expect(pendinWins).to.not.be.equal(BigNumber.from(0));
+      // TODO Find a way to test the actual pendingWins
+      expect(pendingWins).to.not.be.equal(BigNumber.from(0));
 
-      total = total.add(pendinWins);
+      total = total.add(pendingWins);
     }
 
-    console.log("Total redistributed: " + ethers.utils.formatEther(total));
+    console.log(
+      "\nTotal redistributed: " + ethers.utils.formatEther(total) + "\n"
+    );
     expect(await realtToken.getACPI()).to.equal(2);
   });
 
   it("ACPI 3", async function () {
+    const { bidAmount, expected } = acpiData3;
     const getSigners = await ethers.getSigners();
     const rounds = 4;
 
-    const bidAmount = ethers.utils.parseUnits("1", "ether");
     await realtToken.connect(getSigners[0]).setACPI(3);
 
     await acpiThree.connect(getSigners[1]).setBidAmount(bidAmount);
@@ -156,7 +160,7 @@ describe("END 2 END Testing", function () {
     for (let i = 0; i < testUserNumber; i++) {
       expect(
         await acpiThree.pendingWins(getSigners[i + signersOffset].address)
-      ).to.equal("40000000000000000");
+      ).to.equal(expected);
     }
     expect(await realtToken.getACPI()).to.equal(3);
   });
@@ -224,7 +228,7 @@ describe("END 2 END Testing", function () {
 
     await realtToken.connect(getSigners[0]).setACPI(5);
 
-    console.log("TOKEN TO CLAIM\n\n");
+    console.log("\nTOKEN TO CLAIM\n");
     let total = BigNumber.from(0);
     for (let i = 0; i < testUserNumber; i++) {
       const tokenToClaim = await realtToken

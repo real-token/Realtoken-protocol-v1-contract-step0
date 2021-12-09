@@ -899,13 +899,4 @@ export const acpiData4 = [
     "Turn 2__1": "0,16",
     "Turn 3__1": "0",
   },
-  {
-    pendingWins: "TOTAL",
-    "Turn 1": "10",
-    "Turn 2": "16",
-    "Turn 3": "5,632",
-    "Turn 1__1": "10",
-    "Turn 2__1": "16",
-    "Turn 3__1": "11,776",
-  },
 ];

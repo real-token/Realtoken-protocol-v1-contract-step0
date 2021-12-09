@@ -49,7 +49,7 @@ contract ACPIThree is ACPI {
         _roundBidders.push(msg.sender);
         _hasAlreadyBet[msg.sender][_currentRound] = true;
 
-        emit Bid(msg.sender, 3, _bidAmount);
+        emit Bid(msg.sender, _bidAmount);
     }
 
     /**
@@ -67,7 +67,7 @@ contract ACPIThree is ACPI {
             }
             delete _roundBidders;
 
-            emit RoundWin(address(0), 3, _roundBidders.length * _bidAmount);
+            emit RoundWin(address_roundBidders.length * _bidAmount);
         }
         _currentRound += 1;
         if (_currentRound == _totalRound) setAcpiPrice();

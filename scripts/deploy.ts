@@ -37,7 +37,7 @@ async function main() {
     name,
     symbol,
     ACPI_MODERATOR.address,
-    { gasLimit: 10000000 }
+    { gasLimit: 8500000 }
   );
 
   await realtToken.deployed();

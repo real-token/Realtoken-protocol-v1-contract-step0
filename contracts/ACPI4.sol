@@ -97,7 +97,7 @@ contract ACPIFour is ACPI {
         _pendingWins[msg.sender] += 1 ether;
         _rewardLeft -= 1;
 
-       emit Bid(msg.sender, 4, _price);
+       emit Bid(msg.sender, _price);
     }
 
     /**
@@ -122,7 +122,7 @@ contract ACPIFour is ACPI {
             _price += (_price * _priceIncrease) / 100;
         }
 
-        emit RoundWin(address(0), 4, _price);
+        emit RoundWin(_price);
 
         _rewardLeft = _rewardPerTurn;
 

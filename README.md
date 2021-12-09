@@ -9,7 +9,7 @@
 
 <!-- PROJECT LOGO -->
 <br />
-<div align="center">
+<div align="center" id="about-the-project">
   <a href="https://github.com/real-token/Realtoken-protocol-v1-contract-step0">
     <img src="images/logo.svg" alt="Logo" width="80" height="80">
   </a>
@@ -31,15 +31,15 @@ RealT not being a seer we cannot give a price to the token, the market being irr
 The objectives of the ACPIs are therefore to experiment with different prices through 4 sales methods, each of which will be reproduced several times to obtain a sample price which will then be consolidated between the 4 ACPIs to give the initial price.
 Another important objective is to concretely involve the community from the beginning in the life and emotion of this token, being a DAO governance token, we are convinced that the initial price should not be established by a centralized entity, but by the people using it who have an interest.
 
-<ins>ACPI 1</ins> - Similar to an auction, in each session a token is put up for bidding, interested parties will bid to win the token.
+<ins id="acpi1">ACPI 1</ins> - Similar to an auction, in each session a token is put up for bidding, interested parties will bid to win the token.
 At the end of several bidding sessions, the contract will take the median value of all the bids to set the ACPI 1 exit price
 
-<ins>ACPI 2</ins> - Mechanism of participation with the free amount, with each session a token is put on sale, all the participants make a deposit of a free amount in a common pot, at the end of the session the total sum of the pot determines the value of the token and each participant receives a proportional share of the token compared to its deposit in the pot.
+<ins id="acpi2">ACPI 2</ins> - Participation method where the amount is determined by the user, with each session a token is put on sale, Every participant deposits an amount of their choice into the common pot, at the end of the session the total sum of the pot determines the value of the token and each participant receives a proportional share of the token compared to its deposit in the pot.
 At the end of several sessions the contract will take the average value of all the ACPI 2 sessions to set the ACPI 2 exit price.
 
-<ins>ACPI 3</ins> - Similar to ACPI 2, it differs by having a single participation with a fixed amount in the pot, at the end of each session the total sum of the pot determines the value of the token and each participant receives an identical share of the token.
+<ins id="acpi3">ACPI 3</ins> - Similar to ACPI 2, it differs by having a single participation with a fixed amount in the pot, at the end of each session the total sum of the pot determines the value of the token and each participant receives an identical share of the token.
 
-<ins>ACPI 4</ins> - Selling with a tiered price aims to determine the ceiling price, it resembles a low price bid in a liquidity pool with little available liquidity, however in ACPI4 this is done in a controlled environment, each session starts with a low price and increases each round by 60%, each round has an identical number of tokens offered for sale at the prices set by the contract, an investor can only buy one token at a time, but can participate in multiple sessions and each round of the same session.
+<ins id="acpi4">ACPI 4</ins> - Selling with a tiered price aims to determine the ceiling price, it resembles a low price bid in a liquidity pool with little available liquidity, however in ACPI4 this is done in a controlled environment, each session starts with a low price and increases each round by 60%, each round has an identical number of tokens offered for sale at the prices set by the contract, an investor can only buy one token at a time, but can participate in multiple sessions and each round of the same session.
 The round of a session ends when all the tokens of the round are sold or if at the end of the timer the tokens are not completely sold.
 The final price of a session is determined by the contract by taking an average between the sale of the last round and the penultimate round.
 At the end of several sessions the contract will take the median value of all the ACPI 4 sessions to set the exit price of the ACPI 4
@@ -67,7 +67,10 @@ Once all the ACPI's have been completed, the tokens are released and available f
     <li>
       <a href="#about-the-project">About The Project</a>
       <ul>
-        <li><a href="#built-with-hardhat">Built With Hardhat</a></li>
+        <li><a href="#acpi1">ACPI 1</a></li>
+        <li><a href="#acpi2">ACPI 2</a></li>
+        <li><a href="#acpi3">ACPI 3</a></li>
+        <li><a href="#acpi4">ACPI 4</a></li>
       </ul>
     </li>
     <li>
@@ -82,6 +85,7 @@ Once all the ACPI's have been completed, the tokens are released and available f
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
+    <li><a href="#built-with-hardhat">Built With Hardhat</a></li>
     <li><a href="#acknowledgments">Acknowledgments</a></li>
   </ol>
 </details>
@@ -270,8 +274,9 @@ Project Link: [https://github.com/real-token/Realtoken-protocol-v1-contract-step
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 
+<!-- BUILD WITH HARDHAT -->
 
-### Built With Hardhat
+## Built With Hardhat
 
 * [Eslint](https://eslint.org/)
 * [Chai](https://www.chaijs.com/guide/)

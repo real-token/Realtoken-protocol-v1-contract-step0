@@ -1,18 +1,14 @@
 {
   "name": "Realtoken-protocol-v1-contract-step0",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "description": "Real Estate Governance Token",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/real-token/Realtoken-protocol-v1-contract-step0.git"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "github.com/chichke",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/real-token/Realtoken-protocol-v1-contract-step0/issues"
   },

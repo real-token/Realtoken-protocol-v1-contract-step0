@@ -151,9 +151,7 @@ abstract contract ACPI {
      * `amount` is the amount of Governance Token RealT awarded
      */
     event RoundWin(
-        address indexed winner,
-        uint8 indexed acpiNumber,
-        uint256 amount
+        uint256 indexed amount
     );
 
     /**
@@ -161,8 +159,7 @@ abstract contract ACPI {
      */
     event Bid(
         address indexed user,
-        uint8 indexed acpiNumber,
-        uint256 amount
+        uint256 indexed amount
     );
     /**
      * @dev Withdraw native currency {onlyTokenContract}

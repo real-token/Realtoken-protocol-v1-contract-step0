@@ -36,7 +36,7 @@ contract ACPITwo is ACPI {
         _balance[msg.sender][_currentRound] += msg.value;
         _roundPot += msg.value;
 
-        emit Bid(msg.sender, 2, _balance[msg.sender][_currentRound]);
+        emit Bid(msg.sender, _balance[msg.sender][_currentRound]);
     }
 
     function roundPot() external view returns (uint256) {
@@ -62,8 +62,8 @@ contract ACPITwo is ACPI {
         _minBid = newValue;
     }
 
-    function getBet(address account) external view onlyCurrentACPI {
-        _balance[account][_currentRound];
+    function getBet() external view onlyCurrentACPI returns (uint256) {
+        return _balance[msg.sender][_currentRound];
     }
 
     /**
@@ -82,7 +82,7 @@ contract ACPITwo is ACPI {
             }
             delete _roundBidders;
 
-            emit RoundWin(address(0), 2, _roundPot);
+            emit RoundWin(_roundPot);
 
             _roundPot = 0;
 
