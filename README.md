@@ -218,6 +218,7 @@ slither .
 - ACPI 2 ✅
 - ACPI 3 ✅
 - ACPI 4 ✅
+- Testing ✅
 
 See the [open issues](https://github.com/real-token/Realtoken-protocol-v1-contract-step0/issues) for a full list of proposed features (and known issues).
 
