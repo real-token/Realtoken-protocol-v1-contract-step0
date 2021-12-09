@@ -256,7 +256,7 @@ describe("ACPI One", function () {
       value: ethers.utils.parseUnits("1.5", "ether"),
     });
 
-    expect(await acpiOne.connect(addr1).getBet(addr1.address)).to.equal(
+    expect(await acpiOne.connect(addr1).getBet()).to.equal(
       ethers.utils.parseUnits("1.5", "ether")
     );
   });

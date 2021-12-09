@@ -67,7 +67,7 @@ contract ACPIThree is ACPI {
             }
             delete _roundBidders;
 
-            emit RoundWin(address_roundBidders.length * _bidAmount);
+            emit RoundWin(_roundBidders.length * _bidAmount);
         }
         _currentRound += 1;
         if (_currentRound == _totalRound) setAcpiPrice();
