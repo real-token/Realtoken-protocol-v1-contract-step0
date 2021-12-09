@@ -24,12 +24,8 @@ contract ACPIOne is ACPI {
     /**
      * @dev Set bidIncrement value
      */
-    function setBidIncrement(uint256 newValue)
-        external
-        onlyModerator
-        returns (uint256)
-    {
-        return _bidIncrement = newValue;
+    function setBidIncrement(uint256 newValue) external onlyModerator {
+        _bidIncrement = newValue;
     }
 
     function pendingReturns(address account) external view returns (uint256) {
@@ -58,7 +54,7 @@ contract ACPIOne is ACPI {
             // Award Winner
             _pendingWins[_highestBidder] += 1 ether;
             _priceHistory.push(_highestBid);
-            emit RoundWin(_highestBidder, 1, 1);
+            emit RoundWin(_highestBidder, 1, 1 ether);
 
             // Reset state
             _highestBid = 0;
@@ -91,13 +87,16 @@ contract ACPIOne is ACPI {
             _pendingReturns[_highestBidder] += _highestBid;
         }
 
-        if (_balance[msg.sender][_currentRound] > 0)
+        if (_balance[msg.sender][_currentRound] > 0) {
             _pendingReturns[msg.sender] -= _balance[msg.sender][_currentRound];
+        }
 
         _balance[msg.sender][_currentRound] += msg.value;
 
         _highestBid = _balance[msg.sender][_currentRound];
         _highestBidder = msg.sender;
+
+        emit Bid(msg.sender, 1, _highestBid);
     }
 
     function getBet(address account)

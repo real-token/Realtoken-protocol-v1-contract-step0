@@ -89,7 +89,7 @@ abstract contract ACPI {
      * @dev Returns the pendingWins of {account}
      * pendingWins can be withdrawed at the end of all APCIs
      */
-    function pendingWins(address account) external view returns (uint256) {
+    function pendingWins(address account) external view virtual returns (uint256) {
         return _pendingWins[account];
     }
 
@@ -100,9 +100,8 @@ abstract contract ACPI {
         external
         virtual
         onlyModerator
-        returns (uint16)
     {
-        return _totalRound = newValue;
+        _totalRound = newValue;
     }
 
     /**
@@ -112,9 +111,8 @@ abstract contract ACPI {
         external
         virtual
         onlyModerator
-        returns (uint256)
     {
-        return _roundTime = newValue;
+        _roundTime = newValue;
     }
 
     /**
@@ -144,7 +142,9 @@ abstract contract ACPI {
      * @dev Set target user wins to 0 {onlyTokenContract}
      * note called after a claimTokens from the parent contract
      */
-    function resetAccount(address account) external virtual;
+    function resetAccount(address account) external virtual onlyTokenContract {
+        _pendingWins[account] = 0;
+    }
 
     /**
      * @dev Emitted when a user win a round of any ACPI
@@ -157,10 +157,18 @@ abstract contract ACPI {
     );
 
     /**
+     * @dev Emitted when a user bid
+     */
+    event Bid(
+        address indexed user,
+        uint8 indexed acpiNumber,
+        uint256 amount
+    );
+    /**
      * @dev Withdraw native currency {onlyTokenContract}
      */
-    function withdraw(address recipient) external virtual onlyTokenContract {
-        if (address(this).balance > 0 && recipient != address(0))
-            payable(recipient).transfer(address(this).balance);
+    function withdraw(address recipient, uint256 amount) external virtual onlyTokenContract {
+        if (address(this).balance > amount && recipient != address(0))
+            payable(recipient).transfer(amount);
     }
 }

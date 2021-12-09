@@ -160,7 +160,7 @@ npx hardhat run scripts/deploy.ts --network NETWORK_ID
 
 Auditing the solidity code in an important aspect of this language, we need to be confident with the code we ship to the customer to avoid malicious attacks
 
-A lot of the auditing have been done during the contract building phase using the `Solidity static analysis framework` [**Slither**](https://github.com/crytic/slither)
+A lot of the auditing have been done during the contract construction using the `Solidity static analysis framework` [**Slither**](https://github.com/crytic/slither)
 
 You can download Slither and use the following command to _audit_ the code
 
@@ -189,6 +189,36 @@ See the [open issues](https://github.com/real-token/Realtoken-protocol-v1-contra
 
 <img src="images/coverage.png" alt="Coverage">
 
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+<!-- MASS TESTING -->
+## End2End Testing
+
+> In order to ensure the reliability of our contract, we designed an end-to-end test that features 100 users across each of the 4 ACPIs. It verifies that the price for all ACPIs matches and the rewards are all in line.
+
+> The report is available [here](https://docs.google.com/spreadsheets/d/15VrGhLZ6GQ370HacbFeNl1vms_BwhxSOSbxK2alWs2E/edit?usp=sharing)
+
+Use the following command to start the test
+
+```
+npx hardhat test test/end2end
+```
+
+The following syntax will appear in the report:
+
+```
+102: 5.332486580477705241 - 0.262922728291408962 - 13.15
+```
+
++ **102** is the index of the user you can referer to the report [result tab](https://docs.google.com/spreadsheets/d/15VrGhLZ6GQ370HacbFeNl1vms_BwhxSOSbxK2alWs2E/edit#gid=1071362346)
+
++ **The first value 5.3324...** : `tokenToClaim` value, what the user will be able to withdraw at the end of the ACPI event, you can check that value in the report
+
++ **The second value 0.2629...** is the amount of tokens rewarded by the bids that were not the top bidder during **ACPI #1** you can check that value in the report as `PendingReturns`
+
++ **The third value 13.15** : The total of bids that were not the top bidder during ACPI #1 **ACPI #1**
+
+## Following the ACPI event, user #102 will be able to collect the sum of his winnings, for example: <ins>~5.33249 REG</ins>
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- GAS FEES -->
@@ -242,6 +272,7 @@ Project Link: [https://github.com/real-token/Realtoken-protocol-v1-contract-step
 * [Haytham Allos - CTO # Off Chain Oracle](https://www.linkedin.com/in/haythamallos/)
 * [Michael Courvoisier - COO # Guidelines](https://github.com/Michael-RealT)
 * [Bastien Silhol - Solidity code](https://github.com/chichke)
+* [Nathan Quesseveur - Front end](https://www.linkedin.com/in/nathan-quesseveur-221a12145)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 

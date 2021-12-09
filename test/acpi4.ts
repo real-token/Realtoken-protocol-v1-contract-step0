@@ -43,6 +43,8 @@ describe("ACPI Four", function () {
   });
 
   it("Already bet test", async function () {
+    this.timeout(50 * 1000);
+
     const getSigners = await ethers.getSigners();
 
     await acpiFour.connect(getSigners[1]).setTotalRound(2);

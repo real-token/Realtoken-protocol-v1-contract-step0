@@ -95,6 +95,8 @@ describe("ACPI Two", function () {
 
     await acpiTwo.connect(ACPI_MODERATOR).setTotalRound(200);
 
+    await acpiTwo.connect(ACPI_MODERATOR).setRewardMultiplicator(1);
+
     const totalRound = await acpiTwo.totalRound();
     let index = 0;
     for (index; index < totalRound - 1; index++) {

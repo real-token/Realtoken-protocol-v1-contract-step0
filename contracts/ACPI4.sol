@@ -96,6 +96,8 @@ contract ACPIFour is ACPI {
         _hasAlreadyBet[msg.sender][_currentRound][_currentTurn] = true;
         _pendingWins[msg.sender] += 1 ether;
         _rewardLeft -= 1;
+
+       emit Bid(msg.sender, 4, _price);
     }
 
     /**
@@ -106,10 +108,9 @@ contract ACPIFour is ACPI {
 
         if (_rewardLeft > 0) {
             _priceHistory.push(
-                Math.average(
-                    _lastPrice * _rewardPerTurn,
-                    _price * (_rewardPerTurn - _rewardLeft)
-                )
+                    (_lastPrice * _rewardPerTurn +
+                    _price * (_rewardPerTurn - _rewardLeft)) / (2 * _rewardPerTurn - _rewardLeft)
+                
             );
             _currentRound += 1;
             _currentTurn = 0;
@@ -121,6 +122,8 @@ contract ACPIFour is ACPI {
             _price += (_price * _priceIncrease) / 100;
         }
 
+        emit RoundWin(address(0), 4, _price);
+
         _rewardLeft = _rewardPerTurn;
 
         if (_currentRound == _totalRound) setAcpiPrice();
@@ -130,13 +133,5 @@ contract ACPIFour is ACPI {
         if (_priceHistory.length == 0) return;
 
         _acpiPrice = Median.from(_priceHistory);
-    }
-
-    /**
-     * @dev Set target user wins to 0 {onlyTokenContract}
-     * note called after a claimTokens from the parent contract
-     */
-    function resetAccount(address account) external override onlyTokenContract {
-        _pendingWins[account] = 0;
     }
 }

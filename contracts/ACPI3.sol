@@ -28,12 +28,8 @@ contract ACPIThree is ACPI {
     /**
      * @dev Set the bid amount value {onlyModerator}
      */
-    function setBidAmount(uint256 newValue)
-        external
-        onlyModerator
-        returns (uint256)
-    {
-        return _bidAmount = newValue;
+    function setBidAmount(uint256 newValue) external onlyModerator {
+        _bidAmount = newValue;
     }
 
     /**
@@ -52,6 +48,8 @@ contract ACPIThree is ACPI {
 
         _roundBidders.push(msg.sender);
         _hasAlreadyBet[msg.sender][_currentRound] = true;
+
+        emit Bid(msg.sender, 3, _bidAmount);
     }
 
     /**
@@ -63,19 +61,15 @@ contract ACPIThree is ACPI {
         if (_roundBidders.length > 0) {
             _priceHistory.push(_roundBidders.length * _bidAmount);
             for (uint256 i = 0; i < _roundBidders.length; i++) {
-                _pendingWins[_roundBidders[i]] += 1 ether / _roundBidders.length;
+                _pendingWins[_roundBidders[i]] +=
+                    1 ether /
+                    _roundBidders.length;
             }
             delete _roundBidders;
+
+            emit RoundWin(address(0), 3, _roundBidders.length * _bidAmount);
         }
         _currentRound += 1;
         if (_currentRound == _totalRound) setAcpiPrice();
-    }
-
-    /**
-     * @dev Set target user wins to 0 {onlyTokenContract}
-     * note called after a claimTokens from the parent contract
-     */
-    function resetAccount(address account) external override onlyTokenContract {
-        _pendingWins[account] = 0;
     }
 }

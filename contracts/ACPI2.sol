@@ -7,6 +7,8 @@ contract ACPITwo is ACPI {
     // Address => _currentRound => balance
     mapping(address => mapping(uint16 => uint256)) private _balance;
 
+    uint8 private _rewardMultiplicator;
+
     address[] private _roundBidders;
 
     uint256 private _minBid;
@@ -19,6 +21,7 @@ contract ACPITwo is ACPI {
         _totalRound = 10;
         _minBid = 250 gwei;
         _reward = 1 ether;
+        _rewardMultiplicator = 0;
     }
 
     /**
@@ -32,6 +35,8 @@ contract ACPITwo is ACPI {
             _roundBidders.push(msg.sender);
         _balance[msg.sender][_currentRound] += msg.value;
         _roundPot += msg.value;
+
+        emit Bid(msg.sender, 2, _balance[msg.sender][_currentRound]);
     }
 
     function roundPot() external view returns (uint256) {
@@ -46,21 +51,19 @@ contract ACPITwo is ACPI {
         return _minBid;
     }
 
-    function setMinBid(uint256 newValue)
-        external
-        onlyModerator
-        returns (uint256)
-    {
-        return _minBid = newValue;
+    /**
+     * @dev increase reward between each turn in %
+     */
+    function setRewardMultiplicator(uint8 newValue) external onlyModerator {
+        _rewardMultiplicator = newValue;
     }
 
-    function getBet(address account)
-        external
-        view
-        onlyCurrentACPI
-        returns (uint256)
-    {
-        return _balance[account][_currentRound];
+    function setMinBid(uint256 newValue) external onlyModerator {
+        _minBid = newValue;
+    }
+
+    function getBet(address account) external view onlyCurrentACPI {
+        _balance[account][_currentRound];
     }
 
     /**
@@ -71,6 +74,7 @@ contract ACPITwo is ACPI {
 
         if (_roundBidders.length > 0) {
             _priceHistory.push(_roundPot);
+
             for (uint256 i = 0; i < _roundBidders.length; i++) {
                 _pendingWins[_roundBidders[i]] +=
                     (_balance[_roundBidders[i]][_currentRound] * _reward) /
@@ -78,21 +82,14 @@ contract ACPITwo is ACPI {
             }
             delete _roundBidders;
 
+            emit RoundWin(address(0), 2, _roundPot);
+
             _roundPot = 0;
 
-            // TODO Incrementation variable
-            _reward += _reward / 100;
+            _reward += (_reward * _rewardMultiplicator) / 100;
         }
 
         _currentRound += 1;
         if (_currentRound == _totalRound) setAcpiPrice();
-    }
-
-    /**
-     * @dev Set target user wins to 0 {onlyTokenContract}
-     * note called after a claimTokens from the parent contract
-     */
-    function resetAccount(address account) external override onlyTokenContract {
-        _pendingWins[account] = 0;
     }
 }

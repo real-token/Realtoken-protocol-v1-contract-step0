@@ -195,9 +195,9 @@ describe("ACPI One", function () {
 
     await acpiOne.connect(ACPI_MODERATOR).setTotalRound(6);
 
-    expect(
-      await acpiOne.connect(ACPI_MODERATOR).callStatic.setTotalRound(12)
-    ).to.equal(12);
+    await acpiOne.connect(ACPI_MODERATOR).setTotalRound(12);
+
+    expect(await acpiOne.totalRound()).to.equal(12);
 
     await acpiOne
       .connect(ACPI_MODERATOR)

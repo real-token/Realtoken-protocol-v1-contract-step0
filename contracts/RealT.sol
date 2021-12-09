@@ -71,7 +71,6 @@ contract RealT is ERC20, AccessControl {
             (((acpiThree.acpiPrice() * 35) / 100)) +
             (((acpiFour.acpiPrice() * 25) / 100));
 
-        // TODO Emit event
     }
 
     function setACPI(uint8 newACPI) external onlyRole(DEFAULT_ADMIN_ROLE) {
@@ -158,49 +157,60 @@ contract RealT is ERC20, AccessControl {
     }
 
     function _getACPIReturns(address account) private view returns (uint256) {
-        uint256 pendingReturns = acpiOne.pendingReturns(account);
-
-        // TODO Gotta be better than this
-        return pendingReturns;
+        return acpiOne.pendingReturns(account);
     }
 
     function getACPIReturns() external view returns (uint256) {
         return _getACPIReturns(msg.sender);
     }
 
-    function claimTokens() external {
-        require(
-            _currentACPI == 5,
-            "ACPI phase need to be over to claim your token"
-        );
-
+    function _tokenToClaim() private view returns (uint256) {
         uint256 totalReturns = _getACPIReturns(msg.sender);
         uint256 totalWins = _getACPIWins(msg.sender);
 
+        if (totalReturns == 0 && totalWins == 0) return 0;
+
+        return totalWins + 1 ether * totalReturns / _initialTokenPrice;
+    }
+
+    function tokenToClaim() external view returns (uint256) {
+        require(
+            _currentACPI == 5,
+            "ACPI event need to be over to claim your token"
+        );
+
+        return _tokenToClaim();
+    }
+
+    function claimTokens() external {
+        uint256 tokenAmount = _tokenToClaim();
+
         // TODO Check for reentrency
 
-        require(
-            totalReturns > 0 || totalWins > 0,
-            "You don't have any tokens to claim"
-        );
-
-        // TODO Check if totalReturns > initialTokenPrice
-        _transfer(
-            address(this),
-            msg.sender,
-            totalWins + totalReturns / _initialTokenPrice
-        );
+        require(tokenAmount > 0, "You don't have any tokens to claim");
 
         acpiOne.resetAccount(msg.sender);
         acpiTwo.resetAccount(msg.sender);
         acpiThree.resetAccount(msg.sender);
         acpiFour.resetAccount(msg.sender);
+
+        _transfer(address(this), msg.sender, tokenAmount);
     }
 
-    function withdraw(address vault) external onlyRole(DEFAULT_ADMIN_ROLE) {
-        acpiOne.withdraw(vault);
-        acpiTwo.withdraw(vault);
-        acpiThree.withdraw(vault);
-        acpiFour.withdraw(vault);
+    function withdrawAll(address vault) external onlyRole(DEFAULT_ADMIN_ROLE) {
+        acpiOne.withdraw(vault, address(acpiOne).balance);
+        acpiTwo.withdraw(vault, address(acpiTwo).balance);
+        acpiThree.withdraw(vault, address(acpiThree).balance);
+        acpiFour.withdraw(vault, address(acpiFour).balance);
+    }
+
+    function withdraw(address vault, uint256[4] calldata amounts)
+        external
+        onlyRole(DEFAULT_ADMIN_ROLE)
+    {
+        acpiOne.withdraw(vault, amounts[0]);
+        acpiTwo.withdraw(vault, amounts[1]);
+        acpiThree.withdraw(vault, amounts[2]);
+        acpiFour.withdraw(vault, amounts[3]);
     }
 }
