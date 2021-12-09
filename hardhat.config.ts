@@ -23,7 +23,7 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
 
 extendEnvironment((hre) => {
   hre.symbol = "REG";
-  hre.name = "Real Easte Governance";
+  hre.name = "Real Estate Governance";
 });
 
 const config: HardhatUserConfig = {
