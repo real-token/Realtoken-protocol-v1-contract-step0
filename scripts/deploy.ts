@@ -36,7 +36,8 @@ async function main() {
   const realtToken = await RealtFactory.deploy(
     name,
     symbol,
-    ACPI_MODERATOR.address
+    ACPI_MODERATOR.address,
+    { gasLimit: 10000000 }
   );
 
   await realtToken.deployed();

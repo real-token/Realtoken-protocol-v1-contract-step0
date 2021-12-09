@@ -118,12 +118,16 @@ Once all the ACPI's have been completed, the tokens are released and available f
 
    ```sh
     ETHERSCAN_API_KEY=API-KEY
+    REPORT_GAS=CoinMarketCap-API-Key
+
     ROPSTEN_URL=https://ropsten.infura.io/v3/API-KEY
     RINKEBY_URL=https://rinkeby.infura.io/v3/API-KEY
     KOVAN_URL=https://kovan.infura.io/v3/API-KEY
+    GOERLI_URL=https://goerli.infura.io/v3/API-KEY
+
     XDAI_URL=https://rpc.xdaichain.com/
     XDAITEST_URL=https://sokol.poa.network
-    REPORT_GAS=CoinMarketCap-API-Key
+
     TOKEN_ADMIN_PK=Token_Contract_Creator_Private_Key
     ACPI_MODERATOR=ACPI_Moderator_Private_Key
    ```
