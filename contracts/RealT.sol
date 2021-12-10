@@ -32,6 +32,8 @@ contract RealT is ERC20, AccessControl {
     bytes32 public constant ACPI_CONTRACT = keccak256("ACPI_CONTRACT");
     bytes32 public constant TOKEN_CONTRACT = keccak256("TOKEN_CONTRACT");
 
+    event ACPIChanged(uint8 indexed newAcpi);
+
     constructor(
         string memory name,
         string memory symbol,
@@ -70,7 +72,6 @@ contract RealT is ERC20, AccessControl {
             (((acpiTwo.acpiPrice() * 25) / 100)) +
             (((acpiThree.acpiPrice() * 35) / 100)) +
             (((acpiFour.acpiPrice() * 25) / 100));
-
     }
 
     function setACPI(uint8 newACPI) external onlyRole(DEFAULT_ADMIN_ROLE) {
@@ -79,6 +80,8 @@ contract RealT is ERC20, AccessControl {
         if (newACPI == 5) {
             _generatePrice();
         }
+
+        emit ACPIChanged(newACPI);
     }
 
     function batchTransfer(
@@ -170,7 +173,7 @@ contract RealT is ERC20, AccessControl {
 
         if (totalReturns == 0 && totalWins == 0) return 0;
 
-        return totalWins + 1 ether * totalReturns / _initialTokenPrice;
+        return totalWins + (1 ether * totalReturns) / _initialTokenPrice;
     }
 
     function tokenToClaim() external view returns (uint256) {

@@ -175,7 +175,7 @@ npx hardhat run scripts/deploy.ts --network NETWORK_ID
 Use the following command to start the test
 
 ```
-npx hardhat test test/end2end
+npx hardhat test test/end2end/index.test.ts
 ```
 
 The following syntax will appear in the report:
