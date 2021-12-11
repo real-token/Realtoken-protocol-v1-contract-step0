@@ -168,6 +168,11 @@ contract RealT is ERC20, AccessControl {
     }
 
     function _tokenToClaim() private view returns (uint256) {
+        require(
+            _currentACPI == 5,
+            "ACPI event need to be over to claim your tokens"
+        );
+
         uint256 totalReturns = _getACPIReturns(msg.sender);
         uint256 totalWins = _getACPIWins(msg.sender);
 
@@ -177,11 +182,6 @@ contract RealT is ERC20, AccessControl {
     }
 
     function tokenToClaim() external view returns (uint256) {
-        require(
-            _currentACPI == 5,
-            "ACPI event need to be over to claim your token"
-        );
-
         return _tokenToClaim();
     }
 

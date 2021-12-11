@@ -197,6 +197,16 @@ describe("Realt Factory", function () {
       realtToken.connect(TOKEN_ADMIN).batchBurn([], [])
     ).to.revertedWith("can't process empty array");
   });
+
+  it("Can't claim token", async function () {
+    const [TOKEN_ADMIN, , addr1] = await ethers.getSigners();
+
+    await realtToken.connect(TOKEN_ADMIN).setACPI(1);
+
+    expect(realtToken.connect(addr1).claimTokens()).to.revertedWith(
+      "ACPI event need to be over to claim your tokens"
+    );
+  });
 });
 
 // TODO Test claimToken RealT.sol
