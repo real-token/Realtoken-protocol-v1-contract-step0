@@ -50,16 +50,18 @@ contract ACPIOne is ACPI {
     function startRound() external override onlyModerator onlyCurrentACPI {
         require(_currentRound < _totalRound, "All rounds have been done");
 
+        emit RoundWin(_highestBid);
+
         if (_highestBidder != address(0)) {
             // Award Winner
             _pendingWins[_highestBidder] += 1 ether;
             _priceHistory.push(_highestBid);
-            emit RoundWin(1 ether);
 
             // Reset state
             _highestBid = 0;
             _highestBidder = address(0);
         }
+
 
         _currentRound += 1;
         if (_currentRound == _totalRound) setAcpiPrice();
