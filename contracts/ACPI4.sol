@@ -97,7 +97,7 @@ contract ACPIFour is ACPI {
         _pendingWins[msg.sender] += 1 ether;
         _rewardLeft -= 1;
 
-       emit Bid(msg.sender, _price);
+        emit Bid(msg.sender, _price);
     }
 
     /**
@@ -108,9 +108,11 @@ contract ACPIFour is ACPI {
 
         if (_rewardLeft > 0) {
             _priceHistory.push(
-                    (_lastPrice * _rewardPerTurn +
-                    _price * (_rewardPerTurn - _rewardLeft)) / (2 * _rewardPerTurn - _rewardLeft)
-                
+                (_lastPrice *
+                    _rewardPerTurn +
+                    _price *
+                    (_rewardPerTurn - _rewardLeft)) /
+                    (2 * _rewardPerTurn - _rewardLeft)
             );
             _currentRound += 1;
             _currentTurn = 0;

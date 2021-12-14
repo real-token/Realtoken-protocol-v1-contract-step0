@@ -1,28 +1,38 @@
 import { expect } from "chai";
 import { ethers, name, symbol } from "hardhat";
-import { RealT, ACPIFour } from "../typechain";
+import { RealT, ACPIFour, ACPIMaster } from "../typechain";
 
-let realtToken: RealT;
+let realToken: RealT;
 let acpiFour: ACPIFour;
+let acpiMaster: ACPIMaster;
 
 describe("ACPI Four", function () {
   beforeEach(async () => {
     const [TOKEN_ADMIN, ACPI_MODERATOR] = await ethers.getSigners();
 
     const RealtFactory = await ethers.getContractFactory("RealT");
-    realtToken = await RealtFactory.deploy(
-      name,
-      symbol,
+    realToken = await RealtFactory.deploy(name, symbol);
+    await realToken.deployed();
+
+    const ACPIMasterFactory = await ethers.getContractFactory("ACPIMaster");
+    acpiMaster = await ACPIMasterFactory.deploy(
+      realToken.address,
       ACPI_MODERATOR.address
     );
-    await realtToken.deployed();
+
+    await acpiMaster.deployed();
+
+    await realToken.contractTransfer(
+      acpiMaster.address,
+      ethers.utils.parseUnits("1000", "ether")
+    );
 
     acpiFour = await ethers.getContractAt(
       "ACPIFour",
-      await realtToken.acpiFour()
+      await acpiMaster.acpiFour()
     );
 
-    await realtToken.connect(TOKEN_ADMIN).setACPI(4);
+    await acpiMaster.connect(TOKEN_ADMIN).setACPI(4);
   });
 
   it("Going at the end!", async function () {
@@ -153,13 +163,13 @@ describe("ACPI Four", function () {
   it("OnlyCurrentACPI #1 - startRound", async function () {
     const [TOKEN_ADMIN, ACPI_MODERATOR] = await ethers.getSigners();
 
-    await realtToken.connect(TOKEN_ADMIN).setACPI(1);
+    await acpiMaster.connect(TOKEN_ADMIN).setACPI(1);
 
     await expect(acpiFour.connect(ACPI_MODERATOR).startRound()).to.revertedWith(
       "Only Current ACPI Method"
     );
 
-    await realtToken.connect(TOKEN_ADMIN).setACPI(4);
+    await acpiMaster.connect(TOKEN_ADMIN).setACPI(4);
 
     await acpiFour.connect(ACPI_MODERATOR).startRound();
   });
@@ -167,7 +177,7 @@ describe("ACPI Four", function () {
   it("OnlyCurrentACPI #2 - buy", async function () {
     const [TOKEN_ADMIN, , addr1] = await ethers.getSigners();
 
-    await realtToken.connect(TOKEN_ADMIN).setACPI(1);
+    await acpiMaster.connect(TOKEN_ADMIN).setACPI(1);
 
     const tokenPrice = await acpiFour.price();
 
@@ -175,7 +185,7 @@ describe("ACPI Four", function () {
       acpiFour.connect(addr1).buy({ value: tokenPrice })
     ).to.revertedWith("Only Current ACPI Method");
 
-    await realtToken.connect(TOKEN_ADMIN).setACPI(4);
+    await acpiMaster.connect(TOKEN_ADMIN).setACPI(4);
 
     await acpiFour.connect(addr1).buy({ value: tokenPrice });
   });

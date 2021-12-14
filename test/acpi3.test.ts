@@ -1,28 +1,38 @@
 import { expect } from "chai";
 import { ethers, name, symbol } from "hardhat";
-import { RealT, ACPIThree } from "../typechain";
+import { RealT, ACPIThree, ACPIMaster } from "../typechain";
 
-let realtToken: RealT;
+let realToken: RealT;
 let acpiThree: ACPIThree;
+let acpiMaster: ACPIMaster;
 
 describe("ACPI Three", function () {
   beforeEach(async () => {
     const [TOKEN_ADMIN, ACPI_MODERATOR] = await ethers.getSigners();
 
     const RealtFactory = await ethers.getContractFactory("RealT");
-    realtToken = await RealtFactory.deploy(
-      name,
-      symbol,
+    realToken = await RealtFactory.deploy(name, symbol);
+    await realToken.deployed();
+
+    const ACPIMasterFactory = await ethers.getContractFactory("ACPIMaster");
+    acpiMaster = await ACPIMasterFactory.deploy(
+      realToken.address,
       ACPI_MODERATOR.address
     );
-    await realtToken.deployed();
+
+    await acpiMaster.deployed();
+
+    await realToken.contractTransfer(
+      acpiMaster.address,
+      ethers.utils.parseUnits("1000", "ether")
+    );
 
     acpiThree = await ethers.getContractAt(
       "ACPIThree",
-      await realtToken.acpiThree()
+      await acpiMaster.acpiThree()
     );
 
-    await realtToken.connect(TOKEN_ADMIN).setACPI(3);
+    await acpiMaster.connect(TOKEN_ADMIN).setACPI(3);
   });
 
   it("Going at the end!", async function () {
@@ -286,9 +296,9 @@ describe("ACPI Three", function () {
 
     expect(await acpiThree.totalRound()).to.equal(index);
 
-    await realtToken.connect(TOKEN_ADMIN).setACPI(5);
+    await acpiMaster.connect(TOKEN_ADMIN).setACPI(5);
 
-    expect(await realtToken.initialTokenPrice()).to.equal(
+    expect(await acpiMaster.initialTokenPrice()).to.equal(
       _bidAmount.mul(3).div(100).mul(35)
     );
   });

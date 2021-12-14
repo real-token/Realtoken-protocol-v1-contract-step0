@@ -1,30 +1,40 @@
 import { expect } from "chai";
 import { ethers, name, symbol } from "hardhat";
-import { RealT, ACPIOne } from "../typechain";
+import { RealT, ACPIOne, ACPIMaster } from "../typechain";
 
-let realtToken: RealT;
+let realToken: RealT;
 let acpiOne: ACPIOne;
-
+let acpiMaster: ACPIMaster;
 describe("ACPI One", function () {
   beforeEach(async () => {
     const [, ACPI_MODERATOR] = await ethers.getSigners();
 
     const RealtFactory = await ethers.getContractFactory("RealT");
-    realtToken = await RealtFactory.deploy(
-      name,
-      symbol,
+
+    realToken = await RealtFactory.deploy(name, symbol);
+    await realToken.deployed();
+
+    const ACPIMasterFactory = await ethers.getContractFactory("ACPIMaster");
+    acpiMaster = await ACPIMasterFactory.deploy(
+      realToken.address,
       ACPI_MODERATOR.address
     );
-    await realtToken.deployed();
 
-    acpiOne = await ethers.getContractAt("ACPIOne", await realtToken.acpiOne());
+    await acpiMaster.deployed();
+
+    await realToken.contractTransfer(
+      acpiMaster.address,
+      ethers.utils.parseUnits("1000", "ether")
+    );
+
+    acpiOne = await ethers.getContractAt("ACPIOne", await acpiMaster.acpiOne());
   });
 
   it("Starting a bid war", async function () {
     const [TOKEN_ADMIN, ACPI_MODERATOR, addr1, addr2] =
       await ethers.getSigners();
 
-    await realtToken.connect(TOKEN_ADMIN).setACPI(1);
+    await acpiMaster.connect(TOKEN_ADMIN).setACPI(1);
 
     await acpiOne.connect(ACPI_MODERATOR).startRound();
 
@@ -67,7 +77,7 @@ describe("ACPI One", function () {
     const [TOKEN_ADMIN, ACPI_MODERATOR, addr1, addr2] =
       await ethers.getSigners();
 
-    await realtToken.connect(TOKEN_ADMIN).setACPI(1);
+    await acpiMaster.connect(TOKEN_ADMIN).setACPI(1);
 
     await acpiOne.connect(ACPI_MODERATOR).startRound();
 
@@ -108,7 +118,7 @@ describe("ACPI One", function () {
     const [TOKEN_ADMIN, ACPI_MODERATOR, addr1, addr2, addr3] =
       await ethers.getSigners();
 
-    await realtToken.connect(TOKEN_ADMIN).setACPI(1);
+    await acpiMaster.connect(TOKEN_ADMIN).setACPI(1);
 
     await acpiOne.connect(ACPI_MODERATOR).startRound();
 
@@ -168,7 +178,7 @@ describe("ACPI One", function () {
   it("Going at the end!", async function () {
     const [TOKEN_ADMIN, ACPI_MODERATOR, addr1] = await ethers.getSigners();
 
-    await realtToken.connect(TOKEN_ADMIN).setACPI(1);
+    await acpiMaster.connect(TOKEN_ADMIN).setACPI(1);
 
     let index = 0;
     for (index = 0; index < (await acpiOne.totalRound()); index++) {
@@ -187,7 +197,7 @@ describe("ACPI One", function () {
   it("Set roundtime set totalround set bidincrement", async function () {
     const [TOKEN_ADMIN, ACPI_MODERATOR] = await ethers.getSigners();
 
-    await realtToken.connect(TOKEN_ADMIN).setACPI(1);
+    await acpiMaster.connect(TOKEN_ADMIN).setACPI(1);
 
     await acpiOne.connect(ACPI_MODERATOR).setRoundTime(1);
 
@@ -212,7 +222,7 @@ describe("ACPI One", function () {
     const [TOKEN_ADMIN, ACPI_MODERATOR, addr1, addr2] =
       await ethers.getSigners();
 
-    await realtToken.connect(TOKEN_ADMIN).setACPI(1);
+    await acpiMaster.connect(TOKEN_ADMIN).setACPI(1);
 
     await acpiOne.connect(ACPI_MODERATOR).startRound();
 
@@ -248,7 +258,7 @@ describe("ACPI One", function () {
   it("Testing get balance", async function () {
     const [TOKEN_ADMIN, ACPI_MODERATOR, addr1] = await ethers.getSigners();
 
-    await realtToken.connect(TOKEN_ADMIN).setACPI(1);
+    await acpiMaster.connect(TOKEN_ADMIN).setACPI(1);
 
     await acpiOne.connect(ACPI_MODERATOR).startRound();
 
@@ -264,7 +274,7 @@ describe("ACPI One", function () {
   it("Test final price median", async function () {
     const [TOKEN_ADMIN, ACPI_MODERATOR, addr1] = await ethers.getSigners();
 
-    await realtToken.connect(TOKEN_ADMIN).setACPI(1);
+    await acpiMaster.connect(TOKEN_ADMIN).setACPI(1);
 
     await acpiOne.connect(ACPI_MODERATOR).setTotalRound(100);
 
@@ -366,9 +376,9 @@ describe("ACPI One", function () {
 
     expect(await acpiOne.totalRound()).to.equal(index);
 
-    await realtToken.connect(TOKEN_ADMIN).setACPI(5);
+    await acpiMaster.connect(TOKEN_ADMIN).setACPI(5);
 
-    expect(await realtToken.initialTokenPrice()).to.equal(
+    expect(await acpiMaster.initialTokenPrice()).to.equal(
       ethers.utils.parseUnits("17", "ether").div(100).mul(15)
     );
   });

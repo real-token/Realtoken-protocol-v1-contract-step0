@@ -1,25 +1,35 @@
 import { expect } from "chai";
 import { ethers, name, symbol } from "hardhat";
-import { RealT, ACPITwo } from "../typechain";
+import { RealT, ACPITwo, ACPIMaster } from "../typechain";
 
-let realtToken: RealT;
+let realToken: RealT;
 let acpiTwo: ACPITwo;
+let acpiMaster: ACPIMaster;
 
 describe("ACPI Two", function () {
   beforeEach(async () => {
     const [TOKEN_ADMIN, ACPI_MODERATOR] = await ethers.getSigners();
 
     const RealtFactory = await ethers.getContractFactory("RealT");
-    realtToken = await RealtFactory.deploy(
-      name,
-      symbol,
+    realToken = await RealtFactory.deploy(name, symbol);
+    await realToken.deployed();
+
+    const ACPIMasterFactory = await ethers.getContractFactory("ACPIMaster");
+    acpiMaster = await ACPIMasterFactory.deploy(
+      realToken.address,
       ACPI_MODERATOR.address
     );
-    await realtToken.deployed();
 
-    acpiTwo = await ethers.getContractAt("ACPITwo", await realtToken.acpiTwo());
+    await acpiMaster.deployed();
 
-    await realtToken.connect(TOKEN_ADMIN).setACPI(2);
+    await realToken.contractTransfer(
+      acpiMaster.address,
+      ethers.utils.parseUnits("1000", "ether")
+    );
+
+    acpiTwo = await ethers.getContractAt("ACPITwo", await acpiMaster.acpiTwo());
+
+    await acpiMaster.connect(TOKEN_ADMIN).setACPI(2);
   });
 
   it("Going at the end!", async function () {

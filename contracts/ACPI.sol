@@ -1,14 +1,14 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "./IRealT.sol";
+import "./IACPIMaster.sol";
 
 /**
  * @dev Abstract contract of the ACPI standard by realt.co
  */
 
 abstract contract ACPI {
-    IRealT internal _realtERC20;
+    IACPIMaster internal _acpiMaster;
     uint256[] internal _priceHistory;
 
     // User Address => User balance
@@ -24,23 +24,23 @@ abstract contract ACPI {
 
     modifier onlyCurrentACPI() {
         require(
-            _realtERC20.getACPI() == _acpiNumber,
+            _acpiMaster.getACPI() == _acpiNumber,
             "Only Current ACPI Method"
         );
         _;
     }
 
-    modifier onlyTokenContract() {
+    modifier onlyACPIMaster() {
         require(
-            _realtERC20.hasRole(_realtERC20.TOKEN_CONTRACT(), msg.sender),
-            "Only Token Contract Method"
+            _acpiMaster.hasRole(_acpiMaster.ACPI_MASTER(), msg.sender),
+            "Only ACPI Master Method"
         );
         _;
     }
 
     modifier onlyModerator() {
         require(
-            _realtERC20.hasRole(_realtERC20.ACPI_MODERATOR(), msg.sender),
+            _acpiMaster.hasRole(_acpiMaster.ACPI_MODERATOR(), msg.sender),
             "Only ACPI Moderator Method"
         );
         _;
@@ -53,7 +53,7 @@ abstract contract ACPI {
         internal
         virtual
     {
-        _realtERC20 = IRealT(realtERC20);
+        _acpiMaster = IACPIMaster(realtERC20);
         _acpiNumber = acpiNumber;
     }
 
@@ -89,29 +89,26 @@ abstract contract ACPI {
      * @dev Returns the pendingWins of {account}
      * pendingWins can be withdrawed at the end of all APCIs
      */
-    function pendingWins(address account) external view virtual returns (uint256) {
+    function pendingWins(address account)
+        external
+        view
+        virtual
+        returns (uint256)
+    {
         return _pendingWins[account];
     }
 
     /**
      * @dev Set totalRound value
      */
-    function setTotalRound(uint16 newValue)
-        external
-        virtual
-        onlyModerator
-    {
+    function setTotalRound(uint16 newValue) external virtual onlyModerator {
         _totalRound = newValue;
     }
 
     /**
      * @dev Set time between two consecutive round in seconds
      */
-    function setRoundTime(uint256 newValue)
-        external
-        virtual
-        onlyModerator
-    {
+    function setRoundTime(uint256 newValue) external virtual onlyModerator {
         _roundTime = newValue;
     }
 
@@ -139,10 +136,10 @@ abstract contract ACPI {
     }
 
     /**
-     * @dev Set target user wins to 0 {onlyTokenContract}
+     * @dev Set target user wins to 0 {onlyACPIMaster}
      * note called after a claimTokens from the parent contract
      */
-    function resetAccount(address account) external virtual onlyTokenContract {
+    function resetAccount(address account) external virtual onlyACPIMaster {
         _pendingWins[account] = 0;
     }
 
@@ -150,21 +147,21 @@ abstract contract ACPI {
      * @dev Emitted when a user win a round of any ACPI
      * `amount` is the amount of Governance Token RealT awarded
      */
-    event RoundWin(
-        uint256 indexed amount
-    );
+    event RoundWin(uint256 indexed amount);
 
     /**
      * @dev Emitted when a user bid
      */
-    event Bid(
-        address indexed user,
-        uint256 indexed amount
-    );
+    event Bid(address indexed user, uint256 indexed amount);
+
     /**
-     * @dev Withdraw native currency {onlyTokenContract}
+     * @dev Withdraw native currency {onlyACPIMaster}
      */
-    function withdraw(address recipient, uint256 amount) external virtual onlyTokenContract {
+    function withdraw(address recipient, uint256 amount)
+        external
+        virtual
+        onlyACPIMaster
+    {
         if (address(this).balance > amount && recipient != address(0))
             payable(recipient).transfer(amount);
     }

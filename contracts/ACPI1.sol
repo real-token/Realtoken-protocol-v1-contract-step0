@@ -62,7 +62,6 @@ contract ACPIOne is ACPI {
             _highestBidder = address(0);
         }
 
-
         _currentRound += 1;
         if (_currentRound == _totalRound) setAcpiPrice();
     }
@@ -101,20 +100,15 @@ contract ACPIOne is ACPI {
         emit Bid(msg.sender, _highestBid);
     }
 
-    function getBet()
-        external
-        view
-        onlyCurrentACPI
-        returns (uint256)
-    {
+    function getBet() external view onlyCurrentACPI returns (uint256) {
         return _balance[msg.sender][_currentRound];
     }
 
     /**
-     * @dev Set target user wins to 0 {onlyTokenContract}
+     * @dev Set target user wins to 0 {onlyACPIMaster}
      * note called after a claimTokens from the parent contract
      */
-    function resetAccount(address account) external override onlyTokenContract {
+    function resetAccount(address account) external override onlyACPIMaster {
         _pendingReturns[account] = 0;
         _pendingWins[account] = 0;
     }

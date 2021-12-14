@@ -1,13 +1,22 @@
 import { BigNumber } from "@ethersproject/bignumber";
 import chai, { expect } from "chai";
 import { ethers, name, symbol } from "hardhat";
-import { ACPIFour, ACPIOne, ACPIThree, ACPITwo, RealT } from "../../typechain";
+import {
+  ACPIFour,
+  ACPIMaster,
+  ACPIOne,
+  ACPIThree,
+  ACPITwo,
+  RealT,
+} from "../../typechain";
 import { acpiData1, pendingReturns } from "./acpi1data";
 import { acpiData2 } from "./acpi2data";
 import { acpiData3 } from "./acpi3data";
 import { acpiData4 } from "./acpi4data";
 
-let realtToken: RealT;
+let acpiMaster: ACPIMaster;
+
+let realToken: RealT;
 let acpiOne: ACPIOne;
 let acpiTwo: ACPITwo;
 let acpiThree: ACPIThree;
@@ -21,29 +30,38 @@ describe("END 2 END Testing", function () {
     const [, ACPI_MODERATOR] = await ethers.getSigners();
 
     const RealtFactory = await ethers.getContractFactory("RealT");
-    realtToken = await RealtFactory.deploy(
-      name,
-      symbol,
+    realToken = await RealtFactory.deploy(name, symbol);
+    await realToken.deployed();
+
+    const ACPIMasterFactory = await ethers.getContractFactory("ACPIMaster");
+    acpiMaster = await ACPIMasterFactory.deploy(
+      realToken.address,
       ACPI_MODERATOR.address
     );
-    await realtToken.deployed();
 
-    acpiOne = await ethers.getContractAt("ACPIOne", await realtToken.acpiOne());
-    acpiTwo = await ethers.getContractAt("ACPITwo", await realtToken.acpiTwo());
+    await acpiMaster.deployed();
+
+    await realToken.contractTransfer(
+      acpiMaster.address,
+      ethers.utils.parseUnits("10000", "ether")
+    );
+
+    acpiOne = await ethers.getContractAt("ACPIOne", await acpiMaster.acpiOne());
+    acpiTwo = await ethers.getContractAt("ACPITwo", await acpiMaster.acpiTwo());
     acpiThree = await ethers.getContractAt(
       "ACPIThree",
-      await realtToken.acpiThree()
+      await acpiMaster.acpiThree()
     );
     acpiFour = await ethers.getContractAt(
       "ACPIFour",
-      await realtToken.acpiFour()
+      await acpiMaster.acpiFour()
     );
   });
 
   it("ACPI 1", async function () {
     const getSigners = await ethers.getSigners();
 
-    await realtToken.connect(getSigners[0]).setACPI(1);
+    await acpiMaster.connect(getSigners[0]).setACPI(1);
 
     await acpiOne.connect(getSigners[1]).setTotalRound(4);
 
@@ -90,7 +108,7 @@ describe("END 2 END Testing", function () {
     const getSigners = await ethers.getSigners();
 
     const rounds = 4;
-    await realtToken.connect(getSigners[0]).setACPI(2);
+    await acpiMaster.connect(getSigners[0]).setACPI(2);
     await acpiTwo.connect(getSigners[1]).setTotalRound(rounds);
 
     const getEtherValue = (i: number, j: number) => {
@@ -134,7 +152,7 @@ describe("END 2 END Testing", function () {
     console.log(
       "\nTotal redistributed: " + ethers.utils.formatEther(total) + "\n"
     );
-    expect(await realtToken.getACPI()).to.equal(2);
+    expect(await acpiMaster.getACPI()).to.equal(2);
   });
 
   it("ACPI 3", async function () {
@@ -142,7 +160,7 @@ describe("END 2 END Testing", function () {
     const getSigners = await ethers.getSigners();
     const rounds = 4;
 
-    await realtToken.connect(getSigners[0]).setACPI(3);
+    await acpiMaster.connect(getSigners[0]).setACPI(3);
 
     await acpiThree.connect(getSigners[1]).setBidAmount(bidAmount);
 
@@ -162,7 +180,7 @@ describe("END 2 END Testing", function () {
         await acpiThree.pendingWins(getSigners[i + signersOffset].address)
       ).to.equal(expected);
     }
-    expect(await realtToken.getACPI()).to.equal(3);
+    expect(await acpiMaster.getACPI()).to.equal(3);
   });
 
   it("ACPI 4", async function () {
@@ -192,7 +210,7 @@ describe("END 2 END Testing", function () {
       return ethers.utils.parseUnits(ethValue, "ether");
     };
 
-    await realtToken.connect(getSigners[0]).setACPI(4);
+    await acpiMaster.connect(getSigners[0]).setACPI(4);
     await acpiFour.connect(getSigners[1]).setTotalRound(rounds);
 
     for (let i = 0; i < rounds; i++) {
@@ -220,26 +238,26 @@ describe("END 2 END Testing", function () {
       ).to.equal(acpiData4[i].pendingWins);
     }
 
-    expect(await realtToken.getACPI()).to.equal(4);
+    expect(await acpiMaster.getACPI()).to.equal(4);
   });
 
   it("ACPI - Result", async function () {
     const getSigners = await ethers.getSigners();
 
-    await realtToken.connect(getSigners[0]).setACPI(5);
+    await acpiMaster.connect(getSigners[0]).setACPI(5);
 
     console.log("\nTOKEN TO CLAIM\n");
     let total = BigNumber.from(0);
     for (let i = 0; i < testUserNumber; i++) {
-      const tokenToClaim = await realtToken
+      const tokenToClaim = await acpiMaster
         .connect(getSigners[i + signersOffset])
         .tokenToClaim();
 
-      const wins = await realtToken
+      const wins = await acpiMaster
         .connect(getSigners[i + signersOffset])
         .getACPIWins();
 
-      const returns = await realtToken
+      const returns = await acpiMaster
         .connect(getSigners[i + signersOffset])
         .getACPIReturns();
 
@@ -260,7 +278,7 @@ describe("END 2 END Testing", function () {
     const bal3 = await acpiThree.provider.getBalance(acpiThree.address);
     const bal4 = await acpiFour.provider.getBalance(acpiFour.address);
 
-    const initialTokenPrice = await realtToken.initialTokenPrice();
+    const initialTokenPrice = await acpiMaster.initialTokenPrice();
     const deposit = bal1.add(bal2).add(bal3).add(bal4);
 
     const price1 = await acpiOne.acpiPrice();
@@ -283,6 +301,6 @@ describe("END 2 END Testing", function () {
     console.log(
       "TOKEN PRICE = 15%(ACPI1) + 25%(ACPI2) + 35%(ACPI3) + 25%(ACPI4)"
     );
-    expect(await realtToken.getACPI()).to.equal(5);
+    expect(await acpiMaster.getACPI()).to.equal(5);
   });
 });
