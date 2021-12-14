@@ -81,4 +81,8 @@ contract RealT is ERC20, AccessControl, IRealT {
             _burn(account[index], amount[index]);
         }
     }
+
+    function recoverERC20(address tokenAddress, uint256 tokenAmount) external onlyRole(DEFAULT_ADMIN_ROLE) {
+        IERC20(tokenAddress).transfer(_msgSender(), tokenAmount);
+    }
 }

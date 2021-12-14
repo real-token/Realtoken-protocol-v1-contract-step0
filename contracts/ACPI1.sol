@@ -15,8 +15,7 @@ contract ACPIOne is ACPI {
     // Address => _currentRound => balance
     mapping(address => mapping(uint16 => uint256)) private _balance;
 
-    constructor() {
-        _setupAbstract(msg.sender, 1);
+    constructor() ACPI(msg.sender, 1) {
         _roundTime = 60 * 5;
         _totalRound = 10;
     }

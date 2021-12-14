@@ -33,15 +33,24 @@ async function main() {
   const [, ACPI_MODERATOR] = await ethers.getSigners();
 
   const RealtFactory = await ethers.getContractFactory("RealT");
-  const realtToken = await RealtFactory.deploy(
-    name,
-    symbol,
-    ACPI_MODERATOR.address,
-    { gasLimit: 8500000 }
-  );
+  const realtToken = await RealtFactory.deploy(name, symbol, {
+    gasLimit: 8500000,
+  });
 
   await realtToken.deployed();
 
+  const ACPIMasterFactory = await ethers.getContractFactory("ACPIMaster");
+  const acpiMaster = await ACPIMasterFactory.deploy(
+    realtToken.address,
+    ACPI_MODERATOR.address
+  );
+
+  await acpiMaster.deployed();
+
+  await realtToken.contractTransfer(
+    acpiMaster.address,
+    ethers.utils.parseUnits("1000", "ether")
+  );
   console.log("Contract has been deployed!");
 
   await minuteSleep();
@@ -49,16 +58,25 @@ async function main() {
   try {
     await run("verify:verify", {
       address: realtToken.address,
-      constructorArguments: [name, symbol, ACPI_MODERATOR.address],
+      constructorArguments: [name, symbol],
     });
   } catch (err) {
     console.error(err);
   }
 
-  const acpiOne = await realtToken.acpiOne();
-  const acpiTwo = await realtToken.acpiTwo();
-  const acpiThree = await realtToken.acpiThree();
-  const acpiFour = await realtToken.acpiFour();
+  try {
+    await run("verify:verify", {
+      address: acpiMaster.address,
+      constructorArguments: [realtToken.address, ACPI_MODERATOR.address],
+    });
+  } catch (err) {
+    console.error(err);
+  }
+
+  const acpiOne = await acpiMaster.acpiOne();
+  const acpiTwo = await acpiMaster.acpiTwo();
+  const acpiThree = await acpiMaster.acpiThree();
+  const acpiFour = await acpiMaster.acpiFour();
 
   console.log("ACPI 1 is deployed to: " + acpiOne);
   console.log("ACPI 2 is deployed to: " + acpiTwo);
@@ -98,6 +116,7 @@ async function main() {
     console.error(err);
   }
   console.log("RealT is deployed to: ", realtToken.address);
+  console.log("ACPIMaster is deployed to: ", acpiMaster.address);
 }
 
 // We recommend this pattern to be able to use async/await everywhere

@@ -146,12 +146,12 @@ contract ACPIMaster is IACPIMaster, AccessControl {
         acpiFour.withdraw(vault, address(acpiFour).balance);
     }
 
-    function withdrawTokens(address vault)
+    function withdrawTokens(address vault, uint256 amount)
         external
         override
         onlyRole(DEFAULT_ADMIN_ROLE)
     {
-        realToken.transfer(vault, realToken.balanceOf(address(this)));
+        realToken.transfer(vault, amount);
     }
 
     function withdraw(address vault, uint256[4] calldata amounts)
@@ -163,5 +163,9 @@ contract ACPIMaster is IACPIMaster, AccessControl {
         acpiTwo.withdraw(vault, amounts[1]);
         acpiThree.withdraw(vault, amounts[2]);
         acpiFour.withdraw(vault, amounts[3]);
+    }
+
+    function recoverERC20(address tokenAddress, uint256 tokenAmount) external onlyRole(DEFAULT_ADMIN_ROLE) {
+        IERC20(tokenAddress).transfer(_msgSender(), tokenAmount);
     }
 }

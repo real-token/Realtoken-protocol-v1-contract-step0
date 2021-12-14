@@ -20,8 +20,7 @@ contract ACPIFour is ACPI {
     uint256 private _lastPrice;
     uint256 private _defaultPrice;
 
-    constructor() {
-        _setupAbstract(msg.sender, 4);
+    constructor() ACPI(msg.sender, 4) {
         _priceIncrease = 60; // 60% increase
         _defaultPrice = 0.1 ether;
         _roundTime = 60 * 5; // seconds between each turn

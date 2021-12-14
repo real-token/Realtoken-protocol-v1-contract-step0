@@ -32,7 +32,7 @@ interface IACPIMaster is IAccessControl {
 
     function withdrawAll(address vault) external;
 
-   function withdrawTokens(address vault) external;
+   function withdrawTokens(address vault, uint256 amount) external;
 
    function withdraw(address vault, uint256[4] calldata amounts) external;
 }

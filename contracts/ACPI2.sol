@@ -15,8 +15,7 @@ contract ACPITwo is ACPI {
     uint256 private _roundPot;
     uint256 private _reward;
 
-    constructor() {
-        _setupAbstract(msg.sender, 2);
+    constructor() ACPI(msg.sender, 2) {
         _roundTime = 60 * 5;
         _totalRound = 10;
         _minBid = 250 gwei;

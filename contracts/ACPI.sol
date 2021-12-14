@@ -2,6 +2,7 @@
 pragma solidity ^0.8.0;
 
 import "./IACPIMaster.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 /**
  * @dev Abstract contract of the ACPI standard by realt.co
@@ -21,6 +22,15 @@ abstract contract ACPI {
     uint256 internal _acpiPrice;
 
     uint8 internal _acpiNumber;
+
+    /**
+     * @dev Setup Abstract contract must be called only in the child contract
+     */
+    constructor(address acpiMaster, uint8 acpiNumber)
+    {
+        _acpiMaster = IACPIMaster(acpiMaster);
+        _acpiNumber = acpiNumber;
+    }
 
     modifier onlyCurrentACPI() {
         require(
@@ -44,17 +54,6 @@ abstract contract ACPI {
             "Only ACPI Moderator Method"
         );
         _;
-    }
-
-    /**
-     * @dev Setup Abstract contract must be called only in the child contract
-     */
-    function _setupAbstract(address realtERC20, uint8 acpiNumber)
-        internal
-        virtual
-    {
-        _acpiMaster = IACPIMaster(realtERC20);
-        _acpiNumber = acpiNumber;
     }
 
     /**
@@ -164,5 +163,9 @@ abstract contract ACPI {
     {
         if (address(this).balance > amount && recipient != address(0))
             payable(recipient).transfer(amount);
+    }
+
+    function recoverERC20(address tokenAddress, uint256 tokenAmount) external virtual onlyACPIMaster {
+        IERC20(tokenAddress).transfer(msg.sender, tokenAmount);
     }
 }
