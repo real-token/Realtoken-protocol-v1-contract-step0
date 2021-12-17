@@ -135,7 +135,7 @@ contract ACPIMaster is IACPIMaster, AccessControl {
         realToken.transfer(_msgSender(), tokenAmount);
     }
 
-    function withdrawAll(address vault)
+    function withdrawAll(address payable vault)
         external
         override
         onlyRole(DEFAULT_ADMIN_ROLE)
@@ -146,7 +146,7 @@ contract ACPIMaster is IACPIMaster, AccessControl {
         acpiFour.withdraw(vault, address(acpiFour).balance);
     }
 
-    function withdrawTokens(address vault, uint256 amount)
+    function withdrawTokens(address payable vault, uint256 amount)
         external
         override
         onlyRole(DEFAULT_ADMIN_ROLE)
@@ -154,7 +154,7 @@ contract ACPIMaster is IACPIMaster, AccessControl {
         realToken.transfer(vault, amount);
     }
 
-    function withdraw(address vault, uint256[4] calldata amounts)
+    function withdraw(address payable vault, uint256[4] calldata amounts)
         external
         override
         onlyRole(DEFAULT_ADMIN_ROLE)

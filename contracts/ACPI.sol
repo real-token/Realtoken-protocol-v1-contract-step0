@@ -156,13 +156,13 @@ abstract contract ACPI {
     /**
      * @dev Withdraw native currency {onlyACPIMaster}
      */
-    function withdraw(address recipient, uint256 amount)
+    function withdraw(address payable recipient, uint256 amount)
         external
         virtual
         onlyACPIMaster
     {
         if (address(this).balance > amount && recipient != address(0))
-            payable(recipient).transfer(amount);
+            recipient.transfer(amount);
     }
 
     function recoverERC20(address tokenAddress, uint256 tokenAmount) external virtual onlyACPIMaster {
