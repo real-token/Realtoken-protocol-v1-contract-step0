@@ -238,7 +238,7 @@ describe("ACPI One", function () {
       acpiOne.connect(addr2).bid({
         value: ethers.utils.parseUnits("2", "ether"),
       })
-    ).to.revertedWith("BID: value is to low");
+    ).to.revertedWith("BID: value is too low");
 
     expect(await acpiOne.highestBid()).to.equal(
       ethers.utils.parseUnits("1.5", "ether")
