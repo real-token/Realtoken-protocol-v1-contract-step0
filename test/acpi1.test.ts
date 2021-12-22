@@ -27,7 +27,10 @@ describe("ACPI One", function () {
       ethers.utils.parseUnits("1000", "ether")
     );
 
-    acpiOne = await ethers.getContractAt("ACPIOne", await acpiMaster.acpiOne());
+    acpiOne = await ethers.getContractAt(
+      "ACPIOne",
+      await acpiMaster.acpiOneContract()
+    );
   });
 
   it("Starting a bid war", async function () {

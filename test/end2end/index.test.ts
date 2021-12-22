@@ -46,15 +46,21 @@ describe("END 2 END Testing", function () {
       ethers.utils.parseUnits("10000", "ether")
     );
 
-    acpiOne = await ethers.getContractAt("ACPIOne", await acpiMaster.acpiOne());
-    acpiTwo = await ethers.getContractAt("ACPITwo", await acpiMaster.acpiTwo());
+    acpiOne = await ethers.getContractAt(
+      "ACPIOne",
+      await acpiMaster.acpiOneContract()
+    );
+    acpiTwo = await ethers.getContractAt(
+      "ACPITwo",
+      await acpiMaster.acpiTwoContract()
+    );
     acpiThree = await ethers.getContractAt(
       "ACPIThree",
-      await acpiMaster.acpiThree()
+      await acpiMaster.acpiThreeContract()
     );
     acpiFour = await ethers.getContractAt(
       "ACPIFour",
-      await acpiMaster.acpiFour()
+      await acpiMaster.acpiFourContract()
     );
   });
 

@@ -34,23 +34,26 @@ contract ACPIFour is ACPI {
     /**
      * @dev Price per token in native currency
      */
-    function setDefaultPrice(uint256 newValue) external onlyModerator {
+    function setDefaultPrice(uint256 newValue) external onlyModerator returns (bool) {
         _defaultPrice = newValue;
+        return true;
     }
 
     /**
      * @dev Reward for each turn in number of tokens
      */
-    function setReward(uint56 newValue) external onlyModerator {
+    function setReward(uint56 newValue) external onlyModerator returns (bool) {
         _rewardPerTurn = newValue;
         _rewardLeft = newValue;
+        return true;
     }
 
     /**
      * @dev Price increase between each turn in %
      */
-    function setPriceIncrease(uint8 newValue) external onlyModerator {
+    function setPriceIncrease(uint8 newValue) external onlyModerator returns (bool) {
         _priceIncrease = newValue;
+        return true;
     }
 
     function defaultPrice() external view returns (uint256) {
@@ -77,7 +80,7 @@ contract ACPIFour is ACPI {
         return _currentTurn;
     }
 
-    function buy() external payable onlyCurrentACPI {
+    function buy() external payable onlyCurrentACPI returns (bool) {
         require(_currentRound < _totalRound, "BUY: All rounds have been done");
 
         require(
@@ -97,12 +100,14 @@ contract ACPIFour is ACPI {
         _rewardLeft -= 1;
 
         emit Bid(msg.sender, _price);
+
+        return true;
     }
 
     /**
      * @dev Start round of ACPI ending the last one.
      */
-    function startRound() external override onlyModerator onlyCurrentACPI {
+    function startRound() external override onlyModerator onlyCurrentACPI returns (bool) {
         require(_currentRound < _totalRound, "All rounds have been done");
 
         if (_rewardLeft > 0) {
@@ -128,6 +133,8 @@ contract ACPIFour is ACPI {
         _rewardLeft = _rewardPerTurn;
 
         if (_currentRound == _totalRound) setAcpiPrice();
+
+        return true;
     }
 
     function setAcpiPrice() internal override {

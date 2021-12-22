@@ -27,7 +27,10 @@ describe("ACPI Two", function () {
       ethers.utils.parseUnits("1000", "ether")
     );
 
-    acpiTwo = await ethers.getContractAt("ACPITwo", await acpiMaster.acpiTwo());
+    acpiTwo = await ethers.getContractAt(
+      "ACPITwo",
+      await acpiMaster.acpiTwoContract()
+    );
 
     await acpiMaster.connect(TOKEN_ADMIN).setACPI(2);
   });

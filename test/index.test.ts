@@ -70,8 +70,7 @@ describe("Realt Factory", function () {
 
     await expect(acpiMaster.connect(addr1).setACPI(4)).to.be.reverted;
 
-    await expect(realToken.connect(addr1).burn(addr1.address, 10)).to.be
-      .reverted;
+    await expect(realToken.connect(addr1).contractBurn(10)).to.be.reverted;
 
     await expect(realToken.connect(addr1).mint(addr1.address, 10)).to.be
       .reverted;
@@ -80,12 +79,6 @@ describe("Realt Factory", function () {
       realToken
         .connect(addr1)
         .batchMint([addr1.address, addr2.address], [10, 10])
-    ).to.be.reverted;
-
-    await expect(
-      realToken
-        .connect(addr1)
-        .batchBurn([addr1.address, addr2.address], [10, 10])
     ).to.be.reverted;
   });
 
@@ -152,59 +145,6 @@ describe("Realt Factory", function () {
 
     await expect(
       realToken.connect(TOKEN_ADMIN).batchMint([], [])
-    ).to.revertedWith("can't process empty array");
-  });
-
-  it("Burning", async function () {
-    const [TOKEN_ADMIN, , addr1] = await ethers.getSigners();
-
-    expect(await realToken.balanceOf(addr1.address)).to.equal(0);
-
-    await realToken.connect(TOKEN_ADMIN).mint(addr1.address, 100);
-
-    expect(await realToken.balanceOf(addr1.address)).to.equal(100);
-
-    await realToken.connect(TOKEN_ADMIN).burn(addr1.address, 100);
-
-    expect(await realToken.balanceOf(addr1.address)).to.equal(0);
-  });
-
-  it("Batch Burning", async function () {
-    const [TOKEN_ADMIN, , addr1, addr2] = await ethers.getSigners();
-
-    expect(await realToken.balanceOf(addr1.address)).to.equal(0);
-
-    await realToken.connect(TOKEN_ADMIN).mint(addr1.address, 100);
-
-    await realToken.connect(TOKEN_ADMIN).mint(addr2.address, 150);
-
-    expect(await realToken.balanceOf(addr1.address)).to.equal(100);
-
-    expect(await realToken.balanceOf(addr2.address)).to.equal(150);
-
-    await realToken
-      .connect(TOKEN_ADMIN)
-      .batchBurn([addr1.address, addr2.address], [50, 75]);
-
-    expect(await realToken.balanceOf(addr1.address)).to.equal(50);
-
-    expect(await realToken.balanceOf(addr2.address)).to.equal(75);
-  });
-  it("Batch Burning Fail - Different Size", async function () {
-    const [TOKEN_ADMIN, , addr1, addr2] = await ethers.getSigners();
-
-    await expect(
-      realToken
-        .connect(TOKEN_ADMIN)
-        .batchBurn([addr1.address, addr2.address], [100, 100, 100])
-    ).to.revertedWith("Account & amount length mismatch");
-  });
-
-  it("Batch Burning Fail - Empty array", async function () {
-    const [TOKEN_ADMIN] = await ethers.getSigners();
-
-    await expect(
-      realToken.connect(TOKEN_ADMIN).batchBurn([], [])
     ).to.revertedWith("can't process empty array");
   });
 

@@ -20,28 +20,48 @@ contract ACPIMaster is IACPIMaster, AccessControl {
      */
     uint8 private _currentACPI;
 
-    ACPIOne public acpiOne;
-    ACPITwo public acpiTwo;
-    ACPIThree public acpiThree;
-    ACPIFour public acpiFour;
+    ACPIOne private _acpiOne;
+    ACPITwo private _acpiTwo;
+    ACPIThree private _acpiThree;
+    ACPIFour private _acpiFour;
 
     uint256 private _initialTokenPrice;
 
     bytes32 private constant _ACPI_MODERATOR = keccak256("ACPI_MODERATOR");
     bytes32 private constant _ACPI_MASTER = keccak256("ACPI_MASTER");
 
-    IRealT public realToken;
+    IRealT private _realToken;
 
-    constructor(address _realToken, address acpiModerator) {
+    constructor(address realTokenAddress, address acpiModerator) {
         _setupRole(_ACPI_MODERATOR, acpiModerator);
         _setupRole(_ACPI_MASTER, address(this));
         _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
 
-        realToken = IRealT(_realToken);
-        acpiOne = new ACPIOne();
-        acpiTwo = new ACPITwo();
-        acpiThree = new ACPIThree();
-        acpiFour = new ACPIFour();
+        _realToken = IRealT(realTokenAddress);
+        _acpiOne = new ACPIOne();
+        _acpiTwo = new ACPITwo();
+        _acpiThree = new ACPIThree();
+        _acpiFour = new ACPIFour();
+    }
+
+    function tokenContract() external view override returns (address) {
+        return address(_realToken);
+    }
+
+    function acpiOneContract() external view override returns (address) {
+        return address(_acpiOne);
+    }
+
+    function acpiTwoContract() external view override returns (address) {
+        return address(_acpiTwo);
+    }
+
+    function acpiThreeContract() external view override returns (address) {
+        return address(_acpiThree);
+    }
+
+    function acpiFourContract() external view override returns (address) {
+        return address(_acpiFour);
     }
 
     function ACPI_MODERATOR() external pure override returns (bytes32) {
@@ -62,10 +82,10 @@ contract ACPIMaster is IACPIMaster, AccessControl {
 
     function _generatePrice() private {
         _initialTokenPrice =
-            (((acpiOne.acpiPrice() * 15) / 100)) +
-            (((acpiTwo.acpiPrice() * 25) / 100)) +
-            (((acpiThree.acpiPrice() * 35) / 100)) +
-            (((acpiFour.acpiPrice() * 25) / 100));
+            (((_acpiOne.acpiPrice() * 15) / 100)) +
+            (((_acpiTwo.acpiPrice() * 25) / 100)) +
+            (((_acpiThree.acpiPrice() * 35) / 100)) +
+            (((_acpiFour.acpiPrice() * 25) / 100));
     }
 
     function setACPI(uint8 newACPI)
@@ -84,10 +104,10 @@ contract ACPIMaster is IACPIMaster, AccessControl {
 
     function _getACPIWins(address account) private view returns (uint256) {
         return
-            acpiOne.pendingWins(account) +
-            acpiTwo.pendingWins(account) +
-            acpiThree.pendingWins(account) +
-            acpiFour.pendingWins(account);
+            _acpiOne.pendingWins(account) +
+            _acpiTwo.pendingWins(account) +
+            _acpiThree.pendingWins(account) +
+            _acpiFour.pendingWins(account);
     }
 
     function getACPIWins() external view override returns (uint256) {
@@ -95,7 +115,7 @@ contract ACPIMaster is IACPIMaster, AccessControl {
     }
 
     function _getACPIReturns(address account) private view returns (uint256) {
-        return acpiOne.pendingReturns(account);
+        return _acpiOne.pendingReturns(account);
     }
 
     function getACPIReturns() external view override returns (uint256) {
@@ -127,23 +147,12 @@ contract ACPIMaster is IACPIMaster, AccessControl {
 
         require(tokenAmount > 0, "You don't have any tokens to claim");
 
-        acpiOne.resetAccount(_msgSender());
-        acpiTwo.resetAccount(_msgSender());
-        acpiThree.resetAccount(_msgSender());
-        acpiFour.resetAccount(_msgSender());
+        _acpiOne.resetAccount(_msgSender());
+        _acpiTwo.resetAccount(_msgSender());
+        _acpiThree.resetAccount(_msgSender());
+        _acpiFour.resetAccount(_msgSender());
 
-        realToken.transfer(_msgSender(), tokenAmount);
-    }
-
-    function withdrawAll(address payable vault)
-        external
-        override
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
-        acpiOne.withdraw(vault, address(acpiOne).balance);
-        acpiTwo.withdraw(vault, address(acpiTwo).balance);
-        acpiThree.withdraw(vault, address(acpiThree).balance);
-        acpiFour.withdraw(vault, address(acpiFour).balance);
+        _realToken.transfer(_msgSender(), tokenAmount);
     }
 
     function withdrawTokens(address payable vault, uint256 amount)
@@ -151,7 +160,7 @@ contract ACPIMaster is IACPIMaster, AccessControl {
         override
         onlyRole(DEFAULT_ADMIN_ROLE)
     {
-        realToken.transfer(vault, amount);
+        _realToken.transfer(vault, amount);
     }
 
     function withdraw(address payable vault, uint256[4] calldata amounts)
@@ -159,10 +168,10 @@ contract ACPIMaster is IACPIMaster, AccessControl {
         override
         onlyRole(DEFAULT_ADMIN_ROLE)
     {
-        acpiOne.withdraw(vault, amounts[0]);
-        acpiTwo.withdraw(vault, amounts[1]);
-        acpiThree.withdraw(vault, amounts[2]);
-        acpiFour.withdraw(vault, amounts[3]);
+        _acpiOne.withdraw(vault, amounts[0]);
+        _acpiTwo.withdraw(vault, amounts[1]);
+        _acpiThree.withdraw(vault, amounts[2]);
+        _acpiFour.withdraw(vault, amounts[3]);
     }
 
     function recoverERC20(address tokenAddress, uint256 tokenAmount) external onlyRole(DEFAULT_ADMIN_ROLE) {

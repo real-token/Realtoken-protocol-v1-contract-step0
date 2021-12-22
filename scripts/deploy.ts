@@ -73,10 +73,10 @@ async function main() {
     console.error(err);
   }
 
-  const acpiOne = await acpiMaster.acpiOne();
-  const acpiTwo = await acpiMaster.acpiTwo();
-  const acpiThree = await acpiMaster.acpiThree();
-  const acpiFour = await acpiMaster.acpiFour();
+  const acpiOne = await acpiMaster.acpiOneContract();
+  const acpiTwo = await acpiMaster.acpiTwoContract();
+  const acpiThree = await acpiMaster.acpiThreeContract();
+  const acpiFour = await acpiMaster.acpiFourContract();
 
   console.log("ACPI 1 is deployed to: " + acpiOne);
   console.log("ACPI 2 is deployed to: " + acpiTwo);

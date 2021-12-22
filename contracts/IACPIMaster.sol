@@ -6,11 +6,21 @@ pragma solidity ^0.8.0;
  */
 
 import "@openzeppelin/contracts/access/IAccessControl.sol";
-
+import "./IRealT.sol";
 
 interface IACPIMaster is IAccessControl {
     
     event ACPIChanged(uint8 indexed newAcpi);
+
+    function tokenContract() external view returns (address);
+
+    function acpiOneContract() external view returns (address);
+
+    function acpiTwoContract() external view returns (address);
+
+    function acpiThreeContract() external view returns (address);
+
+    function acpiFourContract() external view returns (address);
 
     function ACPI_MASTER() external view returns (bytes32);
 
@@ -29,8 +39,6 @@ interface IACPIMaster is IAccessControl {
     function tokenToClaim() external view returns (uint256);
 
     function claimTokens() external;
-
-    function withdrawAll(address payable vault) external;
 
    function withdrawTokens(address payable vault, uint256 amount) external;
 

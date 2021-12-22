@@ -26,8 +26,7 @@ abstract contract ACPI {
     /**
      * @dev Setup Abstract contract must be called only in the child contract
      */
-    constructor(address acpiMaster, uint8 acpiNumber)
-    {
+    constructor(address acpiMaster, uint8 acpiNumber) {
         _acpiMaster = IACPIMaster(acpiMaster);
         _acpiNumber = acpiNumber;
     }
@@ -100,26 +99,40 @@ abstract contract ACPI {
     /**
      * @dev Set totalRound value
      */
-    function setTotalRound(uint16 newValue) external virtual onlyModerator {
+    function setTotalRound(uint16 newValue)
+        external
+        virtual
+        onlyModerator
+        returns (bool)
+    {
         _totalRound = newValue;
+        return true;
     }
 
     /**
      * @dev Set time between two consecutive round in seconds
      */
-    function setRoundTime(uint256 newValue) external virtual onlyModerator {
+    function setRoundTime(uint256 newValue)
+        external
+        virtual
+        onlyModerator
+        returns (bool)
+    {
         _roundTime = newValue;
+        return true;
     }
 
     /**
      * @dev Start round of ACPI ending the last one.
      */
-    function startRound() external virtual onlyModerator onlyCurrentACPI {
+    function startRound() external virtual onlyModerator onlyCurrentACPI returns (bool) {
         _currentRound += 1;
 
         // Implement ACPI logic
 
         if (_currentRound == _totalRound) setAcpiPrice();
+
+        return true;
     }
 
     /**
@@ -138,8 +151,14 @@ abstract contract ACPI {
      * @dev Set target user wins to 0 {onlyACPIMaster}
      * note called after a claimTokens from the parent contract
      */
-    function resetAccount(address account) external virtual onlyACPIMaster {
+    function resetAccount(address account)
+        external
+        virtual
+        onlyACPIMaster
+        returns (bool)
+    {
         _pendingWins[account] = 0;
+        return true;
     }
 
     /**
@@ -160,12 +179,21 @@ abstract contract ACPI {
         external
         virtual
         onlyACPIMaster
+        returns (bool)
     {
-        if (address(this).balance > amount && recipient != address(0))
-            recipient.transfer(amount);
+        require(recipient != address(0), "Can't burn token");
+
+        recipient.transfer(amount);
+        return true;
     }
 
-    function recoverERC20(address tokenAddress, uint256 tokenAmount) external virtual onlyACPIMaster {
+    function recoverERC20(address tokenAddress, uint256 tokenAmount)
+        external
+        virtual
+        onlyACPIMaster
+        returns (bool)
+    {
         IERC20(tokenAddress).transfer(msg.sender, tokenAmount);
+        return true;
     }
 }

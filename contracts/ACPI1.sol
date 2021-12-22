@@ -23,8 +23,9 @@ contract ACPIOne is ACPI {
     /**
      * @dev Set bidIncrement value
      */
-    function setBidIncrement(uint256 newValue) external onlyModerator {
+    function setBidIncrement(uint256 newValue) external onlyModerator returns (bool) {
         _bidIncrement = newValue;
+        return true;
     }
 
     function pendingReturns(address account) external view returns (uint256) {
@@ -46,7 +47,7 @@ contract ACPIOne is ACPI {
     /**
      * @dev Start round of ACPI ending the last one.
      */
-    function startRound() external override onlyModerator onlyCurrentACPI {
+    function startRound() external override onlyModerator onlyCurrentACPI returns (bool) {
         require(_currentRound < _totalRound, "All rounds have been done");
 
         emit RoundWin(_highestBid);
@@ -63,6 +64,7 @@ contract ACPIOne is ACPI {
 
         _currentRound += 1;
         if (_currentRound == _totalRound) setAcpiPrice();
+        return true;
     }
 
     function setAcpiPrice() internal override {
@@ -71,7 +73,7 @@ contract ACPIOne is ACPI {
         _acpiPrice = Median.from(_priceHistory);
     }
 
-    function bid() external payable onlyCurrentACPI {
+    function bid() external payable onlyCurrentACPI returns (bool) {
         require(_currentRound < _totalRound, "BID: All rounds have been done");
 
         require(
@@ -97,6 +99,8 @@ contract ACPIOne is ACPI {
         _highestBidder = msg.sender;
 
         emit Bid(msg.sender, _highestBid);
+
+        return true;
     }
 
     function getBet() external view onlyCurrentACPI returns (uint256) {
@@ -107,8 +111,9 @@ contract ACPIOne is ACPI {
      * @dev Set target user wins to 0 {onlyACPIMaster}
      * note called after a claimTokens from the parent contract
      */
-    function resetAccount(address account) external override onlyACPIMaster {
+    function resetAccount(address account) external override onlyACPIMaster returns (bool) {
         _pendingReturns[account] = 0;
         _pendingWins[account] = 0;
+        return true;
     }
 }

@@ -29,7 +29,7 @@ describe("ACPI Three", function () {
 
     acpiThree = await ethers.getContractAt(
       "ACPIThree",
-      await acpiMaster.acpiThree()
+      await acpiMaster.acpiThreeContract()
     );
 
     await acpiMaster.connect(TOKEN_ADMIN).setACPI(3);
