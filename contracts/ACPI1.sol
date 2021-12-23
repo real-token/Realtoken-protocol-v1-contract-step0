@@ -82,8 +82,6 @@ contract ACPIOne is ACPI {
             "BID: value is too low"
         );
 
-        require(_highestBidder != msg.sender, "BID: Sender is already winning");
-
         if (_highestBidder != address(0)) {
             // Refund the previously highest bidder.
             _pendingReturns[_highestBidder] += _highestBid;
