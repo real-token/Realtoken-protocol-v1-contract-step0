@@ -198,4 +198,10 @@ contract ACPIMaster is IACPIMaster, AccessControl {
     function recoverERC20(address tokenAddress, uint256 tokenAmount) external onlyRole(DEFAULT_ADMIN_ROLE) returns (bool) {
         return IERC20(tokenAddress).transfer(_msgSender(), tokenAmount);
     }
+
+    function setTokenAddress(address tokenAddress) external onlyRole(DEFAULT_ADMIN_ROLE) returns (bool) {
+        _realToken = IRealT(tokenAddress);
+        return true;
+    }
+
 }
