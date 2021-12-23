@@ -30,7 +30,7 @@ interface IACPIMaster is IAccessControl {
 
     function getACPI() external view returns (uint8);
 
-    function setACPI(uint8 newACPI) external;
+    function setACPI(uint8 newACPI) external returns (bool);
 
     function getACPIWins() external view returns (uint256);
 
@@ -38,9 +38,9 @@ interface IACPIMaster is IAccessControl {
 
     function tokenToClaim() external view returns (uint256);
 
-    function claimTokens() external;
+    function claimTokens() external returns (bool);
 
-   function withdrawTokens(address payable vault, uint256 amount) external;
+   function withdrawTokens(address payable vault, uint256 amount) external returns (bool);
 
-   function withdraw(address payable vault, uint256[4] calldata amounts) external;
+   function withdraw(address payable vault, uint256[4] calldata amounts) external returns (bool);
 }

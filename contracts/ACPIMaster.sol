@@ -92,6 +92,7 @@ contract ACPIMaster is IACPIMaster, AccessControl {
         external
         override
         onlyRole(DEFAULT_ADMIN_ROLE)
+        returns (bool)
     {
         require(newACPI < 6, "Allowed value is 0-5");
         _currentACPI = newACPI;
@@ -100,6 +101,8 @@ contract ACPIMaster is IACPIMaster, AccessControl {
         }
 
         emit ACPIChanged(newACPI);
+
+        return true;
     }
 
     function _getACPIWins(address account) private view returns (uint256) {
@@ -140,7 +143,7 @@ contract ACPIMaster is IACPIMaster, AccessControl {
         return _tokenToClaim();
     }
 
-    function claimTokens() external override {
+    function claimTokens() external override returns (bool) {
         uint256 tokenAmount = _tokenToClaim();
 
         // TODO Check for reentrency
@@ -152,29 +155,33 @@ contract ACPIMaster is IACPIMaster, AccessControl {
         _acpiThree.resetAccount(_msgSender());
         _acpiFour.resetAccount(_msgSender());
 
-        _realToken.transfer(_msgSender(), tokenAmount);
+        return _realToken.transfer(_msgSender(), tokenAmount);
     }
 
     function withdrawTokens(address payable vault, uint256 amount)
         external
         override
         onlyRole(DEFAULT_ADMIN_ROLE)
+        returns (bool)
     {
-        _realToken.transfer(vault, amount);
+        return _realToken.transfer(vault, amount);
     }
 
     function withdraw(address payable vault, uint256[4] calldata amounts)
         external
         override
         onlyRole(DEFAULT_ADMIN_ROLE)
+        returns (bool)
     {
         _acpiOne.withdraw(vault, amounts[0]);
         _acpiTwo.withdraw(vault, amounts[1]);
         _acpiThree.withdraw(vault, amounts[2]);
         _acpiFour.withdraw(vault, amounts[3]);
+
+        return true;
     }
 
-    function recoverERC20(address tokenAddress, uint256 tokenAmount) external onlyRole(DEFAULT_ADMIN_ROLE) {
-        IERC20(tokenAddress).transfer(_msgSender(), tokenAmount);
+    function recoverERC20(address tokenAddress, uint256 tokenAmount) external onlyRole(DEFAULT_ADMIN_ROLE) returns (bool) {
+        return IERC20(tokenAddress).transfer(_msgSender(), tokenAmount);
     }
 }

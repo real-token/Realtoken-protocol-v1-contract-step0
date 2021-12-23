@@ -193,7 +193,6 @@ abstract contract ACPI {
         onlyACPIMaster
         returns (bool)
     {
-        IERC20(tokenAddress).transfer(msg.sender, tokenAmount);
-        return true;
+        return IERC20(tokenAddress).transfer(msg.sender, tokenAmount);
     }
 }

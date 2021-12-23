@@ -10,7 +10,7 @@ import "./IRealT.sol";
 contract RealT is ERC20Votes, AccessControl, IRealT {
     constructor(string memory name, string memory symbol) ERC20(name, symbol) ERC20Permit(name) {
         _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
-        _mint(address(this), 18 * 1000 * 1000 ether);
+        _mint(address(this), 1e18 ether);
     }
 
     function batchTransfer(
