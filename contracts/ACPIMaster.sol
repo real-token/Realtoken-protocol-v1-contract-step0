@@ -181,6 +181,20 @@ contract ACPIMaster is IACPIMaster, AccessControl {
         return true;
     }
 
+    function withdrawAll(address payable vault)
+        external
+        override
+        onlyRole(DEFAULT_ADMIN_ROLE)
+        returns (bool)
+    {
+        _acpiOne.withdraw(vault, address(_acpiOne).balance);
+        _acpiTwo.withdraw(vault, address(_acpiTwo).balance);
+        _acpiThree.withdraw(vault, address(_acpiThree).balance);
+        _acpiFour.withdraw(vault, address(_acpiFour).balance);
+
+        return true;
+    }
+
     function recoverERC20(address tokenAddress, uint256 tokenAmount) external onlyRole(DEFAULT_ADMIN_ROLE) returns (bool) {
         return IERC20(tokenAddress).transfer(_msgSender(), tokenAmount);
     }

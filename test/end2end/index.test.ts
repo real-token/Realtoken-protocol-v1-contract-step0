@@ -77,7 +77,7 @@ describe("END 2 END Testing", function () {
       let increment = acpiData1[i].in;
       const direction = acpiData1[i].d;
       while (counter < testUserNumber) {
-        await acpiOne.connect(getSigners[index + signersOffset]).bid({
+        await acpiOne.connect(getSigners[index + signersOffset]).bid(i, {
           value: increment,
         });
 
@@ -136,7 +136,7 @@ describe("END 2 END Testing", function () {
     for (let i = 0; i < rounds; i++) {
       for (let j = 0; j < testUserNumber; j++) {
         const amount = getEtherValue(i, j);
-        await acpiTwo.connect(getSigners[j + signersOffset]).bid({
+        await acpiTwo.connect(getSigners[j + signersOffset]).bid(i, {
           value: amount,
         });
       }
@@ -174,7 +174,7 @@ describe("END 2 END Testing", function () {
 
     for (let i = 0; i < rounds; i++) {
       for (let j = 0; j < testUserNumber; j++) {
-        await acpiThree.connect(getSigners[j + signersOffset]).bid({
+        await acpiThree.connect(getSigners[j + signersOffset]).bid(i, {
           value: bidAmount,
         });
       }
@@ -226,9 +226,11 @@ describe("END 2 END Testing", function () {
           const getValue = getEtherValue(i, j, turnCount);
 
           if (getValue.gt(0))
-            await acpiFour.connect(getSigners[j + signersOffset]).buy({
-              value: getValue,
-            });
+            await acpiFour
+              .connect(getSigners[j + signersOffset])
+              .bid(turnCount - 1, {
+                value: getValue,
+              });
         }
         turnCount++;
         const rewardLeft = await acpiFour.rewardLeft();

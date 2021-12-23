@@ -46,10 +46,10 @@ describe("ACPI Four", function () {
     expect(await acpiFour.totalRound()).to.equal(index);
 
     await expect(
-      acpiFour.connect(addr1).buy({
+      acpiFour.connect(addr1).bid(index, {
         value: ethers.utils.parseUnits("3", "ether"),
       })
-    ).to.be.revertedWith("BUY: All rounds have been done");
+    ).to.be.revertedWith("BID: All rounds have been done");
   });
 
   it("Already bet test", async function () {
@@ -69,12 +69,12 @@ describe("ACPI Four", function () {
         for (let bid = 0; bid < rewardPerTurn; bid++) {
           await acpiFour
             .connect(getSigners[signerIndex + 2])
-            .buy({ value: tokenPrice });
+            .bid(turnCount, { value: tokenPrice });
 
           await expect(
             acpiFour
               .connect(getSigners[signerIndex + 2])
-              .buy({ value: tokenPrice })
+              .bid(turnCount, { value: tokenPrice })
           ).to.revertedWith("You can only bet once per turn");
 
           signerIndex += 1;
@@ -100,8 +100,8 @@ describe("ACPI Four", function () {
     const tokenPrice = await acpiFour.price();
 
     await expect(
-      acpiFour.connect(getSigners[2]).buy({ value: tokenPrice.add(10) })
-    ).to.revertedWith("BUY: value must match price");
+      acpiFour.connect(getSigners[2]).bid(0, { value: tokenPrice.add(10) })
+    ).to.revertedWith("BID: value must match price");
   });
 
   it("Price doesn't match #2", async function () {
@@ -112,8 +112,8 @@ describe("ACPI Four", function () {
     const tokenPrice = await acpiFour.price();
 
     await expect(
-      acpiFour.connect(getSigners[2]).buy({ value: tokenPrice.sub(3) })
-    ).to.revertedWith("BUY: value must match price");
+      acpiFour.connect(getSigners[2]).bid(0, { value: tokenPrice.sub(3) })
+    ).to.revertedWith("BID: value must match price");
   });
 
   it("Test permission #1 - setDefaultPrice", async function () {
@@ -182,12 +182,12 @@ describe("ACPI Four", function () {
     const tokenPrice = await acpiFour.price();
 
     await expect(
-      acpiFour.connect(addr1).buy({ value: tokenPrice })
+      acpiFour.connect(addr1).bid(0, { value: tokenPrice })
     ).to.revertedWith("Only Current ACPI Method");
 
     await acpiMaster.connect(TOKEN_ADMIN).setACPI(4);
 
-    await acpiFour.connect(addr1).buy({ value: tokenPrice });
+    await acpiFour.connect(addr1).bid(0, { value: tokenPrice });
   });
 
   it("3 turn / 2 rounds / 100 token", async function () {
@@ -208,7 +208,7 @@ describe("ACPI Four", function () {
         for (let bid = 0; bid < rewardPerTurn; bid++) {
           await acpiFour
             .connect(getSigners[signerIndex + 2])
-            .buy({ value: tokenPrice });
+            .bid(turnCount, { value: tokenPrice });
 
           signerIndex++;
         }
@@ -217,7 +217,7 @@ describe("ACPI Four", function () {
       }
       await acpiFour
         .connect(getSigners[signerIndex + 2])
-        .buy({ value: await acpiFour.price() });
+        .bid(3, { value: await acpiFour.price() });
       await acpiFour.connect(getSigners[1]).startRound();
     }
 

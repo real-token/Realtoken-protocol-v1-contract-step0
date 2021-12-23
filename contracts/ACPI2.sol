@@ -26,8 +26,19 @@ contract ACPITwo is ACPI {
     /**
      * @dev bid to enter the round {onlyCurrentACPI}
      */
-    function bid() external payable onlyCurrentACPI returns (bool) {
+    function bid(uint16 targetRound)
+        external
+        override
+        payable
+        onlyCurrentACPI
+        returns (bool)
+    {
         require(_currentRound < _totalRound, "BID: All rounds have been done");
+        require(
+            targetRound == _currentRound,
+            "BID: Current round =/= target round"
+        );
+
         require(msg.value >= _minBid, "bid have to be higher than minBid");
 
         if (_balance[msg.sender][_currentRound] == 0)
@@ -55,7 +66,11 @@ contract ACPITwo is ACPI {
     /**
      * @dev increase reward between each turn in %
      */
-    function setRewardMultiplicator(uint8 newValue) external onlyModerator returns (bool) {
+    function setRewardMultiplicator(uint8 newValue)
+        external
+        onlyModerator
+        returns (bool)
+    {
         _rewardMultiplicator = newValue;
         return true;
     }
@@ -72,7 +87,13 @@ contract ACPITwo is ACPI {
     /**
      * @dev Start round of ACPI ending the last one.
      */
-    function startRound() external override onlyModerator onlyCurrentACPI returns (bool) {
+    function startRound()
+        external
+        override
+        onlyModerator
+        onlyCurrentACPI
+        returns (bool)
+    {
         require(_currentRound < _totalRound, "All rounds have been done");
 
         if (_roundBidders.length > 0) {

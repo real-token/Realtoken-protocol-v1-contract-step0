@@ -41,27 +41,27 @@ describe("ACPI One", function () {
 
     await acpiOne.connect(ACPI_MODERATOR).startRound();
 
-    await acpiOne.connect(addr1).bid({
+    await acpiOne.connect(addr1).bid(1, {
       value: ethers.utils.parseUnits("1", "ether"),
     });
 
-    await acpiOne.connect(addr2).bid({
+    await acpiOne.connect(addr2).bid(1, {
       value: ethers.utils.parseUnits("1.5", "ether"),
     });
 
-    await acpiOne.connect(addr1).bid({
+    await acpiOne.connect(addr1).bid(1, {
       value: ethers.utils.parseUnits("2", "ether"),
     });
 
-    await acpiOne.connect(addr2).bid({
+    await acpiOne.connect(addr2).bid(1, {
       value: ethers.utils.parseUnits("2.5", "ether"),
     });
 
-    await acpiOne.connect(addr1).bid({
+    await acpiOne.connect(addr1).bid(1, {
       value: ethers.utils.parseUnits("3", "ether"),
     });
 
-    await acpiOne.connect(addr2).bid({
+    await acpiOne.connect(addr2).bid(1, {
       value: ethers.utils.parseUnits("3.5", "ether"),
     });
 
@@ -84,20 +84,20 @@ describe("ACPI One", function () {
 
     await acpiOne.connect(ACPI_MODERATOR).startRound();
 
-    await acpiOne.connect(addr1).bid({
+    await acpiOne.connect(addr1).bid(1, {
       value: ethers.utils.parseUnits("1", "ether"),
     });
 
-    await acpiOne.connect(addr2).bid({
+    await acpiOne.connect(addr2).bid(1, {
       value: ethers.utils.parseUnits("1.5", "ether"),
     });
 
-    await acpiOne.connect(addr1).bid({
+    await acpiOne.connect(addr1).bid(1, {
       value: ethers.utils.parseUnits("1", "ether"),
     });
 
     await expect(
-      acpiOne.connect(addr1).bid({
+      acpiOne.connect(addr1).bid(1, {
         value: ethers.utils.parseUnits("1", "ether"),
       })
     ).to.revertedWith("BID: Sender is already winning");
@@ -125,37 +125,37 @@ describe("ACPI One", function () {
 
     await acpiOne.connect(ACPI_MODERATOR).startRound();
 
-    await acpiOne.connect(addr1).bid({
+    await acpiOne.connect(addr1).bid(1, {
       value: ethers.utils.parseUnits("1", "ether"),
     });
 
-    await acpiOne.connect(addr2).bid({
+    await acpiOne.connect(addr2).bid(1, {
       value: ethers.utils.parseUnits("1.5", "ether"),
     });
 
-    await acpiOne.connect(addr3).bid({
+    await acpiOne.connect(addr3).bid(1, {
       value: ethers.utils.parseUnits("2", "ether"),
     });
 
-    await acpiOne.connect(addr1).bid({
+    await acpiOne.connect(addr1).bid(1, {
       value: ethers.utils.parseUnits("1.8", "ether"),
     });
 
     await acpiOne.connect(ACPI_MODERATOR).startRound();
 
-    await acpiOne.connect(addr1).bid({
+    await acpiOne.connect(addr1).bid(2, {
       value: ethers.utils.parseUnits("1", "ether"),
     });
 
-    await acpiOne.connect(addr2).bid({
+    await acpiOne.connect(addr2).bid(2, {
       value: ethers.utils.parseUnits("1.5", "ether"),
     });
 
-    await acpiOne.connect(addr3).bid({
+    await acpiOne.connect(addr3).bid(2, {
       value: ethers.utils.parseUnits("2", "ether"),
     });
 
-    await acpiOne.connect(addr1).bid({
+    await acpiOne.connect(addr1).bid(2, {
       value: ethers.utils.parseUnits("1.8", "ether"),
     });
 
@@ -191,7 +191,7 @@ describe("ACPI One", function () {
     expect(await acpiOne.totalRound()).to.equal(index);
 
     await expect(
-      acpiOne.connect(addr1).bid({
+      acpiOne.connect(addr1).bid(index, {
         value: ethers.utils.parseUnits("3", "ether"),
       })
     ).to.be.revertedWith("BID: All rounds have been done");
@@ -233,12 +233,12 @@ describe("ACPI One", function () {
       .connect(ACPI_MODERATOR)
       .setBidIncrement(ethers.utils.parseUnits("1", "ether"));
 
-    await acpiOne.connect(addr1).bid({
+    await acpiOne.connect(addr1).bid(1, {
       value: ethers.utils.parseUnits("1.5", "ether"),
     });
 
     await expect(
-      acpiOne.connect(addr2).bid({
+      acpiOne.connect(addr2).bid(1, {
         value: ethers.utils.parseUnits("2", "ether"),
       })
     ).to.revertedWith("BID: value is too low");
@@ -265,7 +265,7 @@ describe("ACPI One", function () {
 
     await acpiOne.connect(ACPI_MODERATOR).startRound();
 
-    await acpiOne.connect(addr1).bid({
+    await acpiOne.connect(addr1).bid(1, {
       value: ethers.utils.parseUnits("1.5", "ether"),
     });
 
@@ -281,91 +281,91 @@ describe("ACPI One", function () {
 
     await acpiOne.connect(ACPI_MODERATOR).setTotalRound(100);
 
-    await acpiOne.connect(addr1).bid({
+    await acpiOne.connect(addr1).bid(0, {
       value: ethers.utils.parseUnits("9", "ether"),
     });
 
     await acpiOne.connect(ACPI_MODERATOR).startRound();
 
-    await acpiOne.connect(addr1).bid({
+    await acpiOne.connect(addr1).bid(1, {
       value: ethers.utils.parseUnits("10", "ether"),
     });
 
     await acpiOne.connect(ACPI_MODERATOR).startRound();
 
-    await acpiOne.connect(addr1).bid({
+    await acpiOne.connect(addr1).bid(2, {
       value: ethers.utils.parseUnits("12", "ether"),
     });
 
     await acpiOne.connect(ACPI_MODERATOR).startRound();
 
-    await acpiOne.connect(addr1).bid({
+    await acpiOne.connect(addr1).bid(3, {
       value: ethers.utils.parseUnits("13", "ether"),
     });
 
     await acpiOne.connect(ACPI_MODERATOR).startRound();
 
-    await acpiOne.connect(addr1).bid({
+    await acpiOne.connect(addr1).bid(4, {
       value: ethers.utils.parseUnits("14", "ether"),
     });
 
     await acpiOne.connect(ACPI_MODERATOR).startRound();
 
-    await acpiOne.connect(addr1).bid({
+    await acpiOne.connect(addr1).bid(5, {
       value: ethers.utils.parseUnits("15", "ether"),
     });
 
     await acpiOne.connect(ACPI_MODERATOR).startRound();
 
-    await acpiOne.connect(addr1).bid({
+    await acpiOne.connect(addr1).bid(6, {
       value: ethers.utils.parseUnits("16", "ether"),
     });
 
     await acpiOne.connect(ACPI_MODERATOR).startRound();
 
-    await acpiOne.connect(addr1).bid({
+    await acpiOne.connect(addr1).bid(7, {
       value: ethers.utils.parseUnits("17", "ether"),
     });
 
     await acpiOne.connect(ACPI_MODERATOR).startRound();
 
-    await acpiOne.connect(addr1).bid({
+    await acpiOne.connect(addr1).bid(8, {
       value: ethers.utils.parseUnits("18", "ether"),
     });
 
     await acpiOne.connect(ACPI_MODERATOR).startRound();
 
-    await acpiOne.connect(addr1).bid({
+    await acpiOne.connect(addr1).bid(9, {
       value: ethers.utils.parseUnits("22", "ether"),
     });
 
     await acpiOne.connect(ACPI_MODERATOR).startRound();
 
-    await acpiOne.connect(addr1).bid({
+    await acpiOne.connect(addr1).bid(10, {
       value: ethers.utils.parseUnits("23", "ether"),
     });
 
     await acpiOne.connect(ACPI_MODERATOR).startRound();
 
-    await acpiOne.connect(addr1).bid({
+    await acpiOne.connect(addr1).bid(11, {
       value: ethers.utils.parseUnits("24", "ether"),
     });
 
     await acpiOne.connect(ACPI_MODERATOR).startRound();
 
-    await acpiOne.connect(addr1).bid({
+    await acpiOne.connect(addr1).bid(12, {
       value: ethers.utils.parseUnits("24", "ether"),
     });
 
     await acpiOne.connect(ACPI_MODERATOR).startRound();
 
-    await acpiOne.connect(addr1).bid({
+    await acpiOne.connect(addr1).bid(13, {
       value: ethers.utils.parseUnits("25", "ether"),
     });
 
     await acpiOne.connect(ACPI_MODERATOR).startRound();
 
-    await acpiOne.connect(addr1).bid({
+    await acpiOne.connect(addr1).bid(14, {
       value: ethers.utils.parseUnits("30", "ether"),
     });
 

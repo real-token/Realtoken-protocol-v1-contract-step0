@@ -122,18 +122,12 @@ abstract contract ACPI {
         return true;
     }
 
+    function bid(uint16 targetRound) external virtual payable returns (bool);
+
     /**
      * @dev Start round of ACPI ending the last one.
      */
-    function startRound() external virtual onlyModerator onlyCurrentACPI returns (bool) {
-        _currentRound += 1;
-
-        // Implement ACPI logic
-
-        if (_currentRound == _totalRound) setAcpiPrice();
-
-        return true;
-    }
+    function startRound() external virtual returns (bool);
 
     /**
      * @dev Set the ACPI price when all the rounds have been done

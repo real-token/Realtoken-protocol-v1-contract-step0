@@ -73,9 +73,9 @@ contract ACPIOne is ACPI {
         _acpiPrice = Median.from(_priceHistory);
     }
 
-    function bid() external payable onlyCurrentACPI returns (bool) {
+    function bid(uint16 targetRound) external override payable onlyCurrentACPI returns (bool) {
         require(_currentRound < _totalRound, "BID: All rounds have been done");
-
+        require(targetRound == _currentRound, "BID: Current round =/= target round");
         require(
             msg.value + _balance[msg.sender][_currentRound] >=
                 _highestBid + _bidIncrement,

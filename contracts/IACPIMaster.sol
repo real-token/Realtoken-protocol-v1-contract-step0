@@ -9,7 +9,6 @@ import "@openzeppelin/contracts/access/IAccessControl.sol";
 import "./IRealT.sol";
 
 interface IACPIMaster is IAccessControl {
-    
     event ACPIChanged(uint8 indexed newAcpi);
 
     function tokenContract() external view returns (address);
@@ -40,7 +39,15 @@ interface IACPIMaster is IAccessControl {
 
     function claimTokens() external returns (bool);
 
-   function withdrawTokens(address payable vault, uint256 amount) external returns (bool);
+    function withdrawTokens(address payable vault, uint256 amount)
+        external
+        returns (bool);
 
-   function withdraw(address payable vault, uint256[4] calldata amounts) external returns (bool);
+    function withdrawAll(address payable vault)
+        external
+        returns (bool);
+
+    function withdraw(address payable vault, uint256[4] calldata amounts)
+        external
+        returns (bool);
 }

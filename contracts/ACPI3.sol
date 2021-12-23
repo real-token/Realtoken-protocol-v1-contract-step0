@@ -27,7 +27,11 @@ contract ACPIThree is ACPI {
     /**
      * @dev Set the bid amount value {onlyModerator}
      */
-    function setBidAmount(uint256 newValue) external onlyModerator returns (bool) {
+    function setBidAmount(uint256 newValue)
+        external
+        onlyModerator
+        returns (bool)
+    {
         _bidAmount = newValue;
         return true;
     }
@@ -35,8 +39,13 @@ contract ACPIThree is ACPI {
     /**
      * @dev bid to enter the round {onlyCurrentACPI}
      */
-    function bid() external payable onlyCurrentACPI returns (bool) {
+    function bid(uint16 targetRound) external override payable onlyCurrentACPI returns (bool) {
         require(_currentRound < _totalRound, "BID: All rounds have been done");
+        require(
+            targetRound == _currentRound,
+            "BID: Current round =/= target round"
+        );
+
         require(
             msg.value == _bidAmount,
             "Bid value should match exactly bid amount"
@@ -57,7 +66,13 @@ contract ACPIThree is ACPI {
     /**
      * @dev Start round of ACPI ending the last one. {onlyModerator}
      */
-    function startRound() external override onlyModerator onlyCurrentACPI returns (bool) {
+    function startRound()
+        external
+        override
+        onlyModerator
+        onlyCurrentACPI
+        returns (bool)
+    {
         require(_currentRound < _totalRound, "All rounds have been done");
 
         if (_roundBidders.length > 0) {

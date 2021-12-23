@@ -46,7 +46,7 @@ describe("ACPI Three", function () {
     expect(await acpiThree.totalRound()).to.equal(index);
 
     await expect(
-      acpiThree.connect(addr1).bid({
+      acpiThree.connect(addr1).bid(index, {
         value: ethers.utils.parseUnits("3", "ether"),
       })
     ).to.be.revertedWith("BID: All rounds have been done");
@@ -136,7 +136,7 @@ describe("ACPI Three", function () {
     _bidAmount = _bidAmount.add(1);
 
     await expect(
-      acpiThree.connect(user1).bid({ value: _bidAmount })
+      acpiThree.connect(user1).bid(0, { value: _bidAmount })
     ).to.revertedWith("Bid value should match exactly bid amount");
   });
 
@@ -148,7 +148,7 @@ describe("ACPI Three", function () {
     _bidAmount = _bidAmount.sub(1);
 
     await expect(
-      acpiThree.connect(user1).bid({ value: _bidAmount })
+      acpiThree.connect(user1).bid(0, { value: _bidAmount })
     ).to.revertedWith("Bid value should match exactly bid amount");
   });
 
@@ -157,10 +157,10 @@ describe("ACPI Three", function () {
 
     const _bidAmount = await acpiThree.bidAmount();
 
-    await acpiThree.connect(user1).bid({ value: _bidAmount });
+    await acpiThree.connect(user1).bid(0, { value: _bidAmount });
 
     await expect(
-      acpiThree.connect(user1).bid({ value: _bidAmount })
+      acpiThree.connect(user1).bid(0, { value: _bidAmount })
     ).to.revertedWith("You already bet this round");
   });
 
@@ -169,22 +169,22 @@ describe("ACPI Three", function () {
 
     const _bidAmount = await acpiThree.bidAmount();
 
-    acpiThree.connect(user1).bid({ value: _bidAmount });
+    await acpiThree.connect(user1).bid(0, { value: _bidAmount });
 
     await expect(
-      acpiThree.connect(user1).bid({ value: _bidAmount })
+      acpiThree.connect(user1).bid(0, { value: _bidAmount })
     ).to.revertedWith("You already bet this round");
 
     await expect(
-      acpiThree.connect(user1).bid({ value: _bidAmount })
+      acpiThree.connect(user1).bid(0, { value: _bidAmount })
     ).to.revertedWith("You already bet this round");
 
     await expect(
-      acpiThree.connect(user1).bid({ value: _bidAmount })
+      acpiThree.connect(user1).bid(0, { value: _bidAmount })
     ).to.revertedWith("You already bet this round");
 
     await expect(
-      acpiThree.connect(user1).bid({ value: _bidAmount })
+      acpiThree.connect(user1).bid(0, { value: _bidAmount })
     ).to.revertedWith("You already bet this round");
   });
 
@@ -194,15 +194,15 @@ describe("ACPI Three", function () {
 
     const _bidAmount = await acpiThree.bidAmount();
 
-    await acpiThree.connect(user1).bid({ value: _bidAmount });
+    await acpiThree.connect(user1).bid(0, { value: _bidAmount });
 
-    await acpiThree.connect(user2).bid({ value: _bidAmount });
+    await acpiThree.connect(user2).bid(0, { value: _bidAmount });
 
-    await acpiThree.connect(user3).bid({ value: _bidAmount });
+    await acpiThree.connect(user3).bid(0, { value: _bidAmount });
 
-    await acpiThree.connect(user4).bid({ value: _bidAmount });
+    await acpiThree.connect(user4).bid(0, { value: _bidAmount });
 
-    await acpiThree.connect(user5).bid({ value: _bidAmount });
+    await acpiThree.connect(user5).bid(0, { value: _bidAmount });
 
     await acpiThree.connect(ACPI_MODERATOR).startRound();
 
@@ -232,11 +232,11 @@ describe("ACPI Three", function () {
 
     const _bidAmount = await acpiThree.bidAmount();
 
-    await acpiThree.connect(user1).bid({ value: _bidAmount });
+    await acpiThree.connect(user1).bid(0, { value: _bidAmount });
 
-    await acpiThree.connect(user2).bid({ value: _bidAmount });
+    await acpiThree.connect(user2).bid(0, { value: _bidAmount });
 
-    await acpiThree.connect(user3).bid({ value: _bidAmount });
+    await acpiThree.connect(user3).bid(0, { value: _bidAmount });
 
     await acpiThree.connect(ACPI_MODERATOR).startRound();
 
@@ -252,9 +252,9 @@ describe("ACPI Three", function () {
       "333333333333333333"
     );
 
-    await acpiThree.connect(user1).bid({ value: _bidAmount });
+    await acpiThree.connect(user1).bid(1, { value: _bidAmount });
 
-    await acpiThree.connect(user2).bid({ value: _bidAmount });
+    await acpiThree.connect(user2).bid(1, { value: _bidAmount });
 
     await acpiThree.connect(ACPI_MODERATOR).startRound();
 
@@ -273,19 +273,19 @@ describe("ACPI Three", function () {
 
     const _bidAmount = await acpiThree.bidAmount();
 
-    await acpiThree.connect(user1).bid({ value: _bidAmount });
+    await acpiThree.connect(user1).bid(0, { value: _bidAmount });
 
-    await acpiThree.connect(user2).bid({ value: _bidAmount });
+    await acpiThree.connect(user2).bid(0, { value: _bidAmount });
 
-    await acpiThree.connect(user3).bid({ value: _bidAmount });
+    await acpiThree.connect(user3).bid(0, { value: _bidAmount });
 
-    await acpiThree.connect(user4).bid({ value: _bidAmount });
+    await acpiThree.connect(user4).bid(0, { value: _bidAmount });
 
     await acpiThree.connect(ACPI_MODERATOR).startRound();
 
-    await acpiThree.connect(user1).bid({ value: _bidAmount });
+    await acpiThree.connect(user1).bid(1, { value: _bidAmount });
 
-    await acpiThree.connect(user2).bid({ value: _bidAmount });
+    await acpiThree.connect(user2).bid(1, { value: _bidAmount });
 
     await acpiThree.connect(ACPI_MODERATOR).startRound();
 

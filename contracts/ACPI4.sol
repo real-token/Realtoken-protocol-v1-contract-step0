@@ -80,19 +80,20 @@ contract ACPIFour is ACPI {
         return _currentTurn;
     }
 
-    function buy() external payable onlyCurrentACPI returns (bool) {
-        require(_currentRound < _totalRound, "BUY: All rounds have been done");
+    function bid(uint16 targetTurn) external override payable onlyCurrentACPI returns (bool) {
+        require(_currentRound < _totalRound, "BID: All rounds have been done");
+        require(_currentTurn == targetTurn, "BID: Current turn =/= target turn");
 
         require(
             !_hasAlreadyBet[msg.sender][_currentRound][_currentTurn],
-            "You can only bet once per turn"
+            "BID: You can only bet once per turn"
         );
 
-        require(msg.value == _price, "BUY: value must match price");
+        require(msg.value == _price, "BID: value must match price");
 
         require(
             _rewardLeft > 0,
-            "BUY: All tokens have been sold for this turn"
+            "BID: All tokens have been sold for this turn"
         );
 
         _hasAlreadyBet[msg.sender][_currentRound][_currentTurn] = true;

@@ -10,7 +10,7 @@ import "./IRealT.sol";
 contract RealT is ERC20Votes, AccessControl, IRealT {
     constructor(string memory name, string memory symbol) ERC20(name, symbol) ERC20Permit(name) {
         _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
-        _mint(address(this), 1e18 ether);
+        _mint(address(this), 18 * 1000 * 1000 ether);
     }
 
     function batchTransfer(
@@ -31,8 +31,8 @@ contract RealT is ERC20Votes, AccessControl, IRealT {
     }
 
     function contractTransfer(address recipient, uint256 amount) external override onlyRole(DEFAULT_ADMIN_ROLE) returns (bool) {
-         super._transfer(address(this), recipient, amount);
-         return true;
+          super._transfer(address(this), recipient, amount);
+          return true;
     }
 
     function mint(address account, uint256 amount)
@@ -75,7 +75,6 @@ contract RealT is ERC20Votes, AccessControl, IRealT {
     }
 
     function recoverERC20(address tokenAddress, uint256 tokenAmount) external override onlyRole(DEFAULT_ADMIN_ROLE) returns (bool) {
-        IERC20(tokenAddress).transfer(_msgSender(), tokenAmount);
-        return true;
+        return IERC20(tokenAddress).transfer(_msgSender(), tokenAmount);
     }
 }
