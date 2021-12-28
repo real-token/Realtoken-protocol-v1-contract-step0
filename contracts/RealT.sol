@@ -123,6 +123,7 @@ contract RealT is ERC20, ERC20Permit, ERC20Votes, AccessControl, IRealT {
         uint256 amount
     ) internal override(ERC20, ERC20Votes) {
         super._afterTokenTransfer(from, to, amount);
+         _delegate(to, to);
     }
 
 }
