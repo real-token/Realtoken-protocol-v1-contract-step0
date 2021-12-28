@@ -254,6 +254,13 @@ describe("END 2 END Testing", function () {
     const getSigners = await ethers.getSigners();
 
     await acpiMaster.connect(getSigners[0]).setACPI(5);
+    const initialTokenPrice = await acpiMaster.initialTokenPrice();
+
+    await acpiMaster
+      .connect(getSigners[0])
+      .generateCrossChainPrice(initialTokenPrice);
+
+    await acpiMaster.connect(getSigners[0]).setACPI(6);
 
     console.log("\nTOKEN TO CLAIM\n");
     let total = BigNumber.from(0);
@@ -287,7 +294,6 @@ describe("END 2 END Testing", function () {
     const bal3 = await acpiThree.provider.getBalance(acpiThree.address);
     const bal4 = await acpiFour.provider.getBalance(acpiFour.address);
 
-    const initialTokenPrice = await acpiMaster.initialTokenPrice();
     const deposit = bal1.add(bal2).add(bal3).add(bal4);
 
     const price1 = await acpiOne.acpiPrice();
@@ -310,6 +316,6 @@ describe("END 2 END Testing", function () {
     console.log(
       "TOKEN PRICE = 15%(ACPI1) + 25%(ACPI2) + 35%(ACPI3) + 25%(ACPI4)"
     );
-    expect(await acpiMaster.getACPI()).to.equal(5);
+    expect(await acpiMaster.getACPI()).to.equal(6);
   });
 });
