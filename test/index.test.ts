@@ -62,7 +62,13 @@ describe("Realt Factory", function () {
   });
 
   it("Should set ACPI to 6", async function () {
-    await expect(acpiMaster.setACPI(6)).revertedWith("Allowed value is 0-5");
+    await acpiMaster.setACPI(6);
+
+    expect(await acpiMaster.getACPI()).to.equal(6);
+  });
+
+  it("Should set ACPI to 6", async function () {
+    await expect(acpiMaster.setACPI(7)).revertedWith("Allowed value is 0-6");
   });
 
   it("Test permission", async function () {

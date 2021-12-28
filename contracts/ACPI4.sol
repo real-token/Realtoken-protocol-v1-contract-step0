@@ -119,6 +119,7 @@ contract ACPIFour is ACPI {
 
         _hasAlreadyBid[msg.sender][_currentRound][_currentTurn] = true;
         _pendingWins[msg.sender] += 1 ether;
+        _totalWins += 1 ether;
         _rewardLeft -= 1;
 
         emit Bid(msg.sender, _price);
@@ -176,16 +177,6 @@ contract ACPIFour is ACPI {
     }
 
     function setAcpiPrice() internal override {
-        bool hasValue = false;
-        for (uint256 i = 0; i < _priceHistory.length; i++) {
-            if (_priceHistory[i] > 0) {
-                hasValue = true;
-                break;
-            }
-        }
-
-        if (hasValue) {
-            _acpiPrice = Median.from(_priceHistory);
-        }
+        _acpiPrice = Median.from(_priceHistory);
     }
 }

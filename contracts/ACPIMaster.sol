@@ -28,11 +28,22 @@ contract ACPIMaster is IACPIMaster, AccessControl {
     ACPI private _acpiFour;
 
     uint256 private _initialTokenPrice;
+    uint256 private _crossChainPrice;
 
     bytes32 private constant _ACPI_MODERATOR = keccak256("ACPI_MODERATOR");
     bytes32 private constant _ACPI_MASTER = keccak256("ACPI_MASTER");
 
     IRealT private _realToken;
+
+    /**
+     * @dev Emitted when admin input other chains price to calculate crosschainprice
+     */
+    event CrossChainPrice(uint256 indexed price);
+
+    /**
+     * @dev Emitted when acpi ends and contract calculate ACPI price
+     */
+    event GeneratedPrice(uint256 indexed price);
 
     constructor(address realTokenAddress, address acpiModerator) {
         _setupRole(_ACPI_MODERATOR, acpiModerator);
@@ -78,8 +89,42 @@ contract ACPIMaster is IACPIMaster, AccessControl {
         return _initialTokenPrice;
     }
 
+    function crossChainPrice() external view override returns (uint256) {
+        return _crossChainPrice;
+    }
+
     function getACPI() external view override returns (uint8) {
         return _currentACPI;
+    }
+
+    // Generate average price of ACPIs using the initialTokenPrice on three differents blockchains
+    function generateCrossChainPrice(uint256 averageCrossChainPrice)
+        external
+        override
+        onlyRole(DEFAULT_ADMIN_ROLE)
+        returns (bool)
+    {
+        require(
+            _currentACPI == 5,
+            "ACPI event need to be over to set cross chain price"
+        );
+
+        // prevent overflow
+        _crossChainPrice = averageCrossChainPrice;
+        emit CrossChainPrice(_crossChainPrice);
+        return true;
+    }
+
+    function totalWins() external view returns (uint256) {
+        return
+            _acpiOne.totalWins() +
+            _acpiTwo.totalWins() +
+            _acpiThree.totalWins() +
+            _acpiFour.totalWins();
+    }
+
+    function totalReturns() external view returns (uint256) {
+        return _acpiOne.totalReturns();
     }
 
     function _generatePrice() private {
@@ -88,6 +133,8 @@ contract ACPIMaster is IACPIMaster, AccessControl {
             (((_acpiTwo.acpiPrice() * 25) / 100)) +
             (((_acpiThree.acpiPrice() * 35) / 100)) +
             (((_acpiFour.acpiPrice() * 25) / 100));
+
+        emit GeneratedPrice(_initialTokenPrice);
     }
 
     function setACPI(uint8 newACPI)
@@ -96,7 +143,7 @@ contract ACPIMaster is IACPIMaster, AccessControl {
         onlyRole(DEFAULT_ADMIN_ROLE)
         returns (bool)
     {
-        require(newACPI < 6, "Allowed value is 0-5");
+        require(newACPI < 7, "Allowed value is 0-6");
         _currentACPI = newACPI;
         if (newACPI == 5) {
             _generatePrice();
@@ -129,16 +176,16 @@ contract ACPIMaster is IACPIMaster, AccessControl {
 
     function _tokenToClaim() private view returns (uint256) {
         require(
-            _currentACPI == 5,
+            _currentACPI == 6,
             "ACPI event need to be over to claim your tokens"
         );
 
-        uint256 totalReturns = _getACPIReturns(_msgSender());
-        uint256 totalWins = _getACPIWins(_msgSender());
+        uint256 userReturns = _getACPIReturns(_msgSender());
+        uint256 userWins = _getACPIWins(_msgSender());
 
-        if (totalReturns == 0 && totalWins == 0) return 0;
+        if (userReturns == 0 && userWins == 0) return 0;
 
-        return totalWins + (1 ether * totalReturns) / _initialTokenPrice;
+        return userWins + (1 ether * userReturns) / _crossChainPrice;
     }
 
     function tokenToClaim() external view override returns (uint256) {
@@ -149,10 +196,19 @@ contract ACPIMaster is IACPIMaster, AccessControl {
         uint256 tokenAmount = _tokenToClaim();
         require(tokenAmount > 0, "You don't have any tokens to claim");
 
-        _acpiOne.resetAccount(_msgSender());
-        _acpiTwo.resetAccount(_msgSender());
-        _acpiThree.resetAccount(_msgSender());
-        _acpiFour.resetAccount(_msgSender());
+        (
+            bool successOne,
+            bool successTwo,
+            bool successThree,
+            bool successFour
+        ) = (
+                _acpiOne.resetAccount(_msgSender()),
+                _acpiTwo.resetAccount(_msgSender()),
+                _acpiThree.resetAccount(_msgSender()),
+                _acpiFour.resetAccount(_msgSender())
+            );
+
+        require(successOne && successTwo && successThree && successFour, "Reset function must not fail");
 
         return _realToken.transfer(_msgSender(), tokenAmount);
     }
@@ -194,31 +250,61 @@ contract ACPIMaster is IACPIMaster, AccessControl {
         return true;
     }
 
-    function recoverERC20(address tokenAddress, uint256 tokenAmount) external override onlyRole(DEFAULT_ADMIN_ROLE) returns (bool) {
+    function recoverERC20(address tokenAddress, uint256 tokenAmount)
+        external
+        override
+        onlyRole(DEFAULT_ADMIN_ROLE)
+        returns (bool)
+    {
         return IERC20(tokenAddress).transfer(_msgSender(), tokenAmount);
     }
 
-    function setTokenAddress(address tokenAddress) external override onlyRole(DEFAULT_ADMIN_ROLE) returns (bool) {
+    function setTokenAddress(address tokenAddress)
+        external
+        override
+        onlyRole(DEFAULT_ADMIN_ROLE)
+        returns (bool)
+    {
         _realToken = IRealT(tokenAddress);
         return true;
     }
 
-   function setACPIOne(address acpiAddress) external override onlyRole(DEFAULT_ADMIN_ROLE) returns (bool) {
+    function setACPIOne(address acpiAddress)
+        external
+        override
+        onlyRole(DEFAULT_ADMIN_ROLE)
+        returns (bool)
+    {
         _acpiOne = ACPI(acpiAddress);
         return true;
     }
 
-    function setACPITwo(address acpiAddress) external override onlyRole(DEFAULT_ADMIN_ROLE) returns (bool) {
+    function setACPITwo(address acpiAddress)
+        external
+        override
+        onlyRole(DEFAULT_ADMIN_ROLE)
+        returns (bool)
+    {
         _acpiTwo = ACPI(acpiAddress);
         return true;
     }
 
-    function setACPIThree(address acpiAddress) external override onlyRole(DEFAULT_ADMIN_ROLE) returns (bool) {
+    function setACPIThree(address acpiAddress)
+        external
+        override
+        onlyRole(DEFAULT_ADMIN_ROLE)
+        returns (bool)
+    {
         _acpiThree = ACPI(acpiAddress);
         return true;
     }
 
-    function setACPIFour(address acpiAddress) external override onlyRole(DEFAULT_ADMIN_ROLE) returns (bool) {
+    function setACPIFour(address acpiAddress)
+        external
+        override
+        onlyRole(DEFAULT_ADMIN_ROLE)
+        returns (bool)
+    {
         _acpiFour = ACPI(acpiAddress);
         return true;
     }

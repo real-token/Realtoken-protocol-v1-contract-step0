@@ -34,7 +34,7 @@ async function main() {
 
   const RealtFactory = await ethers.getContractFactory("RealT");
   const realtToken = await RealtFactory.deploy(name, symbol, {
-    gasLimit: 8500000,
+    gasLimit: 3500000,
   });
 
   await realtToken.deployed();
@@ -42,14 +42,17 @@ async function main() {
   const ACPIMasterFactory = await ethers.getContractFactory("ACPIMaster");
   const acpiMaster = await ACPIMasterFactory.deploy(
     realtToken.address,
-    ACPI_MODERATOR.address
+    ACPI_MODERATOR.address,
+    {
+      gasLimit: 8500000,
+    }
   );
 
   await acpiMaster.deployed();
 
   await realtToken.contractTransfer(
     acpiMaster.address,
-    ethers.utils.parseUnits("1000", "ether")
+    ethers.utils.parseUnits("12000", "ether")
   );
   console.log("Contract has been deployed!");
 

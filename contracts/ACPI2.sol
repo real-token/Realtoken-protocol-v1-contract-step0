@@ -116,11 +116,10 @@ contract ACPITwo is ACPI {
                     _roundPot;
             }
             delete _bidders;
-
             emit RoundWin(_roundPot);
 
+            _totalWins += _reward;
             _roundPot = 0;
-
             _reward += (_reward * _rewardMultiplicator) / 100;
         }
 

@@ -12,6 +12,8 @@ contract ACPIOne is ACPI {
 
     mapping(address => uint256) private _pendingReturns;
 
+    uint256 private _totalReturns;
+
     // Address => _currentRound => balance
     mapping(address => mapping(uint16 => uint256)) private _balance;
 
@@ -27,6 +29,10 @@ contract ACPIOne is ACPI {
 
     function pendingReturns(address account) external override view returns (uint256) {
         return _pendingReturns[account];
+    }
+
+    function totalReturns() external override view returns (uint256) {
+        return _totalReturns;
     }
 
     function highestBid() external view returns (uint256) {
@@ -53,7 +59,7 @@ contract ACPIOne is ACPI {
             // Award Winner
             _pendingWins[_highestBidder] += 1 ether;
             _priceHistory.push(_highestBid);
-
+            _totalWins += 1 ether;
             // Reset state
             _highestBid = 0;
             _highestBidder = address(0);
@@ -82,10 +88,12 @@ contract ACPIOne is ACPI {
         if (_highestBidder != address(0)) {
             // Refund the previously highest bidder.
             _pendingReturns[_highestBidder] += _highestBid;
+            _totalReturns += _highestBid;
         }
 
         if (_balance[msg.sender][_currentRound] > 0) {
             _pendingReturns[msg.sender] -= _balance[msg.sender][_currentRound];
+            _totalReturns -= _balance[msg.sender][_currentRound];
         }
 
         _balance[msg.sender][_currentRound] += msg.value;

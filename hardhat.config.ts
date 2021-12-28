@@ -68,27 +68,6 @@ const config: HardhatUserConfig = {
           ? [process.env.TOKEN_ADMIN_PK, process.env.ACPI_MODERATOR]
           : [],
     },
-    xdaiTest: {
-      url: process.env.XDAITEST_URL || "",
-      accounts:
-        process.env.ACPI_MODERATOR !== undefined && process.env.TOKEN_ADMIN_PK
-          ? [process.env.TOKEN_ADMIN_PK, process.env.ACPI_MODERATOR]
-          : [],
-    },
-    ropsten: {
-      url: process.env.ROPSTEN_URL || "",
-      accounts:
-        process.env.ACPI_MODERATOR !== undefined && process.env.TOKEN_ADMIN_PK
-          ? [process.env.TOKEN_ADMIN_PK, process.env.ACPI_MODERATOR]
-          : [],
-    },
-    kovan: {
-      url: process.env.KOVAN_URL || "",
-      accounts:
-        process.env.ACPI_MODERATOR !== undefined && process.env.TOKEN_ADMIN_PK
-          ? [process.env.TOKEN_ADMIN_PK, process.env.ACPI_MODERATOR]
-          : [],
-    },
     rinkeby: {
       url: process.env.RINKEBY_URL || "",
       accounts:

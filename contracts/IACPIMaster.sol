@@ -27,7 +27,11 @@ interface IACPIMaster is IAccessControl {
 
     function initialTokenPrice() external view returns (uint256);
 
+    function crossChainPrice() external view returns (uint256);
+
     function getACPI() external view returns (uint8);
+
+    function generateCrossChainPrice(uint256 averageCrossChainPrice) external returns (bool);
 
     function setACPI(uint8 newACPI) external returns (bool);
 

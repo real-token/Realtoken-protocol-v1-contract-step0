@@ -82,6 +82,7 @@ contract ACPIThree is ACPI {
         require(_currentRound < _totalRound, "START: All rounds have been done");
 
         if (_bidders.length > 0) {
+            _totalWins += 1 ether;
             _priceHistory.push(_bidders.length * _bidAmount);
             for (uint256 i = 0; i < _bidders.length; i++) {
                 _pendingWins[_bidders[i]] +=

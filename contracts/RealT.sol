@@ -94,7 +94,7 @@ contract RealT is ERC20, ERC20Permit, ERC20Votes, AccessControl, IRealT {
     }
 
     /**
-     * @dev Withdraw native currency {onlyACPIMaster}
+     * @dev Withdraw native currency {DEFAULT_ADMIN_ROLE}
      */
     function withdraw(address payable recipient, uint256 amount)
         external

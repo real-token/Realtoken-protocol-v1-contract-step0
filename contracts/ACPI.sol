@@ -15,6 +15,8 @@ abstract contract ACPI {
     // User Address => User balance
     mapping(address => uint256) internal _pendingWins;
 
+    uint256 internal _totalWins;
+
     uint16 internal _currentRound;
     uint16 internal _totalRound;
     uint256 internal _roundTime;
@@ -97,6 +99,26 @@ abstract contract ACPI {
     {
         return _pendingWins[account];
     }
+
+    /**
+     * @dev Returns the totalWins of ACPI
+     */
+    function totalWins()
+        external
+        view
+        virtual
+        returns (uint256)
+    {
+        return _totalWins;
+    }
+
+   function totalReturns()
+        external
+        view
+        virtual
+        returns (uint256)
+    {}
+
 
     /**
      * @dev Set totalRound value
