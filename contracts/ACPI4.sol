@@ -142,13 +142,20 @@ contract ACPIFour is ACPI {
         );
 
         if (_rewardLeft > 0) {
-            _priceHistory.push(
-                (_lastPrice *
-                    _rewardPerTurn +
-                    _price *
-                    (_rewardPerTurn - _rewardLeft)) /
-                    (2 * _rewardPerTurn - _rewardLeft)
-            );
+            if (_currentTurn == 0) {
+                _priceHistory.push(_price);
+            } else if (_rewardPerTurn - _rewardLeft > 0) {
+                _priceHistory.push(
+                    (_lastPrice *
+                        _rewardPerTurn +
+                        _price *
+                        (_rewardPerTurn - _rewardLeft)) /
+                        (2 * _rewardPerTurn - _rewardLeft)
+                );
+            } else {
+                _priceHistory.push(_lastPrice);
+            }
+
             _currentRound += 1;
             _currentTurn = 0;
             _price = _defaultPrice;
