@@ -6,14 +6,12 @@ import "./ACPI.sol";
 contract ACPIThree is ACPI {
     uint256 private _bidAmount;
 
-    address[] private _roundBidders;
+    address[] private _bidders;
 
     // Address => _currentRound => didBet
-    mapping(address => mapping(uint16 => bool)) private _hasAlreadyBet;
+    mapping(address => mapping(uint16 => bool)) private _hasAlreadyBid;
 
     constructor() ACPI(msg.sender, 3) {
-        _roundTime = 60 * 5;
-        _totalRound = 10;
         _bidAmount = 250 gwei;
     }
 
@@ -36,6 +34,14 @@ contract ACPIThree is ACPI {
         return true;
     }
 
+    function getBiddersNumber() external view returns (uint256) {
+        return _bidders.length;
+    }
+
+    function hasBid() external view returns (bool) {
+        return _hasAlreadyBid[msg.sender][_currentRound];
+    }
+
     /**
      * @dev bid to enter the round {onlyCurrentACPI}
      */
@@ -43,20 +49,20 @@ contract ACPIThree is ACPI {
         require(_currentRound < _totalRound, "BID: All rounds have been done");
         require(
             targetRound == _currentRound,
-            "BID: Current round =/= target round"
+            "BID: Current round is over"
         );
 
         require(
             msg.value == _bidAmount,
-            "Bid value should match exactly bid amount"
+            "BID: Amount sent doesn't match expected value"
         );
         require(
-            !_hasAlreadyBet[msg.sender][_currentRound],
-            "You already bet this round"
+            !_hasAlreadyBid[msg.sender][_currentRound],
+            "BID: You can only bet once per round"
         );
 
-        _roundBidders.push(msg.sender);
-        _hasAlreadyBet[msg.sender][_currentRound] = true;
+        _bidders.push(msg.sender);
+        _hasAlreadyBid[msg.sender][_currentRound] = true;
 
         emit Bid(msg.sender, _bidAmount);
 
@@ -73,18 +79,18 @@ contract ACPIThree is ACPI {
         onlyCurrentACPI
         returns (bool)
     {
-        require(_currentRound < _totalRound, "All rounds have been done");
+        require(_currentRound < _totalRound, "START: All rounds have been done");
 
-        if (_roundBidders.length > 0) {
-            _priceHistory.push(_roundBidders.length * _bidAmount);
-            for (uint256 i = 0; i < _roundBidders.length; i++) {
-                _pendingWins[_roundBidders[i]] +=
+        if (_bidders.length > 0) {
+            _priceHistory.push(_bidders.length * _bidAmount);
+            for (uint256 i = 0; i < _bidders.length; i++) {
+                _pendingWins[_bidders[i]] +=
                     1 ether /
-                    _roundBidders.length;
+                    _bidders.length;
             }
-            delete _roundBidders;
+            delete _bidders;
 
-            emit RoundWin(_roundBidders.length * _bidAmount);
+            emit RoundWin(_bidders.length * _bidAmount);
         }
         _currentRound += 1;
         if (_currentRound == _totalRound) setAcpiPrice();

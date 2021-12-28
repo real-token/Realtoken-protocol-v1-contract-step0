@@ -33,6 +33,8 @@ describe("ACPI Four", function () {
     );
 
     await acpiMaster.connect(TOKEN_ADMIN).setACPI(4);
+
+    await acpiFour.connect(ACPI_MODERATOR).setTotalRound(10);
   });
 
   it("Going at the end!", async function () {
@@ -101,7 +103,7 @@ describe("ACPI Four", function () {
 
     await expect(
       acpiFour.connect(getSigners[2]).bid(0, { value: tokenPrice.add(10) })
-    ).to.revertedWith("BID: value must match price");
+    ).to.revertedWith("BID: Amount sent doesn't match expected value");
   });
 
   it("Price doesn't match #2", async function () {
@@ -113,7 +115,7 @@ describe("ACPI Four", function () {
 
     await expect(
       acpiFour.connect(getSigners[2]).bid(0, { value: tokenPrice.sub(3) })
-    ).to.revertedWith("BID: value must match price");
+    ).to.revertedWith("BID: Amount sent doesn't match expected value");
   });
 
   it("Test permission #1 - setDefaultPrice", async function () {
@@ -188,6 +190,10 @@ describe("ACPI Four", function () {
     await acpiMaster.connect(TOKEN_ADMIN).setACPI(4);
 
     await acpiFour.connect(addr1).bid(0, { value: tokenPrice });
+  });
+
+  it("get round time", async function () {
+    expect(await acpiFour.roundTime()).to.equal(600);
   });
 
   it("3 turn / 2 rounds / 100 token", async function () {

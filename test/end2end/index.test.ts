@@ -218,6 +218,7 @@ describe("END 2 END Testing", function () {
 
     await acpiMaster.connect(getSigners[0]).setACPI(4);
     await acpiFour.connect(getSigners[1]).setTotalRound(rounds);
+    await acpiFour.connect(getSigners[1]).setReward(100);
 
     for (let i = 0; i < rounds; i++) {
       let turnCount = 1 as small;

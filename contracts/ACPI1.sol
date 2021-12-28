@@ -15,10 +15,7 @@ contract ACPIOne is ACPI {
     // Address => _currentRound => balance
     mapping(address => mapping(uint16 => uint256)) private _balance;
 
-    constructor() ACPI(msg.sender, 1) {
-        _roundTime = 60 * 5;
-        _totalRound = 10;
-    }
+    constructor() ACPI(msg.sender, 1) {}
 
     /**
      * @dev Set bidIncrement value
@@ -28,7 +25,7 @@ contract ACPIOne is ACPI {
         return true;
     }
 
-    function pendingReturns(address account) external view returns (uint256) {
+    function pendingReturns(address account) external override view returns (uint256) {
         return _pendingReturns[account];
     }
 
@@ -48,7 +45,7 @@ contract ACPIOne is ACPI {
      * @dev Start round of ACPI ending the last one.
      */
     function startRound() external override onlyModerator onlyCurrentACPI returns (bool) {
-        require(_currentRound < _totalRound, "All rounds have been done");
+        require(_currentRound < _totalRound, "START: All rounds have been done");
 
         emit RoundWin(_highestBid);
 
@@ -75,7 +72,7 @@ contract ACPIOne is ACPI {
 
     function bid(uint16 targetRound) external override payable onlyCurrentACPI returns (bool) {
         require(_currentRound < _totalRound, "BID: All rounds have been done");
-        require(targetRound == _currentRound, "BID: Current round =/= target round");
+        require(targetRound == _currentRound, "BID: Current round is over");
         require(
             msg.value + _balance[msg.sender][_currentRound] >=
                 _highestBid + _bidIncrement,
@@ -101,7 +98,7 @@ contract ACPIOne is ACPI {
         return true;
     }
 
-    function getBet() external view onlyCurrentACPI returns (uint256) {
+    function getBid() external view onlyCurrentACPI returns (uint256) {
         return _balance[msg.sender][_currentRound];
     }
 

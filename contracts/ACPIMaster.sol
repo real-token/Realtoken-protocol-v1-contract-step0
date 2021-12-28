@@ -9,6 +9,8 @@ import "./ACPI4.sol";
 import "./IACPIMaster.sol";
 import "./IRealT.sol";
 
+// github.com/chichke
+
 contract ACPIMaster is IACPIMaster, AccessControl {
     /**
      * @dev currentACPI is 0 before ACPI start
@@ -20,10 +22,10 @@ contract ACPIMaster is IACPIMaster, AccessControl {
      */
     uint8 private _currentACPI;
 
-    ACPIOne private _acpiOne;
-    ACPITwo private _acpiTwo;
-    ACPIThree private _acpiThree;
-    ACPIFour private _acpiFour;
+    ACPI private _acpiOne;
+    ACPI private _acpiTwo;
+    ACPI private _acpiThree;
+    ACPI private _acpiFour;
 
     uint256 private _initialTokenPrice;
 
@@ -145,9 +147,6 @@ contract ACPIMaster is IACPIMaster, AccessControl {
 
     function claimTokens() external override returns (bool) {
         uint256 tokenAmount = _tokenToClaim();
-
-        // TODO Check for reentrency
-
         require(tokenAmount > 0, "You don't have any tokens to claim");
 
         _acpiOne.resetAccount(_msgSender());
@@ -195,13 +194,32 @@ contract ACPIMaster is IACPIMaster, AccessControl {
         return true;
     }
 
-    function recoverERC20(address tokenAddress, uint256 tokenAmount) external onlyRole(DEFAULT_ADMIN_ROLE) returns (bool) {
+    function recoverERC20(address tokenAddress, uint256 tokenAmount) external override onlyRole(DEFAULT_ADMIN_ROLE) returns (bool) {
         return IERC20(tokenAddress).transfer(_msgSender(), tokenAmount);
     }
 
-    function setTokenAddress(address tokenAddress) external onlyRole(DEFAULT_ADMIN_ROLE) returns (bool) {
+    function setTokenAddress(address tokenAddress) external override onlyRole(DEFAULT_ADMIN_ROLE) returns (bool) {
         _realToken = IRealT(tokenAddress);
         return true;
     }
 
+   function setACPIOne(address acpiAddress) external override onlyRole(DEFAULT_ADMIN_ROLE) returns (bool) {
+        _acpiOne = ACPI(acpiAddress);
+        return true;
+    }
+
+    function setACPITwo(address acpiAddress) external override onlyRole(DEFAULT_ADMIN_ROLE) returns (bool) {
+        _acpiTwo = ACPI(acpiAddress);
+        return true;
+    }
+
+    function setACPIThree(address acpiAddress) external override onlyRole(DEFAULT_ADMIN_ROLE) returns (bool) {
+        _acpiThree = ACPI(acpiAddress);
+        return true;
+    }
+
+    function setACPIFour(address acpiAddress) external override onlyRole(DEFAULT_ADMIN_ROLE) returns (bool) {
+        _acpiFour = ACPI(acpiAddress);
+        return true;
+    }
 }

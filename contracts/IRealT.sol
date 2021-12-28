@@ -13,14 +13,23 @@ interface IRealT is IERC20 {
         uint256[] calldata amount
     ) external returns (bool);
 
-    function contractTransfer(address recipient, uint256 amount) external returns (bool);
+    function contractTransfer(address recipient, uint256 amount)
+        external
+        returns (bool);
 
     function mint(address account, uint256 amount) external returns (bool);
 
     function batchMint(address[] calldata account, uint256[] calldata amount)
-        external returns (bool);
+        external
+        returns (bool);
 
     function contractBurn(uint256 amount) external returns (bool);
 
-    function recoverERC20(address tokenAddress, uint256 tokenAmount) external returns (bool);
+    function recoverERC20(address tokenAddress, uint256 tokenAmount)
+        external
+        returns (bool);
+
+    function withdraw(address payable recipient, uint256 amount)
+        external
+        returns (bool);
 }

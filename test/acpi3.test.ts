@@ -137,7 +137,7 @@ describe("ACPI Three", function () {
 
     await expect(
       acpiThree.connect(user1).bid(0, { value: _bidAmount })
-    ).to.revertedWith("Bid value should match exactly bid amount");
+    ).to.revertedWith("BID: Amount sent doesn't match expected value");
   });
 
   it("bid sub 1", async function () {
@@ -149,10 +149,10 @@ describe("ACPI Three", function () {
 
     await expect(
       acpiThree.connect(user1).bid(0, { value: _bidAmount })
-    ).to.revertedWith("Bid value should match exactly bid amount");
+    ).to.revertedWith("BID: Amount sent doesn't match expected value");
   });
 
-  it("bid - Already bet this round #1", async function () {
+  it("bid - Already bet this turn #1", async function () {
     const [, , user1] = await ethers.getSigners();
 
     const _bidAmount = await acpiThree.bidAmount();
@@ -161,10 +161,10 @@ describe("ACPI Three", function () {
 
     await expect(
       acpiThree.connect(user1).bid(0, { value: _bidAmount })
-    ).to.revertedWith("You already bet this round");
+    ).to.revertedWith("BID: You can only bet once per round");
   });
 
-  it("bid - Already bet this round #2", async function () {
+  it("bid - Already bet this turn #2", async function () {
     const [, , user1] = await ethers.getSigners();
 
     const _bidAmount = await acpiThree.bidAmount();
@@ -173,19 +173,19 @@ describe("ACPI Three", function () {
 
     await expect(
       acpiThree.connect(user1).bid(0, { value: _bidAmount })
-    ).to.revertedWith("You already bet this round");
+    ).to.revertedWith("BID: You can only bet once per round");
 
     await expect(
       acpiThree.connect(user1).bid(0, { value: _bidAmount })
-    ).to.revertedWith("You already bet this round");
+    ).to.revertedWith("BID: You can only bet once per round");
 
     await expect(
       acpiThree.connect(user1).bid(0, { value: _bidAmount })
-    ).to.revertedWith("You already bet this round");
+    ).to.revertedWith("BID: You can only bet once per round");
 
     await expect(
       acpiThree.connect(user1).bid(0, { value: _bidAmount })
-    ).to.revertedWith("You already bet this round");
+    ).to.revertedWith("BID: You can only bet once per round");
   });
 
   it("bid wars #1", async function () {

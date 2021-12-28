@@ -50,4 +50,17 @@ interface IACPIMaster is IAccessControl {
     function withdraw(address payable vault, uint256[4] calldata amounts)
         external
         returns (bool);
+
+    function recoverERC20(address tokenAddress, uint256 tokenAmount) external returns (bool);
+
+    function setTokenAddress(address tokenAddress) external returns (bool);
+
+    function setACPIOne(address acpiAddress) external returns (bool);
+
+    function setACPITwo(address acpiAddress) external returns (bool);
+
+    function setACPIThree(address acpiAddress) external returns (bool);
+
+
+    function setACPIFour(address acpiAddress) external returns (bool);
 }

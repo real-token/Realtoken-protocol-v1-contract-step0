@@ -7,7 +7,7 @@ import "./Median.sol";
 contract ACPIFour is ACPI {
     // Address => _currentRound => _currentTurn => didBet
     mapping(address => mapping(uint16 => mapping(uint16 => bool)))
-        private _hasAlreadyBet;
+        private _hasAlreadyBid;
 
     uint8 private _priceIncrease;
 
@@ -23,18 +23,22 @@ contract ACPIFour is ACPI {
     constructor() ACPI(msg.sender, 4) {
         _priceIncrease = 60; // 60% increase
         _defaultPrice = 0.1 ether;
-        _roundTime = 60 * 5; // seconds between each turn
-        _totalRound = 10;
-        _rewardPerTurn = 100;
+        _rewardPerTurn = 50;
         _rewardLeft = _rewardPerTurn;
         _price = _defaultPrice;
-        _lastPrice = _defaultPrice;
+        _lastPrice = 0 ether;
+        _roundTime = 60 * 10;
+        _totalRound = 11;
     }
 
     /**
      * @dev Price per token in native currency
      */
-    function setDefaultPrice(uint256 newValue) external onlyModerator returns (bool) {
+    function setDefaultPrice(uint256 newValue)
+        external
+        onlyModerator
+        returns (bool)
+    {
         _defaultPrice = newValue;
         return true;
     }
@@ -51,7 +55,11 @@ contract ACPIFour is ACPI {
     /**
      * @dev Price increase between each turn in %
      */
-    function setPriceIncrease(uint8 newValue) external onlyModerator returns (bool) {
+    function setPriceIncrease(uint8 newValue)
+        external
+        onlyModerator
+        returns (bool)
+    {
         _priceIncrease = newValue;
         return true;
     }
@@ -80,23 +88,36 @@ contract ACPIFour is ACPI {
         return _currentTurn;
     }
 
-    function bid(uint16 targetTurn) external override payable onlyCurrentACPI returns (bool) {
+    function hasBid() external view returns (bool) {
+        return _hasAlreadyBid[msg.sender][_currentRound][_currentTurn];
+    }
+
+    function bid(uint16 targetTurn)
+        external
+        payable
+        override
+        onlyCurrentACPI
+        returns (bool)
+    {
         require(_currentRound < _totalRound, "BID: All rounds have been done");
-        require(_currentTurn == targetTurn, "BID: Current turn =/= target turn");
+        require(_currentTurn == targetTurn, "BID: Current round is over");
 
         require(
-            !_hasAlreadyBet[msg.sender][_currentRound][_currentTurn],
+            !_hasAlreadyBid[msg.sender][_currentRound][_currentTurn],
             "BID: You can only bet once per turn"
         );
 
-        require(msg.value == _price, "BID: value must match price");
+        require(
+            msg.value == _price,
+            "BID: Amount sent doesn't match expected value"
+        );
 
         require(
             _rewardLeft > 0,
             "BID: All tokens have been sold for this turn"
         );
 
-        _hasAlreadyBet[msg.sender][_currentRound][_currentTurn] = true;
+        _hasAlreadyBid[msg.sender][_currentRound][_currentTurn] = true;
         _pendingWins[msg.sender] += 1 ether;
         _rewardLeft -= 1;
 
@@ -108,8 +129,17 @@ contract ACPIFour is ACPI {
     /**
      * @dev Start round of ACPI ending the last one.
      */
-    function startRound() external override onlyModerator onlyCurrentACPI returns (bool) {
-        require(_currentRound < _totalRound, "All rounds have been done");
+    function startRound()
+        external
+        override
+        onlyModerator
+        onlyCurrentACPI
+        returns (bool)
+    {
+        require(
+            _currentRound < _totalRound,
+            "START: All rounds have been done"
+        );
 
         if (_rewardLeft > 0) {
             _priceHistory.push(
@@ -139,8 +169,16 @@ contract ACPIFour is ACPI {
     }
 
     function setAcpiPrice() internal override {
-        if (_priceHistory.length == 0) return;
+        bool hasValue = false;
+        for (uint256 i = 0; i < _priceHistory.length; i++) {
+            if (_priceHistory[i] > 0) {
+                hasValue = true;
+                break;
+            }
+        }
 
-        _acpiPrice = Median.from(_priceHistory);
+        if (hasValue) {
+            _acpiPrice = Median.from(_priceHistory);
+        }
     }
 }

@@ -9,15 +9,13 @@ contract ACPITwo is ACPI {
 
     uint8 private _rewardMultiplicator;
 
-    address[] private _roundBidders;
+    address[] private _bidders;
 
     uint256 private _minBid;
     uint256 private _roundPot;
     uint256 private _reward;
 
     constructor() ACPI(msg.sender, 2) {
-        _roundTime = 60 * 5;
-        _totalRound = 10;
         _minBid = 250 gwei;
         _reward = 1 ether;
         _rewardMultiplicator = 0;
@@ -36,13 +34,13 @@ contract ACPITwo is ACPI {
         require(_currentRound < _totalRound, "BID: All rounds have been done");
         require(
             targetRound == _currentRound,
-            "BID: Current round =/= target round"
+            "BID: Current round is over"
         );
 
-        require(msg.value >= _minBid, "bid have to be higher than minBid");
+        require(msg.value >= _minBid, "BID: Amount sent should be higher");
 
         if (_balance[msg.sender][_currentRound] == 0)
-            _roundBidders.push(msg.sender);
+            _bidders.push(msg.sender);
         _balance[msg.sender][_currentRound] += msg.value;
         _roundPot += msg.value;
 
@@ -75,12 +73,25 @@ contract ACPITwo is ACPI {
         return true;
     }
 
+
+    /**
+     * @dev increase reward between each turn in %
+     */
+    function setReward(uint256 newValue)
+        external
+        onlyModerator
+        returns (bool)
+    {
+        _reward = newValue;
+        return true;
+    }
+
     function setMinBid(uint256 newValue) external onlyModerator returns (bool) {
         _minBid = newValue;
         return true;
     }
 
-    function getBet() external view onlyCurrentACPI returns (uint256) {
+    function getBid() external view onlyCurrentACPI returns (uint256) {
         return _balance[msg.sender][_currentRound];
     }
 
@@ -94,17 +105,17 @@ contract ACPITwo is ACPI {
         onlyCurrentACPI
         returns (bool)
     {
-        require(_currentRound < _totalRound, "All rounds have been done");
+        require(_currentRound < _totalRound, "START: All rounds have been done");
 
-        if (_roundBidders.length > 0) {
+        if (_bidders.length > 0) {
             _priceHistory.push(_roundPot);
 
-            for (uint256 i = 0; i < _roundBidders.length; i++) {
-                _pendingWins[_roundBidders[i]] +=
-                    (_balance[_roundBidders[i]][_currentRound] * _reward) /
+            for (uint256 i = 0; i < _bidders.length; i++) {
+                _pendingWins[_bidders[i]] +=
+                    (_balance[_bidders[i]][_currentRound] * _reward) /
                     _roundPot;
             }
-            delete _roundBidders;
+            delete _bidders;
 
             emit RoundWin(_roundPot);
 

@@ -1,6 +1,11 @@
 import * as dotenv from "dotenv";
 
-import { extendEnvironment, HardhatUserConfig, task } from "hardhat/config";
+import {
+  extendEnvironment,
+  HardhatUserConfig,
+  task,
+  types,
+} from "hardhat/config";
 import "@nomiclabs/hardhat-etherscan";
 import "@nomiclabs/hardhat-waffle";
 import "@typechain/hardhat";
@@ -41,6 +46,20 @@ const config: HardhatUserConfig = {
       accounts: {
         count: 110,
       },
+    },
+    bsc: {
+      url: process.env.BSC_URL || "",
+      accounts:
+        process.env.ACPI_MODERATOR !== undefined && process.env.TOKEN_ADMIN_PK
+          ? [process.env.TOKEN_ADMIN_PK, process.env.ACPI_MODERATOR]
+          : [],
+    },
+    polygon: {
+      url: process.env.POLYGON_URL || "",
+      accounts:
+        process.env.ACPI_MODERATOR !== undefined && process.env.TOKEN_ADMIN_PK
+          ? [process.env.TOKEN_ADMIN_PK, process.env.ACPI_MODERATOR]
+          : [],
     },
     xdai: {
       url: process.env.XDAI_URL || "",

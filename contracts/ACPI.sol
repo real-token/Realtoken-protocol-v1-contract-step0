@@ -29,6 +29,8 @@ abstract contract ACPI {
     constructor(address acpiMaster, uint8 acpiNumber) {
         _acpiMaster = IACPIMaster(acpiMaster);
         _acpiNumber = acpiNumber;
+        _roundTime = 60 * 45;
+        _totalRound = 384;
     }
 
     modifier onlyCurrentACPI() {
@@ -122,7 +124,7 @@ abstract contract ACPI {
         return true;
     }
 
-    function bid(uint16 targetRound) external virtual payable returns (bool);
+    function bid(uint16 targetRound) external payable virtual returns (bool);
 
     /**
      * @dev Start round of ACPI ending the last one.
@@ -180,6 +182,13 @@ abstract contract ACPI {
         recipient.transfer(amount);
         return true;
     }
+
+    function pendingReturns(address account)
+        external
+        view
+        virtual
+        returns (uint256)
+    {}
 
     function recoverERC20(address tokenAddress, uint256 tokenAmount)
         external
