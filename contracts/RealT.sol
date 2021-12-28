@@ -15,7 +15,7 @@ contract RealT is ERC20, ERC20Permit, ERC20Votes, AccessControl, IRealT {
         ERC20Permit(name)
     {
         _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
-        _mint(address(this), 18 * 1000 * 1000 ether);
+        _mint(address(this), 17716752 ether);
     }
 
     function mint(address account, uint256 amount)
