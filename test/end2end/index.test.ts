@@ -286,7 +286,12 @@ describe("END 2 END Testing", function () {
           " - " +
           ethers.utils.formatEther(returns)
       );
+
+      await acpiMaster.connect(getSigners[i + signersOffset]).claimTokens();
     }
+
+    const totalReturns = await acpiMaster.totalReturns();
+    const totalWins = await acpiMaster.totalWins();
 
     console.log("");
     const bal1 = await acpiOne.provider.getBalance(acpiOne.address);
@@ -307,6 +312,9 @@ describe("END 2 END Testing", function () {
     console.log(
       "TOKEN PRICE GENERATED:\t" + ethers.utils.formatEther(initialTokenPrice)
     );
+
+    console.log("TOTAL RETURNS:\t" + ethers.utils.formatEther(totalReturns));
+    console.log("TOTAL WINS:\t" + ethers.utils.formatEther(totalWins));
 
     console.log("ACPI 1 PRICE:\t" + ethers.utils.formatEther(price1));
     console.log("ACPI 2 PRICE:\t" + ethers.utils.formatEther(price2));
