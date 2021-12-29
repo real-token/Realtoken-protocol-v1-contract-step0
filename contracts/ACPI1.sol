@@ -17,6 +17,8 @@ contract ACPIOne is ACPI {
     // Address => _currentRound => balance
     mapping(address => mapping(uint16 => uint256)) private _balance;
 
+    event RoundWin(address winner, uint256 amount);
+
     constructor() ACPI(msg.sender, 1) {}
 
     /**
@@ -53,7 +55,7 @@ contract ACPIOne is ACPI {
     function startRound() external override onlyModerator onlyCurrentACPI returns (bool) {
         require(_currentRound < _totalRound, "START: All rounds have been done");
 
-        emit RoundWin(_highestBid);
+        emit RoundWin(_highestBidder, _highestBid);
 
         if (_highestBidder != address(0)) {
             // Award Winner

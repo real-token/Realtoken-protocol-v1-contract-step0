@@ -183,12 +183,12 @@ abstract contract ACPI {
      * @dev Emitted when a user win a round of any ACPI
      * `amount` is the amount of Governance Token RealT awarded
      */
-    event RoundWin(uint256 indexed amount);
+    event RoundWin(uint256 amount);
 
     /**
      * @dev Emitted when a user bid
      */
-    event Bid(address indexed user, uint256 indexed amount);
+    event Bid(address user, uint256 amount);
 
     /**
      * @dev Withdraw native currency {onlyACPIMaster}
