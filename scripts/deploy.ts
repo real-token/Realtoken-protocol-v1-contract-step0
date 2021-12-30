@@ -3,7 +3,7 @@
 //
 // When running the script with `npx hardhat run <script>` you'll find the Hardhat
 // Runtime Environment's members available in the global scope.
-import { ethers, run, name, symbol } from "hardhat";
+import { ethers, run, name, symbol, nonce } from "hardhat";
 
 function sleep(ms: number | undefined) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -56,26 +56,6 @@ async function main() {
   );
   console.log("Contract has been deployed!");
 
-  await minuteSleep();
-
-  try {
-    await run("verify:verify", {
-      address: regToken.address,
-      constructorArguments: [name, symbol],
-    });
-  } catch (err) {
-    console.error(err);
-  }
-
-  try {
-    await run("verify:verify", {
-      address: acpiMaster.address,
-      constructorArguments: [regToken.address, ACPI_MODERATOR.address],
-    });
-  } catch (err) {
-    console.error(err);
-  }
-
   const acpiOne = await acpiMaster.acpiOneContract();
   const acpiTwo = await acpiMaster.acpiTwoContract();
   const acpiThree = await acpiMaster.acpiThreeContract();
@@ -86,38 +66,6 @@ async function main() {
   console.log("ACPI 3 is deployed to: " + acpiThree);
   console.log("ACPI 4 is deployed to: " + acpiFour);
 
-  try {
-    await run("verify:verify", {
-      address: acpiOne,
-      constructorArguments: [],
-    });
-  } catch (err) {
-    console.error(err);
-  }
-  try {
-    await run("verify:verify", {
-      address: acpiTwo,
-      constructorArguments: [],
-    });
-  } catch (err) {
-    console.error(err);
-  }
-  try {
-    await run("verify:verify", {
-      address: acpiThree,
-      constructorArguments: [],
-    });
-  } catch (err) {
-    console.error(err);
-  }
-  try {
-    await run("verify:verify", {
-      address: acpiFour,
-      constructorArguments: [],
-    });
-  } catch (err) {
-    console.error(err);
-  }
   console.log("REG is deployed to: ", regToken.address);
   console.log("ACPIMaster is deployed to: ", acpiMaster.address);
 }
