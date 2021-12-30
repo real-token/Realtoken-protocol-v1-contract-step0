@@ -3,22 +3,7 @@
 //
 // When running the script with `npx hardhat run <script>` you'll find the Hardhat
 // Runtime Environment's members available in the global scope.
-import { ethers, run, name, symbol, nonce } from "hardhat";
-
-function sleep(ms: number | undefined) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-async function minuteSleep() {
-  console.log("Waiting for 60s before contracts verifications begins");
-
-  for (let i = 1; i <= 6; i++) {
-    await sleep(10 * 1000);
-    console.log(i * 10 + "s");
-  }
-
-  console.log("Done");
-}
+import { ethers, name, symbol } from "hardhat";
 
 async function main() {
   // Hardhat always runs the compile task when running scripts with its command
