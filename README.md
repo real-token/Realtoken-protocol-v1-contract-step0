@@ -158,9 +158,12 @@ npx hardhat verify CONTRACT_ADDRESS --network NETWORK_ID
 ```
 + Deploy and verify on network
 ```sh
+npx hardhat run scripts/deployEther.ts --network NETWORK_ID
+```
++ Deploy on network
+```sh
 npx hardhat run scripts/deploy.ts --network NETWORK_ID
 ```
-
 > NETWORK_ID is specified inside [config](hardhat.config.ts)
 <p align="right">(<a href="#top">back to top</a>)</p>
 
