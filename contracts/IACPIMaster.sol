@@ -6,7 +6,7 @@ pragma solidity ^0.8.0;
  */
 
 import "@openzeppelin/contracts/access/IAccessControl.sol";
-import "./IRealT.sol";
+import "./IREG.sol";
 
 interface IACPIMaster is IAccessControl {
     event ACPIChanged(uint8 indexed newAcpi);

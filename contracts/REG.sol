@@ -5,11 +5,11 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/draft-ERC20Permit.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Votes.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
-import "./IRealT.sol";
+import "./IREG.sol";
 
 // github.com/chichke
 
-contract RealT is ERC20, ERC20Permit, ERC20Votes, AccessControl, IRealT {
+contract REG is ERC20, ERC20Permit, ERC20Votes, AccessControl, IREG {
     constructor(string memory name, string memory symbol)
         ERC20(name, symbol)
         ERC20Permit(name)

@@ -5,7 +5,7 @@ import "./IACPIMaster.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 /**
- * @dev Abstract contract of the ACPI standard by realt.co
+ * @dev Abstract contract of the ACPI standard
  */
 
 abstract contract ACPI {
@@ -181,7 +181,7 @@ abstract contract ACPI {
 
     /**
      * @dev Emitted when a user win a round of any ACPI
-     * `amount` is the amount of Governance Token RealT awarded
+     * `amount` is the amount of REG Token awarded
      */
     event RoundWin(uint256 amount);
 

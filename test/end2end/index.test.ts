@@ -7,7 +7,7 @@ import {
   ACPIOne,
   ACPIThree,
   ACPITwo,
-  RealT,
+  REG,
 } from "../../typechain";
 import { acpiData1, pendingReturns } from "./acpi1data";
 import { acpiData2 } from "./acpi2data";
@@ -16,7 +16,7 @@ import { acpiData4 } from "./acpi4data";
 
 let acpiMaster: ACPIMaster;
 
-let realToken: RealT;
+let regToken: REG;
 let acpiOne: ACPIOne;
 let acpiTwo: ACPITwo;
 let acpiThree: ACPIThree;
@@ -29,19 +29,19 @@ describe("END 2 END Testing", function () {
   it("End 2 End - Deployment", async function () {
     const [, ACPI_MODERATOR] = await ethers.getSigners();
 
-    const RealtFactory = await ethers.getContractFactory("RealT");
-    realToken = await RealtFactory.deploy(name, symbol);
-    await realToken.deployed();
+    const regFactory = await ethers.getContractFactory("REG");
+    regToken = await regFactory.deploy(name, symbol);
+    await regToken.deployed();
 
-    const ACPIMasterFactory = await ethers.getContractFactory("ACPIMaster");
-    acpiMaster = await ACPIMasterFactory.deploy(
-      realToken.address,
+    const acpiMasterFactory = await ethers.getContractFactory("ACPIMaster");
+    acpiMaster = await acpiMasterFactory.deploy(
+      regToken.address,
       ACPI_MODERATOR.address
     );
 
     await acpiMaster.deployed();
 
-    await realToken.contractTransfer(
+    await regToken.contractTransfer(
       acpiMaster.address,
       ethers.utils.parseUnits("10000", "ether")
     );

@@ -32,16 +32,16 @@ async function main() {
 
   const [, ACPI_MODERATOR] = await ethers.getSigners();
 
-  const RealtFactory = await ethers.getContractFactory("RealT");
-  const realtToken = await RealtFactory.deploy(name, symbol, {
+  const regFactory = await ethers.getContractFactory("REG");
+  const regToken = await regFactory.deploy(name, symbol, {
     gasLimit: 3500000,
   });
 
-  await realtToken.deployed();
+  await regToken.deployed();
 
-  const ACPIMasterFactory = await ethers.getContractFactory("ACPIMaster");
-  const acpiMaster = await ACPIMasterFactory.deploy(
-    realtToken.address,
+  const acpiMasterFactory = await ethers.getContractFactory("ACPIMaster");
+  const acpiMaster = await acpiMasterFactory.deploy(
+    regToken.address,
     ACPI_MODERATOR.address,
     {
       gasLimit: 8500000,
@@ -50,7 +50,7 @@ async function main() {
 
   await acpiMaster.deployed();
 
-  await realtToken.contractTransfer(
+  await regToken.contractTransfer(
     acpiMaster.address,
     ethers.utils.parseUnits("12000", "ether")
   );
@@ -60,7 +60,7 @@ async function main() {
 
   try {
     await run("verify:verify", {
-      address: realtToken.address,
+      address: regToken.address,
       constructorArguments: [name, symbol],
     });
   } catch (err) {
@@ -70,7 +70,7 @@ async function main() {
   try {
     await run("verify:verify", {
       address: acpiMaster.address,
-      constructorArguments: [realtToken.address, ACPI_MODERATOR.address],
+      constructorArguments: [regToken.address, ACPI_MODERATOR.address],
     });
   } catch (err) {
     console.error(err);
@@ -118,7 +118,7 @@ async function main() {
   } catch (err) {
     console.error(err);
   }
-  console.log("RealT is deployed to: ", realtToken.address);
+  console.log("RealT is deployed to: ", regToken.address);
   console.log("ACPIMaster is deployed to: ", acpiMaster.address);
 }
 

@@ -1,27 +1,27 @@
 import { expect } from "chai";
 import { ethers, name, symbol } from "hardhat";
-import { ACPIMaster, RealT } from "../typechain";
+import { ACPIMaster, REG } from "../typechain";
 
-let realToken: RealT;
+let regToken: REG;
 let acpiMaster: ACPIMaster;
 
-describe("Realt Factory", function () {
+describe("REG Factory", function () {
   beforeEach(async () => {
     const [, ACPI_MODERATOR] = await ethers.getSigners();
 
-    const RealtFactory = await ethers.getContractFactory("RealT");
-    realToken = await RealtFactory.deploy(name, symbol);
-    await realToken.deployed();
+    const regFactory = await ethers.getContractFactory("REG");
+    regToken = await regFactory.deploy(name, symbol);
+    await regToken.deployed();
 
-    const ACPIMasterFactory = await ethers.getContractFactory("ACPIMaster");
-    acpiMaster = await ACPIMasterFactory.deploy(
-      realToken.address,
+    const acpiMasterFactory = await ethers.getContractFactory("ACPIMaster");
+    acpiMaster = await acpiMasterFactory.deploy(
+      regToken.address,
       ACPI_MODERATOR.address
     );
 
     await acpiMaster.deployed();
 
-    await realToken.contractTransfer(
+    await regToken.contractTransfer(
       acpiMaster.address,
       ethers.utils.parseUnits("1000", "ether")
     );
@@ -76,13 +76,13 @@ describe("Realt Factory", function () {
 
     await expect(acpiMaster.connect(addr1).setACPI(4)).to.be.reverted;
 
-    await expect(realToken.connect(addr1).contractBurn(10)).to.be.reverted;
+    await expect(regToken.connect(addr1).contractBurn(10)).to.be.reverted;
 
-    await expect(realToken.connect(addr1).mint(addr1.address, 10)).to.be
+    await expect(regToken.connect(addr1).mint(addr1.address, 10)).to.be
       .reverted;
 
     await expect(
-      realToken
+      regToken
         .connect(addr1)
         .batchMint([addr1.address, addr2.address], [10, 10])
     ).to.be.reverted;
@@ -91,56 +91,56 @@ describe("Realt Factory", function () {
   it("Should transfer tokens", async function () {
     const [TOKEN_ADMIN, , addr1, addr2] = await ethers.getSigners();
 
-    expect(await realToken.balanceOf(addr1.address)).to.equal(0);
+    expect(await regToken.balanceOf(addr1.address)).to.equal(0);
 
-    await realToken.connect(TOKEN_ADMIN).mint(addr1.address, 100);
+    await regToken.connect(TOKEN_ADMIN).mint(addr1.address, 100);
 
-    expect(await realToken.balanceOf(addr1.address)).to.equal(100);
+    expect(await regToken.balanceOf(addr1.address)).to.equal(100);
 
-    await realToken.connect(addr1).transfer(addr2.address, 100);
+    await regToken.connect(addr1).transfer(addr2.address, 100);
 
-    expect(await realToken.balanceOf(addr1.address)).to.equal(0);
+    expect(await regToken.balanceOf(addr1.address)).to.equal(0);
 
-    expect(await realToken.balanceOf(addr2.address)).to.equal(100);
+    expect(await regToken.balanceOf(addr2.address)).to.equal(100);
   });
 
   it("Should not transfer tokens", async function () {
     const [TOKEN_ADMIN, , addr1, addr2] = await ethers.getSigners();
 
-    expect(await realToken.balanceOf(addr1.address)).to.equal(0);
+    expect(await regToken.balanceOf(addr1.address)).to.equal(0);
 
-    await realToken.connect(TOKEN_ADMIN).mint(addr1.address, 100);
+    await regToken.connect(TOKEN_ADMIN).mint(addr1.address, 100);
 
-    expect(await realToken.balanceOf(addr1.address)).to.equal(100);
+    expect(await regToken.balanceOf(addr1.address)).to.equal(100);
 
     await expect(
-      realToken.connect(addr1).transfer(addr2.address, 101)
+      regToken.connect(addr1).transfer(addr2.address, 101)
     ).to.be.revertedWith("ERC20: transfer amount exceeds balance");
   });
 
   it("Batch Minting", async function () {
     const [TOKEN_ADMIN, , addr1, addr2] = await ethers.getSigners();
 
-    expect(await realToken.balanceOf(addr1.address)).to.equal(0);
+    expect(await regToken.balanceOf(addr1.address)).to.equal(0);
 
-    await realToken.connect(TOKEN_ADMIN).mint(addr1.address, 100);
+    await regToken.connect(TOKEN_ADMIN).mint(addr1.address, 100);
 
-    expect(await realToken.balanceOf(addr1.address)).to.equal(100);
+    expect(await regToken.balanceOf(addr1.address)).to.equal(100);
 
-    await realToken
+    await regToken
       .connect(TOKEN_ADMIN)
       .batchMint([addr1.address, addr2.address], [100, 100]);
 
-    expect(await realToken.balanceOf(addr1.address)).to.equal(200);
+    expect(await regToken.balanceOf(addr1.address)).to.equal(200);
 
-    expect(await realToken.balanceOf(addr2.address)).to.equal(100);
+    expect(await regToken.balanceOf(addr2.address)).to.equal(100);
   });
 
   it("Batch Minting Fail - Different Size", async function () {
     const [TOKEN_ADMIN, , addr1, addr2] = await ethers.getSigners();
 
     await expect(
-      realToken
+      regToken
         .connect(TOKEN_ADMIN)
         .batchMint([addr1.address, addr2.address], [100, 100, 100])
     ).to.revertedWith("Account & amount length mismatch");
@@ -150,7 +150,7 @@ describe("Realt Factory", function () {
     const [TOKEN_ADMIN] = await ethers.getSigners();
 
     await expect(
-      realToken.connect(TOKEN_ADMIN).batchMint([], [])
+      regToken.connect(TOKEN_ADMIN).batchMint([], [])
     ).to.revertedWith("can't process empty array");
   });
 
@@ -165,4 +165,4 @@ describe("Realt Factory", function () {
   });
 });
 
-// TODO Test claimToken RealT.sol
+// TODO Test claimToken REG.sol

@@ -7,7 +7,7 @@ import "./ACPI2.sol";
 import "./ACPI3.sol";
 import "./ACPI4.sol";
 import "./IACPIMaster.sol";
-import "./IRealT.sol";
+import "./IREG.sol";
 
 // github.com/chichke
 
@@ -18,7 +18,7 @@ contract ACPIMaster is IACPIMaster, AccessControl {
      * @dev currentACPI is 2 on phase 2
      * @dev currentACPI is 3 on phase 3
      * @dev currentACPI is 4 on phase 4
-     * @dev currentACPI is 5 when ACPI ends, Realt price will then be calculated
+     * @dev currentACPI is 5 when ACPI ends, REG Token price will then be calculated
      */
     uint8 private _currentACPI;
 
@@ -33,7 +33,7 @@ contract ACPIMaster is IACPIMaster, AccessControl {
     bytes32 private constant _ACPI_MODERATOR = keccak256("ACPI_MODERATOR");
     bytes32 private constant _ACPI_MASTER = keccak256("ACPI_MASTER");
 
-    IRealT private _realToken;
+    IREG private _regToken;
 
     /**
      * @dev Emitted when admin input other chains price to calculate crosschainprice
@@ -45,12 +45,12 @@ contract ACPIMaster is IACPIMaster, AccessControl {
      */
     event GeneratedPrice(uint256 indexed price);
 
-    constructor(address realTokenAddress, address acpiModerator) {
+    constructor(address regTokenAddress, address acpiModerator) {
         _setupRole(_ACPI_MODERATOR, acpiModerator);
         _setupRole(_ACPI_MASTER, address(this));
         _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
 
-        _realToken = IRealT(realTokenAddress);
+        _regToken = IREG(regTokenAddress);
         _acpiOne = new ACPIOne();
         _acpiTwo = new ACPITwo();
         _acpiThree = new ACPIThree();
@@ -58,7 +58,7 @@ contract ACPIMaster is IACPIMaster, AccessControl {
     }
 
     function tokenContract() external view override returns (address) {
-        return address(_realToken);
+        return address(_regToken);
     }
 
     function acpiOneContract() external view override returns (address) {
@@ -210,7 +210,7 @@ contract ACPIMaster is IACPIMaster, AccessControl {
 
         require(successOne && successTwo && successThree && successFour, "Reset function must not fail");
 
-        return _realToken.transfer(_msgSender(), tokenAmount);
+        return _regToken.transfer(_msgSender(), tokenAmount);
     }
 
     function withdrawTokens(address payable vault, uint256 amount)
@@ -219,7 +219,7 @@ contract ACPIMaster is IACPIMaster, AccessControl {
         onlyRole(DEFAULT_ADMIN_ROLE)
         returns (bool)
     {
-        return _realToken.transfer(vault, amount);
+        return _regToken.transfer(vault, amount);
     }
 
     function withdraw(address payable vault, uint256[4] calldata amounts)
@@ -265,7 +265,7 @@ contract ACPIMaster is IACPIMaster, AccessControl {
         onlyRole(DEFAULT_ADMIN_ROLE)
         returns (bool)
     {
-        _realToken = IRealT(tokenAddress);
+        _regToken = IREG(tokenAddress);
         return true;
     }
 

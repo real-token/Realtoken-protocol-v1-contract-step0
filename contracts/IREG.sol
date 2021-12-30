@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
  * @dev Interface of the Real Token
  */
 
-interface IRealT is IERC20 {
+interface IREG is IERC20 {
     function batchTransfer(
         address[] calldata recipient,
         uint256[] calldata amount

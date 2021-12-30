@@ -1,28 +1,28 @@
 import { expect } from "chai";
 import { ethers, name, symbol } from "hardhat";
-import { RealT, ACPIOne, ACPIMaster } from "../typechain";
+import { REG, ACPIOne, ACPIMaster } from "../typechain";
 
-let realToken: RealT;
+let regToken: REG;
 let acpiOne: ACPIOne;
 let acpiMaster: ACPIMaster;
 describe("ACPI One", function () {
   beforeEach(async () => {
     const [, ACPI_MODERATOR] = await ethers.getSigners();
 
-    const RealtFactory = await ethers.getContractFactory("RealT");
+    const regFactory = await ethers.getContractFactory("REG");
 
-    realToken = await RealtFactory.deploy(name, symbol);
-    await realToken.deployed();
+    regToken = await regFactory.deploy(name, symbol);
+    await regToken.deployed();
 
-    const ACPIMasterFactory = await ethers.getContractFactory("ACPIMaster");
-    acpiMaster = await ACPIMasterFactory.deploy(
-      realToken.address,
+    const acpiMasterFactory = await ethers.getContractFactory("ACPIMaster");
+    acpiMaster = await acpiMasterFactory.deploy(
+      regToken.address,
       ACPI_MODERATOR.address
     );
 
     await acpiMaster.deployed();
 
-    await realToken.contractTransfer(
+    await regToken.contractTransfer(
       acpiMaster.address,
       ethers.utils.parseUnits("1000", "ether")
     );
