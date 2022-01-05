@@ -83,72 +83,72 @@ const config: HardhatUserConfig = {
       chainId: 56,
       url: process.env.BSC_URL || "",
       accounts:
-        process.env.ACPI_MODERATOR !== undefined && process.env.TOKEN_ADMIN_PK
-          ? [process.env.TOKEN_ADMIN_PK, process.env.ACPI_MODERATOR]
+        process.env.DEPLOYMENT_WALLET !== undefined
+          ? [process.env.DEPLOYMENT_WALLET]
           : [],
     },
     bsctest: {
       chainId: 97,
       url: process.env.BSCTEST_URL || "",
       accounts:
-        process.env.ACPI_MODERATOR !== undefined && process.env.TOKEN_ADMIN_PK
-          ? [process.env.TOKEN_ADMIN_PK, process.env.ACPI_MODERATOR]
+        process.env.DEPLOYMENT_WALLET !== undefined
+          ? [process.env.DEPLOYMENT_WALLET]
           : [],
     },
     polygon: {
       chainId: 137,
       url: process.env.POLYGON_URL || "",
       accounts:
-        process.env.ACPI_MODERATOR !== undefined && process.env.TOKEN_ADMIN_PK
-          ? [process.env.TOKEN_ADMIN_PK, process.env.ACPI_MODERATOR]
+        process.env.DEPLOYMENT_WALLET !== undefined
+          ? [process.env.DEPLOYMENT_WALLET]
           : [],
     },
     polygontest: {
       chainId: 80001,
       url: process.env.POLYGONTEST_URL || "",
       accounts:
-        process.env.ACPI_MODERATOR !== undefined && process.env.TOKEN_ADMIN_PK
-          ? [process.env.TOKEN_ADMIN_PK, process.env.ACPI_MODERATOR]
+        process.env.DEPLOYMENT_WALLET !== undefined
+          ? [process.env.DEPLOYMENT_WALLET]
           : [],
     },
     xdai: {
       chainId: 100,
       url: process.env.XDAI_URL || "",
       accounts:
-        process.env.ACPI_MODERATOR !== undefined && process.env.TOKEN_ADMIN_PK
-          ? [process.env.TOKEN_ADMIN_PK, process.env.ACPI_MODERATOR]
+        process.env.DEPLOYMENT_WALLET !== undefined
+          ? [process.env.DEPLOYMENT_WALLET]
           : [],
     },
     poa: {
       chainId: 77,
       url: process.env.POA_URL || "",
       accounts:
-        process.env.ACPI_MODERATOR !== undefined && process.env.TOKEN_ADMIN_PK
-          ? [process.env.TOKEN_ADMIN_PK, process.env.ACPI_MODERATOR]
+        process.env.DEPLOYMENT_WALLET !== undefined
+          ? [process.env.DEPLOYMENT_WALLET]
           : [],
     },
     rinkeby: {
       chainId: 4,
       url: process.env.RINKEBY_URL || "",
       accounts:
-        process.env.ACPI_MODERATOR !== undefined && process.env.TOKEN_ADMIN_PK
-          ? [process.env.TOKEN_ADMIN_PK, process.env.ACPI_MODERATOR]
+        process.env.DEPLOYMENT_WALLET !== undefined
+          ? [process.env.DEPLOYMENT_WALLET]
           : [],
     },
     kovan: {
       chainId: 42,
       url: process.env.KOVAN_URL || "",
       accounts:
-        process.env.ACPI_MODERATOR !== undefined && process.env.TOKEN_ADMIN_PK
-          ? [process.env.TOKEN_ADMIN_PK, process.env.ACPI_MODERATOR]
+        process.env.DEPLOYMENT_WALLET !== undefined
+          ? [process.env.DEPLOYMENT_WALLET]
           : [],
     },
     goerli: {
       chainId: 5,
       url: process.env.GOERLI_URL || "",
       accounts:
-        process.env.ACPI_MODERATOR !== undefined && process.env.TOKEN_ADMIN_PK
-          ? [process.env.TOKEN_ADMIN_PK, process.env.ACPI_MODERATOR]
+        process.env.DEPLOYMENT_WALLET !== undefined
+          ? [process.env.DEPLOYMENT_WALLET]
           : [],
     },
   },

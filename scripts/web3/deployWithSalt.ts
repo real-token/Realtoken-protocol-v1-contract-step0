@@ -15,7 +15,11 @@ import {
 import inquirer from "inquirer";
 
 async function main() {
-  const [TOKEN_ADMIN, ACPI_MODERATOR] = await ethers.getSigners();
+  const { TOKEN_ADMIN_PUBLIC, ACPI_MODERATOR_PUBLIC } = process.env;
+  if (!TOKEN_ADMIN_PUBLIC || !ACPI_MODERATOR_PUBLIC)
+    return console.log(
+      "Must have TOKEN_ADMIN_PUBLIC and ACPI_MODERATOR_PUBLIC env set, please refer to readme"
+    );
 
   if (!deployerAddress)
     return console.log("Deployer Address is undefined please set your .env");
@@ -37,7 +41,7 @@ async function main() {
   const { data: regData } = regFactory.getDeployTransaction(
     name,
     symbol,
-    TOKEN_ADMIN.address
+    TOKEN_ADMIN_PUBLIC
   );
 
   let salt: string | undefined;
@@ -80,14 +84,14 @@ async function main() {
 
   const tx1 = await web3Contract.methods
     .deploy(0, ethers.utils.formatBytes32String(salt), regData)
-    .send({ from: TOKEN_ADMIN.address });
+    .send({ from: TOKEN_ADMIN_PUBLIC });
 
   console.log("REG Deployment tx : ", tx1.transactionHash);
 
   const { data: acpiData } = acpiMasterFactory.getDeployTransaction(
     regAddress,
-    TOKEN_ADMIN.address,
-    ACPI_MODERATOR.address
+    TOKEN_ADMIN_PUBLIC,
+    ACPI_MODERATOR_PUBLIC
   );
 
   if (!acpiData) return console.log("ACPIMaster codebyte is undefined");
@@ -113,7 +117,7 @@ async function main() {
 
   const tx2 = await web3Contract.methods
     .deploy(0, ethers.utils.formatBytes32String(salt), acpiData)
-    .send({ from: TOKEN_ADMIN.address });
+    .send({ from: TOKEN_ADMIN_PUBLIC });
   console.log("ACPI Deployment tx : ", tx2.transactionHash);
 }
 

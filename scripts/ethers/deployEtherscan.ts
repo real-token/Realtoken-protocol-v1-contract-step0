@@ -30,23 +30,22 @@ async function main() {
 
   // We get the contract to deploy
 
-  const [TOKEN_ADMIN, ACPI_MODERATOR] = await ethers.getSigners();
+  const { TOKEN_ADMIN_PUBLIC, ACPI_MODERATOR_PUBLIC } = process.env;
+  if (!TOKEN_ADMIN_PUBLIC || !ACPI_MODERATOR_PUBLIC)
+    return console.log(
+      "Must have TOKEN_ADMIN_PUBLIC and ACPI_MODERATOR_PUBLIC env set, please refer to readme"
+    );
 
   const regFactory = await ethers.getContractFactory("REG");
-  const regToken = await regFactory.deploy(name, symbol, TOKEN_ADMIN.address, {
-    gasLimit: 3500000,
-  });
+  const regToken = await regFactory.deploy(name, symbol, TOKEN_ADMIN_PUBLIC);
 
   await regToken.deployed();
 
   const acpiMasterFactory = await ethers.getContractFactory("ACPIMaster");
   const acpiMaster = await acpiMasterFactory.deploy(
     regToken.address,
-    TOKEN_ADMIN.address,
-    ACPI_MODERATOR.address,
-    {
-      gasLimit: 8500000,
-    }
+    TOKEN_ADMIN_PUBLIC,
+    ACPI_MODERATOR_PUBLIC
   );
 
   await acpiMaster.deployed();
@@ -62,7 +61,7 @@ async function main() {
   try {
     await run("verify:verify", {
       address: regToken.address,
-      constructorArguments: [name, symbol],
+      constructorArguments: [name, symbol, TOKEN_ADMIN_PUBLIC],
     });
   } catch (err) {
     console.error(err);
@@ -71,7 +70,11 @@ async function main() {
   try {
     await run("verify:verify", {
       address: acpiMaster.address,
-      constructorArguments: [regToken.address, ACPI_MODERATOR.address],
+      constructorArguments: [
+        regToken.address,
+        TOKEN_ADMIN_PUBLIC,
+        ACPI_MODERATOR_PUBLIC,
+      ],
     });
   } catch (err) {
     console.error(err);

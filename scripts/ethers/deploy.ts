@@ -15,19 +15,23 @@ async function main() {
 
   // We get the contract to deploy
 
-  const [TOKEN_ADMIN, ACPI_MODERATOR] = await ethers.getSigners();
+  const { TOKEN_ADMIN_PUBLIC, ACPI_MODERATOR_PUBLIC } = process.env;
+  if (!TOKEN_ADMIN_PUBLIC || !ACPI_MODERATOR_PUBLIC)
+    return console.log(
+      "Must have TOKEN_ADMIN_PUBLIC and ACPI_MODERATOR_PUBLIC env set, please refer to readme"
+    );
 
   const regFactory = await ethers.getContractFactory("REG");
 
-  const regToken = await regFactory.deploy(name, symbol, TOKEN_ADMIN.address);
+  const regToken = await regFactory.deploy(name, symbol, TOKEN_ADMIN_PUBLIC);
 
   await regToken.deployed();
 
   const acpiMasterFactory = await ethers.getContractFactory("ACPIMaster");
   const acpiMaster = await acpiMasterFactory.deploy(
     regToken.address,
-    TOKEN_ADMIN.address,
-    ACPI_MODERATOR.address
+    TOKEN_ADMIN_PUBLIC,
+    ACPI_MODERATOR_PUBLIC
   );
 
   await acpiMaster.deployed();

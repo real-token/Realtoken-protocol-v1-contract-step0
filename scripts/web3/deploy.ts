@@ -15,6 +15,12 @@ async function main() {
 
   // We get the contract to deploy
 
+  const { TOKEN_ADMIN_PUBLIC, ACPI_MODERATOR_PUBLIC } = process.env;
+  if (!TOKEN_ADMIN_PUBLIC || !ACPI_MODERATOR_PUBLIC)
+    return console.log(
+      "Must have TOKEN_ADMIN_PUBLIC and ACPI_MODERATOR_PUBLIC env set, please refer to readme"
+    );
+
   const web3ChainId = await web3.eth.getChainId();
 
   if (network.config.chainId !== web3ChainId) {
@@ -23,14 +29,12 @@ async function main() {
 
   const account = await web3.eth.getAccounts();
 
-  const [TOKEN_ADMIN, ACPI_MODERATOR] = await ethers.getSigners();
-
   const regFactory = await ethers.getContractFactory("REG");
 
   const { data: regData } = regFactory.getDeployTransaction(
     name,
     symbol,
-    TOKEN_ADMIN.address
+    TOKEN_ADMIN_PUBLIC
   );
 
   const tx1 = await web3.eth.sendTransaction({
@@ -48,8 +52,8 @@ async function main() {
 
   const { data: acpiData } = acpiMasterFactory.getDeployTransaction(
     regAddress,
-    TOKEN_ADMIN.address,
-    ACPI_MODERATOR.address
+    TOKEN_ADMIN_PUBLIC,
+    ACPI_MODERATOR_PUBLIC
   );
 
   const tx2 = await web3.eth.sendTransaction({

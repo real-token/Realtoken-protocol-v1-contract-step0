@@ -135,8 +135,10 @@ Once all the ACPI's have been completed, the tokens are released and available f
     POLYGONTEST_URL=https://rpc-mumbai.maticvigil.com/
     BSCTEST_URL=https://data-seed-prebsc-1-s1.binance.org:8545/
 
-    TOKEN_ADMIN_PK=Token_Contract_Creator_Private_Key
-    ACPI_MODERATOR=ACPI_Moderator_Private_Key
+    TOKEN_ADMIN_PUBLIC=Token_Admin_Public_Key
+    ACPI_MODERATOR_PUBLIC=ACPI_Moderator_Public_Key
+
+    DEPLOYMENT_WALLET=DeploymentWalletPrivateKey
 
     DEPLOYER_ADDRESS=Create2Deployer Contract Address
    ```
