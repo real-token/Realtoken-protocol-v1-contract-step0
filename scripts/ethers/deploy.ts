@@ -15,22 +15,19 @@ async function main() {
 
   // We get the contract to deploy
 
-  const [, ACPI_MODERATOR] = await ethers.getSigners();
+  const [TOKEN_ADMIN, ACPI_MODERATOR] = await ethers.getSigners();
 
   const regFactory = await ethers.getContractFactory("REG");
-  const regToken = await regFactory.deploy(name, symbol, {
-    gasLimit: 3500000,
-  });
+
+  const regToken = await regFactory.deploy(name, symbol, TOKEN_ADMIN.address);
 
   await regToken.deployed();
 
   const acpiMasterFactory = await ethers.getContractFactory("ACPIMaster");
   const acpiMaster = await acpiMasterFactory.deploy(
     regToken.address,
-    ACPI_MODERATOR.address,
-    {
-      gasLimit: 8500000,
-    }
+    TOKEN_ADMIN.address,
+    ACPI_MODERATOR.address
   );
 
   await acpiMaster.deployed();

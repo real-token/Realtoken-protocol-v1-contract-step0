@@ -10,12 +10,12 @@ import "./IREG.sol";
 // github.com/chichke
 
 contract REG is ERC20, ERC20Permit, ERC20Votes, AccessControl, IREG {
-    constructor(string memory name, string memory symbol)
+    constructor(string memory name, string memory symbol, address admin)
         ERC20(name, symbol)
         ERC20Permit(name)
     {
-        _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
-        _mint(address(this), 17716752 ether);
+        _setupRole(DEFAULT_ADMIN_ROLE, admin);
+        _mint(address(this), 12000 ether);
     }
 
     function mint(address account, uint256 amount)

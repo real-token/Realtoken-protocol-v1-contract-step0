@@ -130,9 +130,15 @@ Once all the ACPI's have been completed, the tokens are released and available f
 
     RINKEBY_URL=https://rinkeby.infura.io/v3/API-KEY
     GOERLI_URL=https://goerli.infura.io/v3/API-KEY
+    KOVAN_URL=https://kovan.infura.io/v3/API-KEY
+    POA_URL=https://sokol.poa.network
+    POLYGONTEST_URL=https://rpc-mumbai.maticvigil.com/
+    BSCTEST_URL=https://data-seed-prebsc-1-s1.binance.org:8545/
 
     TOKEN_ADMIN_PK=Token_Contract_Creator_Private_Key
     ACPI_MODERATOR=ACPI_Moderator_Private_Key
+
+    DEPLOYER_ADDRESS=Create2Deployer Contract Address
    ```
 
 <p align="right">(<a href="#top">back to top</a>)</p>
@@ -152,20 +158,61 @@ npx hardhat test
 ```sh
 npx hardhat coverage
 ```
-+ Verify deployed smart contract on Etherscan
++ Verify already deployed smart contract on Etherscan.io
 ```sh
 npx hardhat verify CONTRACT_ADDRESS --network NETWORK_ID
 ```
-+ Deploy and verify on network
++ Deploy and verify on etherscan.io REG and ACPIMaster contract
 ```sh
-npx hardhat run scripts/deployEther.ts --network NETWORK_ID
+npx hardhat run scripts/ethers/deployEtherscan.ts --network NETWORK_ID
 ```
-+ Deploy on network
+
++ Deploy Create2Contract 
 ```sh
-npx hardhat run scripts/deploy.ts --network NETWORK_ID
+npx hardhat run scripts/web3/deployCreate2.ts --network NETWORK_ID
 ```
+
++ Deploy with Salt (Predict deployment address) **REQUIRE DEPLOYER_ADDRESS env var**
+
+**WEB3** : `
+npx hardhat run scripts/web3/deployWithSalt.ts --network NETWORK_ID
+`
+
+**ETHERS** : `
+npx hardhat run scripts/ethers/deployWithSalt.ts --network NETWORK_ID
+`
++ Deploy REG and ACPI master at random 0x
+
+**ETHERS** : 
+`
+npx hardhat run scripts/ethers/deploy.ts --network NETWORK_ID
+`
+
+**WEB3** : 
+`
+npx hardhat run scripts/web3/deploy.ts --network NETWORK_ID
+`
+
++ Get primary signer nonce for current network
+```sh
+npx hardhat run scripts/getNonce.ts --network NETWORK_ID
+```
+
++ Increase by 1 the nonce of the primary signer for the current network
+```sh
+npx hardhat run scripts/increaseNonce.ts --network NETWORK_ID
+```
+
++ Increase primary signer nonce for the current network until it reaches target nonce.
+```sh
+npx hardhat nonce --target 15 --network NETWORK_ID
+```
+
 > NETWORK_ID is specified inside [config](hardhat.config.ts)
+
+
 <p align="right">(<a href="#top">back to top</a>)</p>
+
 
 <!-- MASS TESTING -->
 # End2End Testing

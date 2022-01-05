@@ -9,5 +9,6 @@ declare module "hardhat/types/runtime" {
   export interface HardhatRuntimeEnvironment {
     name: string;
     symbol: string;
+    deployerAddress: string | undefined;
   }
 }

@@ -45,10 +45,10 @@ contract ACPIMaster is IACPIMaster, AccessControl {
      */
     event GeneratedPrice(uint256 indexed price);
 
-    constructor(address regTokenAddress, address acpiModerator) {
-        _setupRole(_ACPI_MODERATOR, acpiModerator);
+    constructor(address regTokenAddress, address admin, address moderator) {
+        _setupRole(_ACPI_MODERATOR, moderator);
         _setupRole(_ACPI_MASTER, address(this));
-        _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
+        _setupRole(DEFAULT_ADMIN_ROLE, admin);
 
         _regToken = IREG(regTokenAddress);
         _acpiOne = new ACPIOne();

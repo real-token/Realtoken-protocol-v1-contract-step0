@@ -1,5 +1,5 @@
 import { BigNumber } from "@ethersproject/bignumber";
-import chai, { expect } from "chai";
+import { expect } from "chai";
 import { ethers, name, symbol } from "hardhat";
 import {
   ACPIFour,
@@ -27,15 +27,16 @@ const testUserNumber = 100;
 
 describe("END 2 END Testing", function () {
   it("End 2 End - Deployment", async function () {
-    const [, ACPI_MODERATOR] = await ethers.getSigners();
+    const [TOKEN_ADMIN, ACPI_MODERATOR] = await ethers.getSigners();
 
     const regFactory = await ethers.getContractFactory("REG");
-    regToken = await regFactory.deploy(name, symbol);
+    regToken = await regFactory.deploy(name, symbol, TOKEN_ADMIN.address);
     await regToken.deployed();
 
     const acpiMasterFactory = await ethers.getContractFactory("ACPIMaster");
     acpiMaster = await acpiMasterFactory.deploy(
       regToken.address,
+      TOKEN_ADMIN.address,
       ACPI_MODERATOR.address
     );
 

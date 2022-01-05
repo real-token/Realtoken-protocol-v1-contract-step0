@@ -7,15 +7,16 @@ let acpiMaster: ACPIMaster;
 
 describe("REG Factory", function () {
   beforeEach(async () => {
-    const [, ACPI_MODERATOR] = await ethers.getSigners();
+    const [TOKEN_ADMIN, ACPI_MODERATOR] = await ethers.getSigners();
 
     const regFactory = await ethers.getContractFactory("REG");
-    regToken = await regFactory.deploy(name, symbol);
+    regToken = await regFactory.deploy(name, symbol, TOKEN_ADMIN.address);
     await regToken.deployed();
 
     const acpiMasterFactory = await ethers.getContractFactory("ACPIMaster");
     acpiMaster = await acpiMasterFactory.deploy(
       regToken.address,
+      TOKEN_ADMIN.address,
       ACPI_MODERATOR.address
     );
 
