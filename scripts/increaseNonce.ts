@@ -12,7 +12,7 @@ async function main() {
 
   console.log("Nonce increased !");
   console.log("TX Hash : " + tx.transactionHash);
-  console.log("Current nonce : " + nonce);
+  console.log("Next transaction nonce : " + nonce);
 }
 
 main().catch((error) => {

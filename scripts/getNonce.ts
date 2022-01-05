@@ -5,7 +5,7 @@ async function main() {
 
   const nonce = await web3.eth.getTransactionCount(accounts[0]);
 
-  console.log("Current nonce : " + nonce);
+  console.log("Next transaction nonce : " + nonce);
 }
 
 main().catch((error) => {

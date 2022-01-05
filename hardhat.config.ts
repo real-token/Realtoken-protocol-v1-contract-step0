@@ -54,7 +54,7 @@ task("nonce", "Increase the nonce value by sending self transaction")
 
     const newNonce = await hre.web3.eth.getTransactionCount(DEPLOYER.address);
 
-    console.log("Current nonce is now : " + newNonce);
+    console.log("Next transaction nonce is now : " + newNonce);
   });
 
 extendEnvironment((hre) => {
@@ -144,7 +144,7 @@ const config: HardhatUserConfig = {
           : [],
     },
     goerli: {
-      chainId: 420,
+      chainId: 5,
       url: process.env.GOERLI_URL || "",
       accounts:
         process.env.ACPI_MODERATOR !== undefined && process.env.TOKEN_ADMIN_PK
