@@ -22,7 +22,7 @@ describe("REG Factory", function () {
 
     await acpiMaster.deployed();
 
-    await regToken.contractTransfer(
+    await regToken.mint(
       acpiMaster.address,
       ethers.utils.parseUnits("1000", "ether")
     );

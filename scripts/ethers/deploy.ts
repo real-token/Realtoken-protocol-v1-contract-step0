@@ -36,10 +36,6 @@ async function main() {
 
   await acpiMaster.deployed();
 
-  await regToken.contractTransfer(
-    acpiMaster.address,
-    ethers.utils.parseUnits("12000", "ether")
-  );
   console.log("Contract has been deployed!");
 
   const acpiOne = await acpiMaster.acpiOneContract();

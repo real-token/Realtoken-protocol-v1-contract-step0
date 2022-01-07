@@ -13,10 +13,6 @@ interface IREG is IERC20 {
         uint256[] calldata amount
     ) external returns (bool);
 
-    function contractTransfer(address recipient, uint256 amount)
-        external
-        returns (bool);
-
     function mint(address account, uint256 amount) external returns (bool);
 
     function batchMint(address[] calldata account, uint256[] calldata amount)

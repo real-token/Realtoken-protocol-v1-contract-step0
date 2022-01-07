@@ -42,7 +42,7 @@ describe("END 2 END Testing", function () {
 
     await acpiMaster.deployed();
 
-    await regToken.contractTransfer(
+    await regToken.mint(
       acpiMaster.address,
       ethers.utils.parseUnits("10000", "ether")
     );

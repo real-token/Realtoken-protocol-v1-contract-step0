@@ -1,21 +1,22 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-import "@openzeppelin/contracts/token/ERC20/extensions/draft-ERC20Permit.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Votes.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+
 import "./IREG.sol";
 
 // github.com/chichke
 
-contract REG is ERC20, ERC20Permit, ERC20Votes, AccessControl, IREG {
+contract REG is ERC20Votes, AccessControl, IREG {
+    using SafeERC20 for IERC20;
+
     constructor(string memory name, string memory symbol, address admin)
         ERC20(name, symbol)
         ERC20Permit(name)
     {
         _setupRole(DEFAULT_ADMIN_ROLE, admin);
-        _mint(address(this), 12000 ether);
     }
 
     function mint(address account, uint256 amount)
@@ -40,18 +41,8 @@ contract REG is ERC20, ERC20Permit, ERC20Votes, AccessControl, IREG {
         require(recipient.length > 0, "can't process empty array");
 
         for (uint256 index = 0; index < recipient.length; index++) {
-            super._transfer(_msgSender(), recipient[index], amount[index]);
+            _transfer(_msgSender(), recipient[index], amount[index]);
         }
-        return true;
-    }
-
-    function contractTransfer(address recipient, uint256 amount)
-        external
-        override
-        onlyRole(DEFAULT_ADMIN_ROLE)
-        returns (bool)
-    {
-        _transfer(address(this), recipient, amount);
         return true;
     }
 
@@ -90,7 +81,8 @@ contract REG is ERC20, ERC20Permit, ERC20Votes, AccessControl, IREG {
         onlyRole(DEFAULT_ADMIN_ROLE)
         returns (bool)
     {
-        return IERC20(tokenAddress).transfer(_msgSender(), tokenAmount);
+        IERC20(tokenAddress).safeTransfer(_msgSender(), tokenAmount);
+        return true;
     }
 
     /**
@@ -109,11 +101,11 @@ contract REG is ERC20, ERC20Permit, ERC20Votes, AccessControl, IREG {
     }
 
     // The functions below are overrides required by Solidity.
-    function _mint(address _to, uint256 _amount) internal override(ERC20, ERC20Votes) {
+    function _mint(address _to, uint256 _amount) internal override(ERC20Votes) {
         super._mint(_to, _amount);
     }
 
-    function _burn(address _account, uint256 _amount) internal override(ERC20, ERC20Votes) {
+    function _burn(address _account, uint256 _amount) internal override(ERC20Votes) {
         super._burn(_account, _amount);
     }
 
@@ -121,9 +113,10 @@ contract REG is ERC20, ERC20Permit, ERC20Votes, AccessControl, IREG {
         address from,
         address to,
         uint256 amount
-    ) internal override(ERC20, ERC20Votes) {
+    ) internal override(ERC20Votes) {
         super._afterTokenTransfer(from, to, amount);
-         _delegate(to, to);
+        if (delegates(to) == address(0))
+            _delegate(to, to);
     }
 
 }
