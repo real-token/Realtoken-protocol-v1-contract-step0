@@ -2,16 +2,19 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/access/AccessControl.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "./ACPI1.sol";
 import "./ACPI2.sol";
 import "./ACPI3.sol";
 import "./ACPI4.sol";
 import "./IACPIMaster.sol";
-import "./IREG.sol";
 
 // github.com/chichke
 
 contract ACPIMaster is IACPIMaster, AccessControl {
+    using SafeERC20 for IERC20;
+
     /**
      * @dev currentACPI is 0 before ACPI start
      * @dev currentACPI is 1 on phase 1
@@ -33,7 +36,7 @@ contract ACPIMaster is IACPIMaster, AccessControl {
     bytes32 private constant _ACPI_MODERATOR = keccak256("ACPI_MODERATOR");
     bytes32 private constant _ACPI_MASTER = keccak256("ACPI_MASTER");
 
-    IREG private _regToken;
+    IERC20 private _regToken;
 
     /**
      * @dev Emitted when admin input other chains price to calculate crosschainprice
@@ -50,7 +53,7 @@ contract ACPIMaster is IACPIMaster, AccessControl {
         _setupRole(_ACPI_MASTER, address(this));
         _setupRole(DEFAULT_ADMIN_ROLE, admin);
 
-        _regToken = IREG(regTokenAddress);
+        _regToken = IERC20(regTokenAddress);
         _acpiOne = new ACPIOne();
         _acpiTwo = new ACPITwo();
         _acpiThree = new ACPIThree();
@@ -210,7 +213,8 @@ contract ACPIMaster is IACPIMaster, AccessControl {
 
         require(successOne && successTwo && successThree && successFour, "Reset function must not fail");
 
-        return _regToken.transfer(_msgSender(), tokenAmount);
+        _regToken.safeTransfer(_msgSender(), tokenAmount);
+        return true;
     }
 
     function withdrawTokens(address payable vault, uint256 amount)
@@ -219,7 +223,8 @@ contract ACPIMaster is IACPIMaster, AccessControl {
         onlyRole(DEFAULT_ADMIN_ROLE)
         returns (bool)
     {
-        return _regToken.transfer(vault, amount);
+        _regToken.safeTransfer(vault, amount);
+        return true;
     }
 
     function withdraw(address payable vault, uint256[4] calldata amounts)
@@ -256,7 +261,8 @@ contract ACPIMaster is IACPIMaster, AccessControl {
         onlyRole(DEFAULT_ADMIN_ROLE)
         returns (bool)
     {
-        return IERC20(tokenAddress).transfer(_msgSender(), tokenAmount);
+        IERC20(tokenAddress).safeTransfer(_msgSender(), tokenAmount);
+        return true;
     }
 
     function setTokenAddress(address tokenAddress)
@@ -265,7 +271,7 @@ contract ACPIMaster is IACPIMaster, AccessControl {
         onlyRole(DEFAULT_ADMIN_ROLE)
         returns (bool)
     {
-        _regToken = IREG(tokenAddress);
+        _regToken = IERC20(tokenAddress);
         return true;
     }
 

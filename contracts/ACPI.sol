@@ -3,12 +3,15 @@ pragma solidity ^0.8.0;
 
 import "./IACPIMaster.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
 /**
  * @dev Abstract contract of the ACPI standard
  */
 
 abstract contract ACPI {
+    using SafeERC20 for IERC20;
+
     IACPIMaster internal _acpiMaster;
     uint256[] internal _priceHistory;
 
@@ -218,6 +221,7 @@ abstract contract ACPI {
         onlyACPIMaster
         returns (bool)
     {
-        return IERC20(tokenAddress).transfer(msg.sender, tokenAmount);
+        IERC20(tokenAddress).safeTransfer(msg.sender, tokenAmount);
+        return true;
     }
 }

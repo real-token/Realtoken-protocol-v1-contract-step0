@@ -2,6 +2,7 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
 /**
  * @dev Interface of the Real Token
@@ -22,10 +23,6 @@ interface IREG is IERC20 {
     function contractBurn(uint256 amount) external returns (bool);
 
     function recoverERC20(address tokenAddress, uint256 tokenAmount)
-        external
-        returns (bool);
-
-    function withdraw(address payable recipient, uint256 amount)
         external
         returns (bool);
 }

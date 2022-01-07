@@ -85,30 +85,6 @@ contract REG is ERC20Votes, AccessControl, IREG {
         return true;
     }
 
-    /**
-     * @dev Withdraw native currency {DEFAULT_ADMIN_ROLE}
-     */
-    function withdraw(address payable recipient, uint256 amount)
-        external
-        override
-        onlyRole(DEFAULT_ADMIN_ROLE)
-        returns (bool)
-    {
-        require(recipient != address(0), "Can't burn token");
-
-        recipient.transfer(amount);
-        return true;
-    }
-
-    // The functions below are overrides required by Solidity.
-    function _mint(address _to, uint256 _amount) internal override(ERC20Votes) {
-        super._mint(_to, _amount);
-    }
-
-    function _burn(address _account, uint256 _amount) internal override(ERC20Votes) {
-        super._burn(_account, _amount);
-    }
-
     function _afterTokenTransfer(
         address from,
         address to,
