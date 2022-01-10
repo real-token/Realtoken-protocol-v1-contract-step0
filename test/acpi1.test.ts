@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { ethers, name, symbol } from "hardhat";
+import { ethers, name, symbol, upgrades } from "hardhat";
 import { REG, ACPIOne, ACPIMaster } from "../typechain";
 
 let regToken: REG;
@@ -11,7 +11,11 @@ describe("ACPI One", function () {
 
     const regFactory = await ethers.getContractFactory("REG");
 
-    regToken = await regFactory.deploy(name, symbol, TOKEN_ADMIN.address);
+    regToken = (await upgrades.deployProxy(regFactory, [
+      name,
+      symbol,
+      TOKEN_ADMIN.address,
+    ])) as REG;
     await regToken.deployed();
 
     const acpiMasterFactory = await ethers.getContractFactory("ACPIMaster");

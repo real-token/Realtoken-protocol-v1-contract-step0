@@ -1,6 +1,6 @@
 import { BigNumber } from "@ethersproject/bignumber";
 import { expect } from "chai";
-import { ethers, name, symbol } from "hardhat";
+import { ethers, name, symbol, upgrades } from "hardhat";
 import {
   ACPIFour,
   ACPIMaster,
@@ -30,7 +30,11 @@ describe("END 2 END Testing", function () {
     const [TOKEN_ADMIN, ACPI_MODERATOR] = await ethers.getSigners();
 
     const regFactory = await ethers.getContractFactory("REG");
-    regToken = await regFactory.deploy(name, symbol, TOKEN_ADMIN.address);
+    regToken = (await upgrades.deployProxy(regFactory, [
+      name,
+      symbol,
+      TOKEN_ADMIN.address,
+    ])) as REG;
     await regToken.deployed();
 
     const acpiMasterFactory = await ethers.getContractFactory("ACPIMaster");
