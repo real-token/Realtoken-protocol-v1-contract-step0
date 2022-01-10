@@ -27,7 +27,6 @@ contract REG is UUPSUpgradeable, ERC20VotesUpgradeable, AccessControlUpgradeable
 
     function _authorizeUpgrade(address newImplementation) internal view override {
         _checkRole(DEFAULT_ADMIN_ROLE, _msgSender());
-        newImplementation; //remove warning
     }
 
     function mint(address account, uint256 amount)

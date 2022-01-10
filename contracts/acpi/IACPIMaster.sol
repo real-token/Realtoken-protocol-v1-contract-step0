@@ -9,6 +9,16 @@ import "@openzeppelin/contracts/access/IAccessControl.sol";
 import "../reg/IREG.sol";
 
 interface IACPIMaster is IAccessControl {
+    /**
+     * @dev Emitted when admin input other chains price to calculate crosschainprice
+     */
+    event CrossChainPrice(uint256 indexed crossChainPrice, uint256 indexed crossChainPriceUSD);
+
+    /**
+     * @dev Emitted when acpi ends and contract calculate ACPI price
+     */
+    event GeneratedPrice(uint256 indexed price);
+
     event ACPIChanged(uint8 indexed newAcpi);
 
     function tokenContract() external view returns (address);
@@ -29,9 +39,11 @@ interface IACPIMaster is IAccessControl {
 
     function crossChainPrice() external view returns (uint256);
 
+    function crossChainPriceUSD() external view returns (uint256);
+
     function getACPI() external view returns (uint8);
 
-    function generateCrossChainPrice(uint256 averageCrossChainPrice) external returns (bool);
+    function generateCrossChainPrice(uint256 crossChainPrice_, uint256 crossChainPriceUSD_) external returns (bool);
 
     function setACPI(uint8 newACPI) external returns (bool);
 
@@ -39,6 +51,10 @@ interface IACPIMaster is IAccessControl {
 
     function getACPIReturns() external view returns (uint256);
 
+    function totalWins() external view returns (uint256);
+
+    function totalReturns() external view returns (uint256);
+    
     function tokenToClaim() external view returns (uint256);
 
     function claimTokens() external returns (bool);

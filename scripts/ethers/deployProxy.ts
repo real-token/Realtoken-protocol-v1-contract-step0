@@ -24,6 +24,7 @@ async function main() {
 
   // Deploying
   const regFactory = await ethers.getContractFactory("REG");
+
   const instance = await upgrades.deployProxy(regFactory, [
     name,
     symbol,
@@ -31,11 +32,14 @@ async function main() {
   ]);
   await instance.deployed();
 
+  const implAddress = await upgrades.erc1967.getImplementationAddress(
+    instance.address
+  );
   await minuteSleep();
 
   try {
     await run("verify:verify", {
-      address: instance.address,
+      address: implAddress,
       constructorArguments: [],
     });
   } catch (err) {
@@ -43,7 +47,8 @@ async function main() {
   }
 
   console.log("Contract has been deployed!");
-  console.log("REG is deployed to: ", instance.address);
+  console.log("REG (Proxy) is deployed to: ", instance.address);
+  console.log("REG (Implementation) is deployed to: ", implAddress);
 }
 
 // We recommend this pattern to be able to use async/await everywhere

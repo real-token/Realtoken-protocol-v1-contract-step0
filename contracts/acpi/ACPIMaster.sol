@@ -32,21 +32,12 @@ contract ACPIMaster is IACPIMaster, AccessControl {
 
     uint256 private _initialTokenPrice;
     uint256 private _crossChainPrice;
+    uint256 private _crossChainPriceUSD;
 
     bytes32 private constant _ACPI_MODERATOR = keccak256("ACPI_MODERATOR");
     bytes32 private constant _ACPI_MASTER = keccak256("ACPI_MASTER");
 
     IERC20 private _regToken;
-
-    /**
-     * @dev Emitted when admin input other chains price to calculate crosschainprice
-     */
-    event CrossChainPrice(uint256 indexed price);
-
-    /**
-     * @dev Emitted when acpi ends and contract calculate ACPI price
-     */
-    event GeneratedPrice(uint256 indexed price);
 
     constructor(address regTokenAddress, address admin, address moderator) {
         _setupRole(_ACPI_MODERATOR, moderator);
@@ -92,6 +83,10 @@ contract ACPIMaster is IACPIMaster, AccessControl {
         return _initialTokenPrice;
     }
 
+    function crossChainPriceUSD() external view override returns (uint256) {
+        return _crossChainPriceUSD;
+    }
+
     function crossChainPrice() external view override returns (uint256) {
         return _crossChainPrice;
     }
@@ -101,7 +96,7 @@ contract ACPIMaster is IACPIMaster, AccessControl {
     }
 
     // Generate average price of ACPIs using the initialTokenPrice on three differents blockchains
-    function generateCrossChainPrice(uint256 averageCrossChainPrice)
+    function generateCrossChainPrice(uint256 crossChainPrice_, uint256 crossChainPriceUSD_)
         external
         override
         onlyRole(DEFAULT_ADMIN_ROLE)
@@ -112,13 +107,13 @@ contract ACPIMaster is IACPIMaster, AccessControl {
             "ACPI event need to be over to set cross chain price"
         );
 
-        // prevent overflow
-        _crossChainPrice = averageCrossChainPrice;
-        emit CrossChainPrice(_crossChainPrice);
+        _crossChainPrice = crossChainPrice_;
+        _crossChainPriceUSD = crossChainPriceUSD_;
+        emit CrossChainPrice(crossChainPrice_, crossChainPriceUSD_);
         return true;
     }
 
-    function totalWins() external view returns (uint256) {
+    function totalWins() external override view returns (uint256) {
         return
             _acpiOne.totalWins() +
             _acpiTwo.totalWins() +
@@ -126,7 +121,7 @@ contract ACPIMaster is IACPIMaster, AccessControl {
             _acpiFour.totalWins();
     }
 
-    function totalReturns() external view returns (uint256) {
+    function totalReturns() external override view returns (uint256) {
         return _acpiOne.totalReturns();
     }
 
