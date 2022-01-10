@@ -1,22 +1,33 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Votes.sol";
-import "@openzeppelin/contracts/access/AccessControl.sol";
-import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20VotesUpgradeable.sol";
+
+import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC20/utils/SafeERC20Upgradeable.sol";
+
+import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 
 import "./IREG.sol";
 
 // github.com/chichke
 
-contract REG is ERC20Votes, AccessControl, IREG {
-    using SafeERC20 for IERC20;
+contract REG is UUPSUpgradeable, ERC20VotesUpgradeable, AccessControlUpgradeable, IREG {
+    using SafeERC20Upgradeable for IERC20Upgradeable;
 
-    constructor(string memory name, string memory symbol, address admin)
-        ERC20(name, symbol)
-        ERC20Permit(name)
+    function initialize(string memory name, string memory symbol, address admin) external onlyProxy initializer
     {
+        __AccessControl_init();
+        __ERC20_init(name, symbol);
+        __ERC20Permit_init(name);
+        __UUPSUpgradeable_init();
+        __ERC20Votes_init_unchained();
         _setupRole(DEFAULT_ADMIN_ROLE, admin);
+    }
+
+    function _authorizeUpgrade(address newImplementation) internal view override {
+        _checkRole(DEFAULT_ADMIN_ROLE, _msgSender());
+        newImplementation; //remove warning
     }
 
     function mint(address account, uint256 amount)
@@ -81,7 +92,7 @@ contract REG is ERC20Votes, AccessControl, IREG {
         onlyRole(DEFAULT_ADMIN_ROLE)
         returns (bool)
     {
-        IERC20(tokenAddress).safeTransfer(_msgSender(), tokenAmount);
+        IERC20Upgradeable(tokenAddress).safeTransfer(_msgSender(), tokenAmount);
         return true;
     }
 
@@ -89,7 +100,7 @@ contract REG is ERC20Votes, AccessControl, IREG {
         address from,
         address to,
         uint256 amount
-    ) internal override(ERC20Votes) {
+    ) internal override(ERC20VotesUpgradeable) {
         super._afterTokenTransfer(from, to, amount);
         if (delegates(to) == address(0))
             _delegate(to, to);
