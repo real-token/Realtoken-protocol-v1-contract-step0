@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import { ethers, name, symbol } from "hardhat";
-import { ACPIMaster, REG } from "../typechain";
+import { ACPIMaster, REG } from "../typechain-types";
 
 let regToken: REG;
 let acpiMaster: ACPIMaster;
