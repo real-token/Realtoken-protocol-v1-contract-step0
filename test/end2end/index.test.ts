@@ -8,7 +8,7 @@ import {
   ACPIThree,
   ACPITwo,
   REG,
-} from "../../typechain";
+} from "../../typechain-types";
 import { acpiData1, pendingReturns } from "./acpi1data";
 import { acpiData2 } from "./acpi2data";
 import { acpiData3 } from "./acpi3data";
