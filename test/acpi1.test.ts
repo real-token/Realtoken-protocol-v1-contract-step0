@@ -11,11 +11,11 @@ describe("ACPI One", function () {
 
     const regFactory = await ethers.getContractFactory("REG");
 
-    regToken = (await upgrades.deployProxy(regFactory, [
-      name,
-      symbol,
-      TOKEN_ADMIN.address,
-    ])) as REG;
+    regToken = (await upgrades.deployProxy(
+      regFactory,
+      [name, symbol, TOKEN_ADMIN.address],
+      { kind: "uups" }
+    )) as REG;
     await regToken.deployed();
 
     const acpiMasterFactory = await ethers.getContractFactory("ACPIMaster");

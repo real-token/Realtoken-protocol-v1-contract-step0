@@ -1,5 +1,6 @@
-import { ethers, upgrades, run, name, symbol } from "hardhat";
+import { ethers, upgrades, run, name, symbol, network } from "hardhat";
 
+import { ERC1967Proxy } from "../../typechain-types";
 function sleep(ms: number | undefined) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
@@ -25,17 +26,36 @@ async function main() {
   // Deploying
   const regFactory = await ethers.getContractFactory("REG");
 
-  const instance = await upgrades.deployProxy(regFactory, [
-    name,
-    symbol,
-    TOKEN_ADMIN_PUBLIC,
-  ]);
+  const instance = (await upgrades.deployProxy(
+    regFactory,
+    [name, symbol, TOKEN_ADMIN_PUBLIC],
+    { kind: "uups" }
+  )) as ERC1967Proxy;
+
   await instance.deployed();
 
   const implAddress = await upgrades.erc1967.getImplementationAddress(
     instance.address
   );
   await minuteSleep();
+
+  if (network.name === "poa") {
+    try {
+      await run("verify:verify", {
+        address: instance.address,
+        constructorArguments: [
+          implAddress,
+          regFactory.interface.encodeFunctionData("initialize", [
+            name,
+            symbol,
+            TOKEN_ADMIN_PUBLIC,
+          ]),
+        ],
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  }
 
   try {
     await run("verify:verify", {

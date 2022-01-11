@@ -121,6 +121,7 @@ const config: HardhatUserConfig = {
           : [],
     },
     poa: {
+      gasPrice: 2500000007,
       chainId: 77,
       url: process.env.POA_URL || "",
       accounts:
