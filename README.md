@@ -122,6 +122,8 @@ Once all the ACPI's have been completed, the tokens are released and available f
 
    ```sh
     ETHERSCAN_API_KEY=API-KEY
+    POLYGONSCAN_API_KEY=API-KEY
+    BSCSCAN_API_KEY=API-KEY
     REPORT_GAS=CoinMarketCap-API-Key
 
     XDAI_URL=https://rpc.xdaichain.com/realt

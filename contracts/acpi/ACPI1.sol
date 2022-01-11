@@ -19,7 +19,7 @@ contract ACPIOne is ACPI {
 
     event RoundWinWithUser(address user, uint256 amount);
 
-    constructor() ACPI(msg.sender, 1) {}
+    constructor(address acpiMaster) ACPI(acpiMaster, 1) {}
 
     /**
      * @dev Set bidIncrement value

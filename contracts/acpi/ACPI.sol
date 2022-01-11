@@ -34,8 +34,8 @@ abstract contract ACPI {
     constructor(address acpiMaster, uint8 acpiNumber) {
         _acpiMaster = IACPIMaster(acpiMaster);
         _acpiNumber = acpiNumber;
-        _roundTime = 60 * 45;
-        _totalRound = 384;
+        _roundTime = 60 * 60;
+        _totalRound = 336;
     }
 
     modifier onlyCurrentACPI() {

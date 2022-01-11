@@ -20,7 +20,7 @@ contract ACPIFour is ACPI {
     uint256 private _lastPrice;
     uint256 private _defaultPrice;
 
-    constructor() ACPI(msg.sender, 4) {
+    constructor(address acpiMaster) ACPI(acpiMaster, 4) {
         _priceIncrease = 60; // 60% increase
         _defaultPrice = 0.1 ether;
         _rewardPerTurn = 50;

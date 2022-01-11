@@ -81,6 +81,7 @@ const config: HardhatUserConfig = {
       },
     },
     bsc: {
+      gasPrice: 5000000000,
       chainId: 56,
       url: process.env.BSC_URL || "",
       accounts:
@@ -89,6 +90,7 @@ const config: HardhatUserConfig = {
           : [],
     },
     bsctest: {
+      gasPrice: 10000000000,
       chainId: 97,
       url: process.env.BSCTEST_URL || "",
       accounts:
@@ -97,6 +99,7 @@ const config: HardhatUserConfig = {
           : [],
     },
     polygon: {
+      gasPrice: 45000000000,
       chainId: 137,
       url: process.env.POLYGON_URL || "",
       accounts:
@@ -160,7 +163,14 @@ const config: HardhatUserConfig = {
     currency: "USD",
   },
   etherscan: {
-    apiKey: process.env.ETHERSCAN_API_KEY,
+    apiKey: {
+      bsc: process.env.BSCSCAN_API_KEY,
+      bscTestnet: process.env.BSCSCAN_API_KEY,
+      polygon: process.env.POLYGONSCAN_API_KEY,
+      polygonMumbai: process.env.POLYGONSCAN_API_KEY,
+      mainnet: process.env.ETHERSCAN_API_KEY,
+      xdai: process.env.ETHERSCAN_API_KEY,
+    },
   },
 };
 

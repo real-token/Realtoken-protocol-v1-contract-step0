@@ -45,10 +45,6 @@ contract ACPIMaster is IACPIMaster, AccessControl {
         _setupRole(DEFAULT_ADMIN_ROLE, admin);
 
         _regToken = IERC20(regTokenAddress);
-        _acpiOne = new ACPIOne();
-        _acpiTwo = new ACPITwo();
-        _acpiThree = new ACPIThree();
-        _acpiFour = new ACPIFour();
     }
 
     function tokenContract() external view override returns (address) {

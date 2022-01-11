@@ -3,7 +3,22 @@
 //
 // When running the script with `npx hardhat run <script>` you'll find the Hardhat
 // Runtime Environment's members available in the global scope.
-import { ethers, name, symbol, web3, network } from "hardhat";
+import { ethers, name, symbol, web3, network, run } from "hardhat";
+
+function sleep(ms: number | undefined) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function minuteSleep() {
+  console.log("Waiting for 60s before contracts verifications begins");
+
+  for (let i = 1; i <= 6; i++) {
+    await sleep(10 * 1000);
+    console.log(i * 10 + "s");
+  }
+
+  console.log("Done");
+}
 
 async function main() {
   // Hardhat always runs the compile task when running scripts with its command
@@ -14,6 +29,8 @@ async function main() {
   // await hre.run('compile');
 
   // We get the contract to deploy
+
+  const regToken = "0xe3BEC39D9b08f9672Be1E128880F6747273B1e89";
 
   const { TOKEN_ADMIN_PUBLIC, ACPI_MODERATOR_PUBLIC } = process.env;
   if (!TOKEN_ADMIN_PUBLIC || !ACPI_MODERATOR_PUBLIC)
@@ -29,29 +46,10 @@ async function main() {
 
   const account = await web3.eth.getAccounts();
 
-  const regFactory = await ethers.getContractFactory("REG");
-
-  const { data: regData } = regFactory.getDeployTransaction(
-    name,
-    symbol,
-    TOKEN_ADMIN_PUBLIC
-  );
-
-  const tx1 = await web3.eth.sendTransaction({
-    from: account[0],
-    data: regData?.toString(),
-  });
-
-  const regAddress = tx1.contractAddress;
-
-  if (!regAddress) {
-    return console.log("REG Address was undefined ");
-  }
-
   const acpiMasterFactory = await ethers.getContractFactory("ACPIMaster");
 
   const { data: acpiData } = acpiMasterFactory.getDeployTransaction(
-    regAddress,
+    regToken,
     TOKEN_ADMIN_PUBLIC,
     ACPI_MODERATOR_PUBLIC
   );
@@ -61,7 +59,53 @@ async function main() {
     data: acpiData?.toString(),
   });
 
-  console.log("REG is deployed to: ", regAddress);
+  await minuteSleep();
+
+  if (!tx2.contractAddress) return;
+
+  const acpiMaster = await ethers.getContractAt(
+    "ACPIMaster",
+    tx2.contractAddress
+  );
+
+  const acpiOne = await acpiMaster.acpiOneContract();
+  // const acpiTwo = await acpiMaster.acpiTwoContract();
+  // const acpiThree = await acpiMaster.acpiThreeContract();
+  // const acpiFour = await acpiMaster.acpiFourContract();
+
+  try {
+    await run("verify:verify", {
+      address: acpiOne,
+      constructorArguments: [],
+    });
+  } catch (err) {
+    console.error(err);
+  }
+  // try {
+  //   await run("verify:verify", {
+  //     address: acpiTwo,
+  //     constructorArguments: [],
+  //   });
+  // } catch (err) {
+  //   console.error(err);
+  // }
+  // try {
+  //   await run("verify:verify", {
+  //     address: acpiThree,
+  //     constructorArguments: [],
+  //   });
+  // } catch (err) {
+  //   console.error(err);
+  // }
+  // try {
+  //   await run("verify:verify", {
+  //     address: acpiFour,
+  //     constructorArguments: [],
+  //   });
+  // } catch (err) {
+  //   console.error(err);
+  // }
+
   console.log("ACPIMaster is deployed to: ", tx2.contractAddress);
 }
 

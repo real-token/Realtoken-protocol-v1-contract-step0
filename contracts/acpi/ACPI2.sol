@@ -15,7 +15,7 @@ contract ACPITwo is ACPI {
     uint256 private _roundPot;
     uint256 private _reward;
 
-    constructor() ACPI(msg.sender, 2) {
+    constructor(address acpiMaster) ACPI(acpiMaster, 2) {
         _minBid = 250 gwei;
         _reward = 1 ether;
         _rewardMultiplicator = 0;

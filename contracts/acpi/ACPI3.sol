@@ -11,7 +11,7 @@ contract ACPIThree is ACPI {
     // Address => _currentRound => didBet
     mapping(address => mapping(uint16 => bool)) private _hasAlreadyBid;
 
-    constructor() ACPI(msg.sender, 3) {
+    constructor(address acpiMaster) ACPI(acpiMaster, 3) {
         _bidAmount = 250 gwei;
     }
 

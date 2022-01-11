@@ -6,7 +6,6 @@ pragma solidity ^0.8.0;
  */
 
 import "@openzeppelin/contracts/access/IAccessControl.sol";
-import "../reg/IREG.sol";
 
 interface IACPIMaster is IAccessControl {
     /**
