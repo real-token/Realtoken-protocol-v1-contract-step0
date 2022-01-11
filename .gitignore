@@ -1,10 +1,10 @@
 node_modules
 .env
+.openzeppelin
 coverage
 coverage.json
 typechain
 typechain-types
-.openzeppelin
 .DS_Store
 #Hardhat files
 cache
