@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { ethers, name, symbol } from "hardhat";
+import { ethers, name, symbol, upgrades } from "hardhat";
 import { ACPIMaster, REG } from "../typechain-types";
 
 let regToken: REG;
@@ -10,7 +10,11 @@ describe("REG Factory", function () {
     const [TOKEN_ADMIN, ACPI_MODERATOR] = await ethers.getSigners();
 
     const regFactory = await ethers.getContractFactory("REG");
-    regToken = await regFactory.deploy(name, symbol, TOKEN_ADMIN.address);
+    regToken = (await upgrades.deployProxy(
+      regFactory,
+      [name, symbol, TOKEN_ADMIN.address],
+      { kind: "uups" }
+    )) as REG;
     await regToken.deployed();
 
     const acpiMasterFactory = await ethers.getContractFactory("ACPIMaster");
@@ -24,6 +28,10 @@ describe("REG Factory", function () {
 
     await regToken.mint(
       acpiMaster.address,
+      ethers.utils.parseUnits("1000", "ether")
+    );
+
+    expect(await regToken.balanceOf(acpiMaster.address)).to.equal(
       ethers.utils.parseUnits("1000", "ether")
     );
   });

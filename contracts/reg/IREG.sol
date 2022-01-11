@@ -1,14 +1,13 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
 
 /**
  * @dev Interface of the Real Token
  */
 
-interface IREG is IERC20 {
+interface IREG is IERC20Upgradeable {
     function batchTransfer(
         address[] calldata recipient,
         uint256[] calldata amount
@@ -25,4 +24,5 @@ interface IREG is IERC20 {
     function recoverERC20(address tokenAddress, uint256 tokenAmount)
         external
         returns (bool);
+
 }

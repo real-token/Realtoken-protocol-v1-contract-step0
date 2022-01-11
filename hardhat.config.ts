@@ -12,6 +12,7 @@ import "@typechain/hardhat";
 import "hardhat-gas-reporter";
 import "solidity-coverage";
 
+import "@openzeppelin/hardhat-upgrades";
 import "./type-extensions";
 
 import "@nomiclabs/hardhat-web3";
@@ -65,7 +66,7 @@ extendEnvironment((hre) => {
 
 const config: HardhatUserConfig = {
   solidity: {
-    version: "0.8.4",
+    version: "0.8.2",
     settings: {
       optimizer: {
         enabled: true,
@@ -120,6 +121,7 @@ const config: HardhatUserConfig = {
           : [],
     },
     poa: {
+      gasPrice: 2500000007,
       chainId: 77,
       url: process.env.POA_URL || "",
       accounts:

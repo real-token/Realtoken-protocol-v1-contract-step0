@@ -6,7 +6,7 @@ pragma solidity ^0.8.0;
  */
 
 import "@openzeppelin/contracts/access/IAccessControl.sol";
-import "./IREG.sol";
+import "../reg/IREG.sol";
 
 interface IACPIMaster is IAccessControl {
     /**
@@ -54,7 +54,7 @@ interface IACPIMaster is IAccessControl {
     function totalWins() external view returns (uint256);
 
     function totalReturns() external view returns (uint256);
-
+    
     function tokenToClaim() external view returns (uint256);
 
     function claimTokens() external returns (bool);
