@@ -32,11 +32,33 @@ describe("ACPI Three", function () {
       ethers.utils.parseUnits("1000", "ether")
     );
 
-    acpiThree = await ethers.getContractAt(
-      "ACPIThree",
-      await acpiMaster.acpiThreeContract()
-    );
+    const acpiOneFactory = await ethers.getContractFactory("ACPIOne");
+    const acpiOne = await acpiOneFactory.deploy(acpiMaster.address);
 
+    await acpiOne.deployed();
+
+    await acpiMaster.setACPIOne(acpiOne.address);
+
+    const acpiTwoFactory = await ethers.getContractFactory("ACPITwo");
+    const acpiTwo = await acpiTwoFactory.deploy(acpiMaster.address);
+
+    await acpiTwo.deployed();
+
+    await acpiMaster.setACPITwo(acpiTwo.address);
+
+    const acpiThreeFactory = await ethers.getContractFactory("ACPIThree");
+    acpiThree = await acpiThreeFactory.deploy(acpiMaster.address);
+
+    await acpiThree.deployed();
+
+    await acpiMaster.setACPIThree(acpiThree.address);
+
+    const acpiFourFactory = await ethers.getContractFactory("ACPIFour");
+    const acpiFour = await acpiFourFactory.deploy(acpiMaster.address);
+
+    await acpiFour.deployed();
+
+    await acpiMaster.setACPIFour(acpiFour.address);
     await acpiMaster.connect(TOKEN_ADMIN).setACPI(3);
   });
 

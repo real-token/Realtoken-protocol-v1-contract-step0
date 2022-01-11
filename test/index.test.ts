@@ -31,6 +31,33 @@ describe("REG Factory", function () {
       ethers.utils.parseUnits("1000", "ether")
     );
 
+    const acpiOneFactory = await ethers.getContractFactory("ACPIOne");
+    const acpiOne = await acpiOneFactory.deploy(acpiMaster.address);
+
+    await acpiOne.deployed();
+
+    await acpiMaster.setACPIOne(acpiOne.address);
+
+    const acpiTwoFactory = await ethers.getContractFactory("ACPITwo");
+    const acpiTwo = await acpiTwoFactory.deploy(acpiMaster.address);
+
+    await acpiTwo.deployed();
+
+    await acpiMaster.setACPITwo(acpiTwo.address);
+    const acpiThreeFactory = await ethers.getContractFactory("ACPIThree");
+    const acpiThree = await acpiThreeFactory.deploy(acpiMaster.address);
+
+    await acpiThree.deployed();
+
+    await acpiMaster.setACPIThree(acpiThree.address);
+
+    const acpiFourFactory = await ethers.getContractFactory("ACPIFour");
+    const acpiFour = await acpiFourFactory.deploy(acpiMaster.address);
+
+    await acpiFour.deployed();
+
+    await acpiMaster.setACPIFour(acpiFour.address);
+
     expect(await regToken.balanceOf(acpiMaster.address)).to.equal(
       ethers.utils.parseUnits("1000", "ether")
     );
@@ -76,7 +103,7 @@ describe("REG Factory", function () {
     expect(await acpiMaster.getACPI()).to.equal(6);
   });
 
-  it("Should set ACPI to 6", async function () {
+  it("Should set ACPI to 7", async function () {
     await expect(acpiMaster.setACPI(7)).revertedWith("Allowed value is 0-6");
   });
 

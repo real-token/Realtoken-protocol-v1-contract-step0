@@ -32,10 +32,32 @@ describe("ACPI One", function () {
       ethers.utils.parseUnits("1000", "ether")
     );
 
-    acpiOne = await ethers.getContractAt(
-      "ACPIOne",
-      await acpiMaster.acpiOneContract()
-    );
+    const acpiOneFactory = await ethers.getContractFactory("ACPIOne");
+    acpiOne = await acpiOneFactory.deploy(acpiMaster.address);
+
+    await acpiOne.deployed();
+
+    await acpiMaster.setACPIOne(acpiOne.address);
+
+    const acpiTwoFactory = await ethers.getContractFactory("ACPITwo");
+    const acpiTwo = await acpiTwoFactory.deploy(acpiMaster.address);
+
+    await acpiTwo.deployed();
+
+    await acpiMaster.setACPITwo(acpiTwo.address);
+    const acpiThreeFactory = await ethers.getContractFactory("ACPIThree");
+    const acpiThree = await acpiThreeFactory.deploy(acpiMaster.address);
+
+    await acpiThree.deployed();
+
+    await acpiMaster.setACPIThree(acpiThree.address);
+
+    const acpiFourFactory = await ethers.getContractFactory("ACPIFour");
+    const acpiFour = await acpiFourFactory.deploy(acpiMaster.address);
+
+    await acpiFour.deployed();
+
+    await acpiMaster.setACPIFour(acpiFour.address);
   });
 
   it("Starting a bid war", async function () {

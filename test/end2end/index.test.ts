@@ -51,22 +51,32 @@ describe("END 2 END Testing", function () {
       ethers.utils.parseUnits("10000", "ether")
     );
 
-    acpiOne = await ethers.getContractAt(
-      "ACPIOne",
-      await acpiMaster.acpiOneContract()
-    );
-    acpiTwo = await ethers.getContractAt(
-      "ACPITwo",
-      await acpiMaster.acpiTwoContract()
-    );
-    acpiThree = await ethers.getContractAt(
-      "ACPIThree",
-      await acpiMaster.acpiThreeContract()
-    );
-    acpiFour = await ethers.getContractAt(
-      "ACPIFour",
-      await acpiMaster.acpiFourContract()
-    );
+    const acpiOneFactory = await ethers.getContractFactory("ACPIOne");
+    acpiOne = await acpiOneFactory.deploy(acpiMaster.address);
+
+    await acpiOne.deployed();
+
+    await acpiMaster.setACPIOne(acpiOne.address);
+
+    const acpiTwoFactory = await ethers.getContractFactory("ACPITwo");
+    acpiTwo = await acpiTwoFactory.deploy(acpiMaster.address);
+
+    await acpiTwo.deployed();
+
+    await acpiMaster.setACPITwo(acpiTwo.address);
+    const acpiThreeFactory = await ethers.getContractFactory("ACPIThree");
+    acpiThree = await acpiThreeFactory.deploy(acpiMaster.address);
+
+    await acpiThree.deployed();
+
+    await acpiMaster.setACPIThree(acpiThree.address);
+
+    const acpiFourFactory = await ethers.getContractFactory("ACPIFour");
+    acpiFour = await acpiFourFactory.deploy(acpiMaster.address);
+
+    await acpiFour.deployed();
+
+    await acpiMaster.setACPIFour(acpiFour.address);
   });
 
   it("ACPI 1", async function () {

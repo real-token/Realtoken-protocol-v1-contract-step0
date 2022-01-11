@@ -34,10 +34,12 @@ describe("ACPI Two", function () {
       ethers.utils.parseUnits("1000", "ether")
     );
 
-    acpiTwo = await ethers.getContractAt(
-      "ACPITwo",
-      await acpiMaster.acpiTwoContract()
-    );
+    const acpiTwoFactory = await ethers.getContractFactory("ACPITwo");
+    acpiTwo = await acpiTwoFactory.deploy(acpiMaster.address);
+
+    await acpiTwo.deployed();
+
+    await acpiMaster.setACPITwo(acpiTwo.address);
 
     await acpiMaster.connect(TOKEN_ADMIN).setACPI(2);
   });
