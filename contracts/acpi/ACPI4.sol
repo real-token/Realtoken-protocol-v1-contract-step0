@@ -32,6 +32,90 @@ contract ACPIFour is ACPI {
     }
 
     /**
+     * @dev Start round of ACPI ending the last one.
+     */
+    function startRound()
+        external
+        override
+        onlyModerator
+        onlyCurrentACPI
+        returns (bool)
+    {
+        require(
+            _currentRound < _totalRound,
+            "START: All rounds have been done"
+        );
+
+        if (_rewardLeft > 0) {
+            if (_currentTurn == 0) {
+                _priceHistory.push(_price);
+            } else if (_rewardPerTurn - _rewardLeft > 0) {
+                _priceHistory.push(
+                    (_lastPrice *
+                        _rewardPerTurn +
+                        _price *
+                        (_rewardPerTurn - _rewardLeft)) /
+                        (2 * _rewardPerTurn - _rewardLeft)
+                );
+            } else {
+                _priceHistory.push(_lastPrice);
+            }
+
+            _currentRound += 1;
+            _currentTurn = 0;
+            _price = _defaultPrice;
+            _lastPrice = _defaultPrice;
+        } else {
+            _lastPrice = _price;
+            _currentTurn += 1;
+            _price += (_price * _priceIncrease) / 100;
+        }
+
+        emit RoundWin(_price);
+
+        _rewardLeft = _rewardPerTurn;
+
+        if (_currentRound == _totalRound) setAcpiPrice();
+
+        return true;
+    }
+
+   function bid(uint16 targetTurn)
+        external
+        payable
+        override
+        onlyCurrentACPI
+        returns (bool)
+    {
+        require(_currentRound < _totalRound, "BID: All rounds have been done");
+        require(_currentTurn == targetTurn, "BID: Current round is over");
+
+        require(
+            !_hasAlreadyBid[msg.sender][_currentRound][_currentTurn],
+            "BID: You can only bet once per turn"
+        );
+
+        require(
+            msg.value == _price,
+            "BID: Amount sent doesn't match expected value"
+        );
+
+        require(
+            _rewardLeft > 0,
+            "BID: All tokens have been sold for this turn"
+        );
+
+        _hasAlreadyBid[msg.sender][_currentRound][_currentTurn] = true;
+        _pendingWins[msg.sender] += 1 ether;
+        _totalWins += 1 ether;
+        _rewardLeft -= 1;
+
+        emit Bid(msg.sender, _price);
+
+        return true;
+    }
+    
+    /**
      * @dev Price per token in native currency
      */
     function setDefaultPrice(uint256 newValue)
@@ -90,90 +174,6 @@ contract ACPIFour is ACPI {
 
     function hasBid() external view returns (bool) {
         return _hasAlreadyBid[msg.sender][_currentRound][_currentTurn];
-    }
-
-    function bid(uint16 targetTurn)
-        external
-        payable
-        override
-        onlyCurrentACPI
-        returns (bool)
-    {
-        require(_currentRound < _totalRound, "BID: All rounds have been done");
-        require(_currentTurn == targetTurn, "BID: Current round is over");
-
-        require(
-            !_hasAlreadyBid[msg.sender][_currentRound][_currentTurn],
-            "BID: You can only bet once per turn"
-        );
-
-        require(
-            msg.value == _price,
-            "BID: Amount sent doesn't match expected value"
-        );
-
-        require(
-            _rewardLeft > 0,
-            "BID: All tokens have been sold for this turn"
-        );
-
-        _hasAlreadyBid[msg.sender][_currentRound][_currentTurn] = true;
-        _pendingWins[msg.sender] += 1 ether;
-        _totalWins += 1 ether;
-        _rewardLeft -= 1;
-
-        emit Bid(msg.sender, _price);
-
-        return true;
-    }
-
-    /**
-     * @dev Start round of ACPI ending the last one.
-     */
-    function startRound()
-        external
-        override
-        onlyModerator
-        onlyCurrentACPI
-        returns (bool)
-    {
-        require(
-            _currentRound < _totalRound,
-            "START: All rounds have been done"
-        );
-
-        if (_rewardLeft > 0) {
-            if (_currentTurn == 0) {
-                _priceHistory.push(_price);
-            } else if (_rewardPerTurn - _rewardLeft > 0) {
-                _priceHistory.push(
-                    (_lastPrice *
-                        _rewardPerTurn +
-                        _price *
-                        (_rewardPerTurn - _rewardLeft)) /
-                        (2 * _rewardPerTurn - _rewardLeft)
-                );
-            } else {
-                _priceHistory.push(_lastPrice);
-            }
-
-            _currentRound += 1;
-            _currentTurn = 0;
-            _price = _defaultPrice;
-            _lastPrice = _defaultPrice;
-        } else {
-            _lastPrice = _price;
-            _currentTurn += 1;
-            _price += (_price * _priceIncrease) / 100;
-        }
-
-        emit RoundWin(_price);
-
-        _rewardLeft = _rewardPerTurn;
-
-        if (_currentRound == _totalRound) setAcpiPrice();
-
-        return true;
     }
 
     function setAcpiPrice() internal override {

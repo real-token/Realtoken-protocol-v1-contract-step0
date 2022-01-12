@@ -22,34 +22,6 @@ contract ACPIOne is ACPI {
     constructor(address acpiMaster) ACPI(acpiMaster, 1) {}
 
     /**
-     * @dev Set bidIncrement value
-     */
-    function setBidIncrement(uint256 newValue) external onlyModerator returns (bool) {
-        _bidIncrement = newValue;
-        return true;
-    }
-
-    function pendingReturns(address account) external override view returns (uint256) {
-        return _pendingReturns[account];
-    }
-
-    function totalReturns() external override view returns (uint256) {
-        return _totalReturns;
-    }
-
-    function highestBid() external view returns (uint256) {
-        return _highestBid;
-    }
-
-    function highestBidder() external view returns (address) {
-        return _highestBidder;
-    }
-
-    function bidIncrement() external view returns (uint256) {
-        return _bidIncrement;
-    }
-
-    /**
      * @dev Start round of ACPI ending the last one.
      */
     function startRound() external override onlyModerator onlyCurrentACPI returns (bool) {
@@ -70,12 +42,6 @@ contract ACPIOne is ACPI {
         _currentRound += 1;
         if (_currentRound == _totalRound) setAcpiPrice();
         return true;
-    }
-
-    function setAcpiPrice() internal override {
-        if (_priceHistory.length == 0) return;
-
-        _acpiPrice = Median.from(_priceHistory);
     }
 
     function bid(uint16 targetRound) external override payable onlyCurrentACPI returns (bool) {
@@ -106,6 +72,40 @@ contract ACPIOne is ACPI {
         emit Bid(msg.sender, _highestBid);
 
         return true;
+    }
+    
+    /**
+     * @dev Set bidIncrement value
+     */
+    function setBidIncrement(uint256 newValue) external onlyModerator returns (bool) {
+        _bidIncrement = newValue;
+        return true;
+    }
+
+    function pendingReturns(address account) external override view returns (uint256) {
+        return _pendingReturns[account];
+    }
+
+    function totalReturns() external override view returns (uint256) {
+        return _totalReturns;
+    }
+
+    function highestBid() external view returns (uint256) {
+        return _highestBid;
+    }
+
+    function highestBidder() external view returns (address) {
+        return _highestBidder;
+    }
+
+    function bidIncrement() external view returns (uint256) {
+        return _bidIncrement;
+    }
+
+    function setAcpiPrice() internal override {
+        if (_priceHistory.length == 0) return;
+
+        _acpiPrice = Median.from(_priceHistory);
     }
 
     function getBid() external view onlyCurrentACPI returns (uint256) {

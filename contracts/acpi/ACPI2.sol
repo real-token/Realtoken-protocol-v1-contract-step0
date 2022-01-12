@@ -22,6 +22,40 @@ contract ACPITwo is ACPI {
     }
 
     /**
+     * @dev Start round of ACPI ending the last one.
+     */
+    function startRound()
+        external
+        override
+        onlyModerator
+        onlyCurrentACPI
+        returns (bool)
+    {
+        require(_currentRound < _totalRound, "START: All rounds have been done");
+
+        if (_bidders.length > 0) {
+            _priceHistory.push(_roundPot);
+
+            for (uint256 i = 0; i < _bidders.length; i++) {
+                _pendingWins[_bidders[i]] +=
+                    (_balance[_bidders[i]][_currentRound] * _reward) /
+                    _roundPot;
+            }
+            delete _bidders;
+            emit RoundWin(_roundPot);
+
+            _totalWins += _reward;
+            _roundPot = 0;
+            _reward += (_reward * _rewardMultiplicator) / 100;
+        }
+
+        _currentRound += 1;
+        if (_currentRound == _totalRound) setAcpiPrice();
+
+        return true;
+    }
+    
+    /**
      * @dev bid to enter the round {onlyCurrentACPI}
      */
     function bid(uint16 targetRound)
@@ -93,39 +127,5 @@ contract ACPITwo is ACPI {
 
     function getBid() external view onlyCurrentACPI returns (uint256) {
         return _balance[msg.sender][_currentRound];
-    }
-
-    /**
-     * @dev Start round of ACPI ending the last one.
-     */
-    function startRound()
-        external
-        override
-        onlyModerator
-        onlyCurrentACPI
-        returns (bool)
-    {
-        require(_currentRound < _totalRound, "START: All rounds have been done");
-
-        if (_bidders.length > 0) {
-            _priceHistory.push(_roundPot);
-
-            for (uint256 i = 0; i < _bidders.length; i++) {
-                _pendingWins[_bidders[i]] +=
-                    (_balance[_bidders[i]][_currentRound] * _reward) /
-                    _roundPot;
-            }
-            delete _bidders;
-            emit RoundWin(_roundPot);
-
-            _totalWins += _reward;
-            _roundPot = 0;
-            _reward += (_reward * _rewardMultiplicator) / 100;
-        }
-
-        _currentRound += 1;
-        if (_currentRound == _totalRound) setAcpiPrice();
-
-        return true;
     }
 }
