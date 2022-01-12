@@ -39,7 +39,7 @@ async function main() {
   );
   await minuteSleep();
 
-  if (network.name === "poa") {
+  if (network.name === "poa" || network.name === "xdai") {
     try {
       await run("verify:verify", {
         address: instance.address,
