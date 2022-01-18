@@ -19,7 +19,7 @@ async function minuteSleep() {
 async function main() {
   const { TOKEN_ADMIN_PUBLIC } = process.env;
   if (!TOKEN_ADMIN_PUBLIC)
-    return console.log(
+    throw new Error(
       "Must have TOKEN_ADMIN_PUBLIC env set, please refer to readme"
     );
 
@@ -69,6 +69,8 @@ async function main() {
   console.log("Contract has been deployed!");
   console.log("REG (Proxy) is deployed to: ", instance.address);
   console.log("REG (Implementation) is deployed to: ", implAddress);
+
+  return instance.address;
 }
 
 // We recommend this pattern to be able to use async/await everywhere
@@ -77,3 +79,5 @@ main().catch((error) => {
   console.error(error);
   process.exitCode = 1;
 });
+
+export default main;

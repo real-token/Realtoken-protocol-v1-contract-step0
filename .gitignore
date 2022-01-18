@@ -1,6 +1,14 @@
 node_modules
 .env
-.openzeppelin
+
+.openzeppelin/*
+# Polygon Proxy
+!.openzeppelin/unknown-137.json
+# BSC Proxy
+!.openzeppelin/unknown-56.json
+# Gnosis Chain Proxy
+!.openzeppelin/unknown-100.json
+
 coverage
 coverage.json
 typechain
