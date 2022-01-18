@@ -20,6 +20,10 @@ contract ACPIFour is ACPI {
     uint256 private _lastPrice;
     uint256 private _defaultPrice;
 
+    event LogSetDefaultPrice(uint256 indexed newValue);
+    event LogSetPriceIncrease(uint256 indexed newValue);
+    event LogSetReward(uint256 indexed newValue);
+
     constructor(address acpiMaster) ACPI(acpiMaster, 4) {
         _priceIncrease = 60; // 60% increase
         _defaultPrice = 0.1 ether;
@@ -71,9 +75,9 @@ contract ACPIFour is ACPI {
             _price += (_price * _priceIncrease) / 100;
         }
 
-        emit RoundWin(_price);
-
         _rewardLeft = _rewardPerTurn;
+
+        emit RoundWin(_price);
 
         if (_currentRound == _totalRound) setAcpiPrice();
 
@@ -124,6 +128,7 @@ contract ACPIFour is ACPI {
         returns (bool)
     {
         _defaultPrice = newValue;
+        emit LogSetDefaultPrice(newValue);
         return true;
     }
 
@@ -133,6 +138,7 @@ contract ACPIFour is ACPI {
     function setReward(uint56 newValue) external onlyModerator returns (bool) {
         _rewardPerTurn = newValue;
         _rewardLeft = newValue;
+        emit LogSetReward(newValue);
         return true;
     }
 
@@ -145,6 +151,7 @@ contract ACPIFour is ACPI {
         returns (bool)
     {
         _priceIncrease = newValue;
+        emit LogSetPriceIncrease(newValue);
         return true;
     }
 

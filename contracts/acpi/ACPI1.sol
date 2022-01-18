@@ -17,7 +17,8 @@ contract ACPIOne is ACPI {
     // Address => _currentRound => balance
     mapping(address => mapping(uint16 => uint256)) private _balance;
 
-    event RoundWinWithUser(address user, uint256 amount);
+    event RoundWinWithUser(address indexed user, uint256 indexed amount);
+    event LogSetBidIncrement(uint256 indexed newValue);
 
     constructor(address acpiMaster) ACPI(acpiMaster, 1) {}
 
@@ -27,7 +28,8 @@ contract ACPIOne is ACPI {
     function startRound() external override onlyModerator onlyCurrentACPI returns (bool) {
         require(_currentRound < _totalRound, "START: All rounds have been done");
 
-        emit RoundWinWithUser(_highestBidder, _highestBid);
+        address highestBidder_ = _highestBidder;
+        uint256 highestBid_ = _highestBid;
 
         if (_highestBidder != address(0)) {
             // Award Winner
@@ -41,6 +43,9 @@ contract ACPIOne is ACPI {
 
         _currentRound += 1;
         if (_currentRound == _totalRound) setAcpiPrice();
+        
+        
+        emit RoundWinWithUser(highestBidder_, highestBid_);
         return true;
     }
 
@@ -79,6 +84,7 @@ contract ACPIOne is ACPI {
      */
     function setBidIncrement(uint256 newValue) external onlyModerator returns (bool) {
         _bidIncrement = newValue;
+        emit LogSetBidIncrement(newValue);
         return true;
     }
 

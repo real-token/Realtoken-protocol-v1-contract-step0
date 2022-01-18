@@ -39,7 +39,11 @@ contract ACPIMaster is IACPIMaster, AccessControl {
 
     IERC20 private _regToken;
 
-    constructor(address regTokenAddress, address admin, address moderator) {
+    constructor(
+        address regTokenAddress,
+        address admin,
+        address moderator
+    ) {
         _setupRole(_ACPI_MODERATOR, moderator);
         _setupRole(_ACPI_MASTER, address(this));
         _setupRole(DEFAULT_ADMIN_ROLE, admin);
@@ -92,12 +96,10 @@ contract ACPIMaster is IACPIMaster, AccessControl {
     }
 
     // Generate average price of ACPIs using the initialTokenPrice on three differents blockchains
-    function generateCrossChainPrice(uint256 crossChainPrice_, uint256 crossChainPriceUSD_)
-        external
-        override
-        onlyRole(DEFAULT_ADMIN_ROLE)
-        returns (bool)
-    {
+    function generateCrossChainPrice(
+        uint256 crossChainPrice_,
+        uint256 crossChainPriceUSD_
+    ) external override onlyRole(DEFAULT_ADMIN_ROLE) returns (bool) {
         require(
             _currentACPI == 5,
             "ACPI event need to be over to set cross chain price"
@@ -109,7 +111,7 @@ contract ACPIMaster is IACPIMaster, AccessControl {
         return true;
     }
 
-    function totalWins() external override view returns (uint256) {
+    function totalWins() external view override returns (uint256) {
         return
             _acpiOne.totalWins() +
             _acpiTwo.totalWins() +
@@ -117,7 +119,7 @@ contract ACPIMaster is IACPIMaster, AccessControl {
             _acpiFour.totalWins();
     }
 
-    function totalReturns() external override view returns (uint256) {
+    function totalReturns() external view override returns (uint256) {
         return _acpiOne.totalReturns();
     }
 
@@ -202,7 +204,10 @@ contract ACPIMaster is IACPIMaster, AccessControl {
                 _acpiFour.resetAccount(_msgSender())
             );
 
-        require(successOne && successTwo && successThree && successFour, "Reset function must not fail");
+        require(
+            successOne && successTwo && successThree && successFour,
+            "Reset function must not fail"
+        );
 
         _regToken.safeTransfer(_msgSender(), tokenAmount);
         return true;
@@ -263,6 +268,7 @@ contract ACPIMaster is IACPIMaster, AccessControl {
         returns (bool)
     {
         _regToken = IERC20(tokenAddress);
+        emit TokenContractSet(tokenAddress);
         return true;
     }
 
@@ -273,6 +279,7 @@ contract ACPIMaster is IACPIMaster, AccessControl {
         returns (bool)
     {
         _acpiOne = ACPI(acpiAddress);
+        emit ACPIContractSet(1, acpiAddress);
         return true;
     }
 
@@ -283,6 +290,7 @@ contract ACPIMaster is IACPIMaster, AccessControl {
         returns (bool)
     {
         _acpiTwo = ACPI(acpiAddress);
+        emit ACPIContractSet(2, acpiAddress);
         return true;
     }
 
@@ -293,6 +301,7 @@ contract ACPIMaster is IACPIMaster, AccessControl {
         returns (bool)
     {
         _acpiThree = ACPI(acpiAddress);
+        emit ACPIContractSet(3, acpiAddress);
         return true;
     }
 
@@ -303,6 +312,7 @@ contract ACPIMaster is IACPIMaster, AccessControl {
         returns (bool)
     {
         _acpiFour = ACPI(acpiAddress);
+        emit ACPIContractSet(4, acpiAddress);
         return true;
     }
 }

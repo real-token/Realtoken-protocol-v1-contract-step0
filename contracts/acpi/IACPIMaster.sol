@@ -8,6 +8,18 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/access/IAccessControl.sol";
 
 interface IACPIMaster is IAccessControl {
+
+
+    /**
+     * @dev Emitted when admin change REG token contract address
+     */
+    event TokenContractSet(address newContract);
+
+    /**
+     * @dev Emitted when admin change acpi children contract
+     */
+    event ACPIContractSet(uint8 indexed acpiNumber, address newContract);
+
     /**
      * @dev Emitted when admin input other chains price to calculate crosschainprice
      */

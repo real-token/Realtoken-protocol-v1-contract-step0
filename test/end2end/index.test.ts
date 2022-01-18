@@ -266,6 +266,8 @@ describe("END 2 END Testing", function () {
   });
 
   it("ACPI - Result", async function () {
+    this.timeout(40000);
+
     const getSigners = await ethers.getSigners();
 
     await acpiMaster.connect(getSigners[0]).setACPI(5);
@@ -302,7 +304,54 @@ describe("END 2 END Testing", function () {
           ethers.utils.formatEther(returns)
       );
 
+      const balanceBeforeTranfer = await regToken.balanceOf(
+        getSigners[i + signersOffset].address
+      );
+
+      expect(
+        await acpiTwo.pendingWins(getSigners[i + signersOffset].address)
+      ).not.equal(BigNumber.from(0));
+
+      expect(
+        await acpiThree.pendingWins(getSigners[i + signersOffset].address)
+      ).not.equal(BigNumber.from(0));
+
+      expect(
+        await acpiFour.pendingWins(getSigners[i + signersOffset].address)
+      ).not.equal(BigNumber.from(0));
+
+      expect(
+        await acpiOne.pendingReturns(getSigners[i + signersOffset].address)
+      ).not.equal(BigNumber.from(0));
+
+      expect(balanceBeforeTranfer).be.equal(BigNumber.from(0));
+
       await acpiMaster.connect(getSigners[i + signersOffset]).claimTokens();
+
+      const balanceAfterTransfer = await regToken.balanceOf(
+        getSigners[i + signersOffset].address
+      );
+      expect(balanceAfterTransfer).be.equal(tokenToClaim);
+
+      expect(
+        await acpiOne.pendingWins(getSigners[i + signersOffset].address)
+      ).be.equal(BigNumber.from(0));
+
+      expect(
+        await acpiTwo.pendingWins(getSigners[i + signersOffset].address)
+      ).be.equal(BigNumber.from(0));
+
+      expect(
+        await acpiThree.pendingWins(getSigners[i + signersOffset].address)
+      ).be.equal(BigNumber.from(0));
+
+      expect(
+        await acpiFour.pendingWins(getSigners[i + signersOffset].address)
+      ).be.equal(BigNumber.from(0));
+
+      expect(
+        await acpiOne.pendingReturns(getSigners[i + signersOffset].address)
+      ).be.equal(BigNumber.from(0));
     }
 
     const totalReturns = await acpiMaster.totalReturns();

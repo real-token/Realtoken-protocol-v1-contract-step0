@@ -186,12 +186,12 @@ abstract contract ACPI {
      * @dev Emitted when a user win a round of any ACPI
      * `amount` is the amount of REG Token awarded
      */
-    event RoundWin(uint256 amount);
+    event RoundWin(uint256 indexed amount);
 
     /**
      * @dev Emitted when a user bid
      */
-    event Bid(address user, uint256 amount);
+    event Bid(address indexed user, uint256 indexed amount);
 
     /**
      * @dev Withdraw native currency {onlyACPIMaster}
