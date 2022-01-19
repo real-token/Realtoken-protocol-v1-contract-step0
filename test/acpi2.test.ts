@@ -167,7 +167,9 @@ describe("ACPI Two", function () {
       .connect(addr6)
       .bid(0, { value: ethers.utils.parseUnits("20", "ether") });
 
-    await acpiTwo.connect(ACPI_MODERATOR).startRound();
+    expect(await acpiTwo.connect(ACPI_MODERATOR).startRound())
+      .to.emit(acpiTwo, "RoundWin")
+      .withArgs(ethers.utils.parseUnits("40", "ether"));
 
     expect(await acpiTwo.pendingWins(addr1.address)).to.equal(
       ethers.utils.parseUnits("0.125", "ether")

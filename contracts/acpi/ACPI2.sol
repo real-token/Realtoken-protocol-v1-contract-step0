@@ -33,6 +33,8 @@ contract ACPITwo is ACPI {
     {
         require(_currentRound < _totalRound, "START: All rounds have been done");
 
+        uint256 roundPot_ = _roundPot;
+
         if (_bidders.length > 0) {
             _priceHistory.push(_roundPot);
 
@@ -42,7 +44,6 @@ contract ACPITwo is ACPI {
                     _roundPot;
             }
             delete _bidders;
-            emit RoundWin(_roundPot);
 
             _totalWins += _reward;
             _roundPot = 0;
@@ -52,6 +53,7 @@ contract ACPITwo is ACPI {
         _currentRound += 1;
         if (_currentRound == _totalRound) setAcpiPrice();
 
+        emit RoundWin(roundPot_);
         return true;
     }
     

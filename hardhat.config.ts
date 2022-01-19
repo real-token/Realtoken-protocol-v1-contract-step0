@@ -99,7 +99,7 @@ const config: HardhatUserConfig = {
           : [],
     },
     polygon: {
-      gasPrice: 45000000000,
+      gasPrice: 180000000000,
       chainId: 137,
       url: process.env.POLYGON_URL || "",
       accounts:

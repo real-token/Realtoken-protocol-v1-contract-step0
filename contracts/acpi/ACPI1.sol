@@ -27,6 +27,9 @@ contract ACPIOne is ACPI {
     function startRound() external override onlyModerator onlyCurrentACPI returns (bool) {
         require(_currentRound < _totalRound, "START: All rounds have been done");
 
+        address highestBidder_ = _highestBidder;
+        uint256 highestBid_ = _highestBid;
+
         emit RoundWinWithUser(_highestBidder, _highestBid);
 
         if (_highestBidder != address(0)) {
@@ -41,6 +44,8 @@ contract ACPIOne is ACPI {
 
         _currentRound += 1;
         if (_currentRound == _totalRound) setAcpiPrice();
+        
+        emit RoundWinWithUser(highestBidder_, highestBid_);
         return true;
     }
 

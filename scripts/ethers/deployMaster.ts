@@ -4,7 +4,7 @@ import { minuteSleep } from "../../utils";
 
 async function main(regTokenAddress?: string) {
   const regToken =
-    regTokenAddress ?? "0x0000000000000000000000000000000000000000";
+    regTokenAddress ?? "0xe3BEC39D9b08f9672Be1E128880F6747273B1e89";
 
   const { TOKEN_ADMIN_PUBLIC, ACPI_MODERATOR_PUBLIC } = process.env;
   if (!TOKEN_ADMIN_PUBLIC || !ACPI_MODERATOR_PUBLIC)
