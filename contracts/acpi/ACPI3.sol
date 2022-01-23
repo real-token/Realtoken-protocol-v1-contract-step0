@@ -42,6 +42,7 @@ contract ACPIThree is ACPI {
         }
         _currentRound += 1;
         if (_currentRound == _totalRound) setAcpiPrice();
+        else _roundStartedAt = block.timestamp;
 
         emit RoundWin(_bidderLength * _bidAmount);
 
@@ -97,11 +98,11 @@ contract ACPIThree is ACPI {
         return true;
     }
 
-    function getBiddersNumber() external view returns (uint256) {
-        return _bidders.length;
+    function getBidders() external view onlyCurrentACPI returns (address[] memory) {
+        return _bidders;
     }
 
-    function hasBid() external view returns (bool) {
-        return _hasAlreadyBid[msg.sender][_currentRound];
+    function hasBid(address account, uint16 target) external view onlyCurrentACPI returns (bool) {
+        return _hasAlreadyBid[account][target];
     }
 }

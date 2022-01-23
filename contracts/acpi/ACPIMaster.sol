@@ -10,19 +10,12 @@ import "./ACPI3.sol";
 import "./ACPI4.sol";
 import "./IACPIMaster.sol";
 
-// github.com/chichke
-
+/// @title ACPIMaster contract
+/// @author Bastien Silhol @ Realt.co ~ github.com/chichke
+/// @dev ACPIMaster manage 4 children's acpi contracts
 contract ACPIMaster is IACPIMaster, AccessControl {
     using SafeERC20 for IERC20;
 
-    /**
-     * @dev currentACPI is 0 before ACPI start
-     * @dev currentACPI is 1 on phase 1
-     * @dev currentACPI is 2 on phase 2
-     * @dev currentACPI is 3 on phase 3
-     * @dev currentACPI is 4 on phase 4
-     * @dev currentACPI is 5 when ACPI ends, REG Token price will then be calculated
-     */
     uint8 private _currentACPI;
 
     ACPI private _acpiOne;
@@ -47,51 +40,62 @@ contract ACPIMaster is IACPIMaster, AccessControl {
         _regToken = IERC20(regTokenAddress);
     }
 
+    /// @inheritdoc IACPIMaster
     function tokenContract() external view override returns (address) {
         return address(_regToken);
     }
 
+    /// @inheritdoc IACPIMaster
     function acpiOneContract() external view override returns (address) {
         return address(_acpiOne);
     }
 
+    /// @inheritdoc IACPIMaster
     function acpiTwoContract() external view override returns (address) {
         return address(_acpiTwo);
     }
 
+    /// @inheritdoc IACPIMaster
     function acpiThreeContract() external view override returns (address) {
         return address(_acpiThree);
     }
 
+    /// @inheritdoc IACPIMaster
     function acpiFourContract() external view override returns (address) {
         return address(_acpiFour);
     }
 
+    /// @inheritdoc IACPIMaster
     function ACPI_MODERATOR() external pure override returns (bytes32) {
         return _ACPI_MODERATOR;
     }
 
+    /// @inheritdoc IACPIMaster
     function ACPI_MASTER() external pure override returns (bytes32) {
         return _ACPI_MASTER;
     }
 
+    /// @inheritdoc IACPIMaster
     function initialTokenPrice() external view override returns (uint256) {
         return _initialTokenPrice;
     }
 
+    /// @inheritdoc IACPIMaster
     function crossChainPriceUSD() external view override returns (uint256) {
         return _crossChainPriceUSD;
     }
 
+    /// @inheritdoc IACPIMaster
     function crossChainPrice() external view override returns (uint256) {
         return _crossChainPrice;
     }
 
+    /// @inheritdoc IACPIMaster
     function getACPI() external view override returns (uint8) {
         return _currentACPI;
     }
 
-    // Generate average price of ACPIs using the initialTokenPrice on three differents blockchains
+    /// @inheritdoc IACPIMaster
     function generateCrossChainPrice(uint256 crossChainPrice_, uint256 crossChainPriceUSD_)
         external
         override
@@ -109,6 +113,7 @@ contract ACPIMaster is IACPIMaster, AccessControl {
         return true;
     }
 
+    /// @inheritdoc IACPIMaster
     function totalWins() external override view returns (uint256) {
         return
             _acpiOne.totalWins() +
@@ -117,6 +122,7 @@ contract ACPIMaster is IACPIMaster, AccessControl {
             _acpiFour.totalWins();
     }
 
+    /// @inheritdoc IACPIMaster
     function totalReturns() external override view returns (uint256) {
         return _acpiOne.totalReturns();
     }
@@ -131,6 +137,7 @@ contract ACPIMaster is IACPIMaster, AccessControl {
         emit GeneratedPrice(_initialTokenPrice);
     }
 
+    /// @inheritdoc IACPIMaster
     function setACPI(uint8 newACPI)
         external
         override
@@ -139,6 +146,12 @@ contract ACPIMaster is IACPIMaster, AccessControl {
     {
         require(newACPI < 7, "Allowed value is 0-6");
         _currentACPI = newACPI;
+        
+        if (newACPI == 1) _acpiOne.setRoundStartedAt(block.timestamp); 
+        if (newACPI == 2) _acpiTwo.setRoundStartedAt(block.timestamp); 
+        if (newACPI == 3) _acpiThree.setRoundStartedAt(block.timestamp); 
+        if (newACPI == 4) _acpiFour.setRoundStartedAt(block.timestamp); 
+
         if (newACPI == 5) {
             _generatePrice();
         }
@@ -156,6 +169,7 @@ contract ACPIMaster is IACPIMaster, AccessControl {
             _acpiFour.pendingWins(account);
     }
 
+    /// @inheritdoc IACPIMaster
     function getACPIWins() external view override returns (uint256) {
         return _getACPIWins(_msgSender());
     }
@@ -164,6 +178,7 @@ contract ACPIMaster is IACPIMaster, AccessControl {
         return _acpiOne.pendingReturns(account);
     }
 
+    /// @inheritdoc IACPIMaster
     function getACPIReturns() external view override returns (uint256) {
         return _getACPIReturns(_msgSender());
     }
@@ -182,10 +197,12 @@ contract ACPIMaster is IACPIMaster, AccessControl {
         return userWins + (1 ether * userReturns) / _crossChainPrice;
     }
 
+    /// @inheritdoc IACPIMaster
     function tokenToClaim() external view override returns (uint256) {
         return _tokenToClaim();
     }
 
+    /// @inheritdoc IACPIMaster
     function claimTokens() external override returns (bool) {
         uint256 tokenAmount = _tokenToClaim();
         require(tokenAmount > 0, "You don't have any tokens to claim");
@@ -208,6 +225,7 @@ contract ACPIMaster is IACPIMaster, AccessControl {
         return true;
     }
 
+    /// @inheritdoc IACPIMaster
     function withdrawTokens(address payable vault, uint256 amount)
         external
         override
@@ -218,6 +236,7 @@ contract ACPIMaster is IACPIMaster, AccessControl {
         return true;
     }
 
+    /// @inheritdoc IACPIMaster
     function withdraw(address payable vault, uint256[4] calldata amounts)
         external
         override
@@ -232,6 +251,7 @@ contract ACPIMaster is IACPIMaster, AccessControl {
         return true;
     }
 
+    /// @inheritdoc IACPIMaster
     function withdrawAll(address payable vault)
         external
         override
@@ -246,6 +266,7 @@ contract ACPIMaster is IACPIMaster, AccessControl {
         return true;
     }
 
+    /// @inheritdoc IACPIMaster
     function recoverERC20(address tokenAddress, uint256 tokenAmount)
         external
         override
@@ -256,6 +277,7 @@ contract ACPIMaster is IACPIMaster, AccessControl {
         return true;
     }
 
+    /// @inheritdoc IACPIMaster
     function setTokenAddress(address tokenAddress)
         external
         override
@@ -266,6 +288,7 @@ contract ACPIMaster is IACPIMaster, AccessControl {
         return true;
     }
 
+    /// @inheritdoc IACPIMaster
     function setACPIOne(address acpiAddress)
         external
         override
@@ -276,6 +299,7 @@ contract ACPIMaster is IACPIMaster, AccessControl {
         return true;
     }
 
+    /// @inheritdoc IACPIMaster
     function setACPITwo(address acpiAddress)
         external
         override
@@ -286,6 +310,7 @@ contract ACPIMaster is IACPIMaster, AccessControl {
         return true;
     }
 
+    /// @inheritdoc IACPIMaster
     function setACPIThree(address acpiAddress)
         external
         override
@@ -296,6 +321,7 @@ contract ACPIMaster is IACPIMaster, AccessControl {
         return true;
     }
 
+    /// @inheritdoc IACPIMaster
     function setACPIFour(address acpiAddress)
         external
         override

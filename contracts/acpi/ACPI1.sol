@@ -17,7 +17,7 @@ contract ACPIOne is ACPI {
     // Address => _currentRound => balance
     mapping(address => mapping(uint16 => uint256)) private _balance;
 
-    event RoundWinWithUser(address user, uint256 amount);
+    event RoundWinWithUser(address indexed user, uint256 indexed amount);
 
     constructor(address acpiMaster) ACPI(acpiMaster, 1) {}
 
@@ -29,8 +29,6 @@ contract ACPIOne is ACPI {
 
         address highestBidder_ = _highestBidder;
         uint256 highestBid_ = _highestBid;
-
-        emit RoundWinWithUser(_highestBidder, _highestBid);
 
         if (_highestBidder != address(0)) {
             // Award Winner
@@ -44,6 +42,7 @@ contract ACPIOne is ACPI {
 
         _currentRound += 1;
         if (_currentRound == _totalRound) setAcpiPrice();
+        else _roundStartedAt = block.timestamp;
         
         emit RoundWinWithUser(highestBidder_, highestBid_);
         return true;
@@ -113,8 +112,8 @@ contract ACPIOne is ACPI {
         _acpiPrice = Median.from(_priceHistory);
     }
 
-    function getBid() external view onlyCurrentACPI returns (uint256) {
-        return _balance[msg.sender][_currentRound];
+    function getBid(address account, uint16 target) external view onlyCurrentACPI returns (uint256) {
+        return _balance[account][target];
     }
 
     /**

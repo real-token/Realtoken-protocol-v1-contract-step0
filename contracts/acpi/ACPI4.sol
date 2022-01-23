@@ -60,7 +60,6 @@ contract ACPIFour is ACPI {
             } else {
                 _priceHistory.push(_lastPrice);
             }
-
             _currentRound += 1;
             _currentTurn = 0;
             _price = _defaultPrice;
@@ -76,6 +75,7 @@ contract ACPIFour is ACPI {
         _rewardLeft = _rewardPerTurn;
 
         if (_currentRound == _totalRound) setAcpiPrice();
+        else _roundStartedAt = block.timestamp;
 
         return true;
     }
@@ -172,8 +172,8 @@ contract ACPIFour is ACPI {
         return _currentTurn;
     }
 
-    function hasBid() external view returns (bool) {
-        return _hasAlreadyBid[msg.sender][_currentRound][_currentTurn];
+    function hasBid(address account, uint16 targetRound, uint16 targetTurn) external view returns (bool) {
+        return _hasAlreadyBid[account][targetRound][targetTurn];
     }
 
     function setAcpiPrice() internal override {

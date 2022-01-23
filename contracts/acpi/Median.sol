@@ -3,6 +3,11 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/utils/math/Math.sol";
 
+/// @title Library to calculate a median from a range of number
+/// @author Based on the work of Amxx @ OpenZeppelin
+/// @notice Retrieve median from an array of numbers
+/// @dev Retrieve median from an array of uint256
+
 library Median {
     function _swap(
         uint256[] memory array,

@@ -24,6 +24,8 @@ abstract contract ACPI {
     uint16 internal _totalRound;
     uint256 internal _roundTime;
 
+    uint256 internal _roundStartedAt;
+
     uint256 internal _acpiPrice;
 
     uint8 internal _acpiNumber;
@@ -84,6 +86,13 @@ abstract contract ACPI {
     }
 
     /**
+     * @dev Returns the round start timestamp
+     */
+    function roundStartedAt() external view virtual returns (uint256) {
+        return _roundStartedAt;
+    }
+
+    /**
      * @dev Returns the price of the current ACPI
      */
     function acpiPrice() external view virtual returns (uint256) {
@@ -122,6 +131,19 @@ abstract contract ACPI {
         returns (uint256)
     {}
 
+
+    /**
+     * @dev Set totalRound value
+     */
+    function setRoundStartedAt(uint256 value)
+        external
+        virtual
+        onlyACPIMaster
+        returns (bool)
+    {
+        _roundStartedAt = value;
+        return true;
+    }
 
     /**
      * @dev Set totalRound value
@@ -186,12 +208,12 @@ abstract contract ACPI {
      * @dev Emitted when a user win a round of any ACPI
      * `amount` is the amount of REG Token awarded
      */
-    event RoundWin(uint256 amount);
+    event RoundWin(uint256 indexed amount);
 
     /**
      * @dev Emitted when a user bid
      */
-    event Bid(address user, uint256 amount);
+    event Bid(address indexed user, uint256 indexed amount);
 
     /**
      * @dev Withdraw native currency {onlyACPIMaster}

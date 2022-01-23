@@ -52,6 +52,7 @@ contract ACPITwo is ACPI {
 
         _currentRound += 1;
         if (_currentRound == _totalRound) setAcpiPrice();
+        else _roundStartedAt = block.timestamp;
 
         emit RoundWin(roundPot_);
         return true;
@@ -80,7 +81,7 @@ contract ACPITwo is ACPI {
         _balance[msg.sender][_currentRound] += msg.value;
         _roundPot += msg.value;
 
-        emit Bid(msg.sender, _balance[msg.sender][_currentRound]);
+        emit Bid(msg.sender, msg.value);
 
         return true;
     }
@@ -127,7 +128,11 @@ contract ACPITwo is ACPI {
         return true;
     }
 
-    function getBid() external view onlyCurrentACPI returns (uint256) {
-        return _balance[msg.sender][_currentRound];
+    function getBid(address account, uint16 target) external view onlyCurrentACPI returns (uint256) {
+        return _balance[account][target];
+    }
+
+    function getBidders() external view onlyCurrentACPI returns (address[] memory) {
+        return _bidders;
     }
 }

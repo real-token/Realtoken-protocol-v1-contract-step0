@@ -11,7 +11,7 @@ import "@nomiclabs/hardhat-waffle";
 import "@typechain/hardhat";
 import "hardhat-gas-reporter";
 import "solidity-coverage";
-
+import "hardhat-docgen";
 import "@openzeppelin/hardhat-upgrades";
 import "./type-extensions";
 
@@ -65,6 +65,11 @@ extendEnvironment((hre) => {
 });
 
 const config: HardhatUserConfig = {
+  docgen: {
+    path: "./docs",
+    clear: true,
+    runOnCompile: true,
+  },
   solidity: {
     version: "0.8.2",
     settings: {

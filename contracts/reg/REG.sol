@@ -10,11 +10,17 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 
 import "./IREG.sol";
 
-// github.com/chichke
-
+/// @title Real Estate Governance Token
+/// @author Bastien Silhol @ Realt.co ~ github.com/chichke
+/// @notice REG DAO utility token
+/// @dev UUPS Proxy contract to fix or implement new functionality
 contract REG is UUPSUpgradeable, ERC20VotesUpgradeable, AccessControlUpgradeable, IREG {
     using SafeERC20Upgradeable for IERC20Upgradeable;
 
+    /// @dev Initialize function called by the ERC1967 Proxy constructor
+    /// @param name string - name of the token
+    /// @param symbol string - symbol of the token
+    /// @param admin address - that will be granted the {DEFAULT_ADMIN_ROLE}
     function initialize(string memory name, string memory symbol, address admin) external onlyProxy initializer
     {
         __AccessControl_init();
@@ -29,6 +35,8 @@ contract REG is UUPSUpgradeable, ERC20VotesUpgradeable, AccessControlUpgradeable
         _checkRole(DEFAULT_ADMIN_ROLE, _msgSender());
     }
 
+
+    /// @inheritdoc IREG
     function mint(address account, uint256 amount)
         external
         override
@@ -39,6 +47,7 @@ contract REG is UUPSUpgradeable, ERC20VotesUpgradeable, AccessControlUpgradeable
         return true;
     }
 
+    /// @inheritdoc IREG
     function batchTransfer(
         address[] calldata recipient,
         uint256[] calldata amount
@@ -56,6 +65,7 @@ contract REG is UUPSUpgradeable, ERC20VotesUpgradeable, AccessControlUpgradeable
         return true;
     }
 
+    /// @inheritdoc IREG
     function batchMint(address[] calldata account, uint256[] calldata amount)
         external
         override
@@ -75,6 +85,8 @@ contract REG is UUPSUpgradeable, ERC20VotesUpgradeable, AccessControlUpgradeable
         return true;
     }
 
+
+    /// @inheritdoc IREG
     function contractBurn(uint256 amount)
         external
         override
@@ -85,6 +97,7 @@ contract REG is UUPSUpgradeable, ERC20VotesUpgradeable, AccessControlUpgradeable
         return true;
     }
 
+    /// @inheritdoc IREG
     function recoverERC20(address tokenAddress, uint256 tokenAmount)
         external
         override
