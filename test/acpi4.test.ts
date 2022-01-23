@@ -1,8 +1,18 @@
 import { expect } from "chai";
 import { ethers, name, symbol, upgrades } from "hardhat";
-import { REG, ACPIFour, ACPIMaster } from "../typechain-types";
+import {
+  REG,
+  ACPIFour,
+  ACPIMaster,
+  ACPIOne,
+  ACPITwo,
+  ACPIThree,
+} from "../typechain-types";
 
 let regToken: REG;
+let acpiOne: ACPIOne;
+let acpiTwo: ACPITwo;
+let acpiThree: ACPIThree;
 let acpiFour: ACPIFour;
 let acpiMaster: ACPIMaster;
 
@@ -31,6 +41,26 @@ describe("ACPI Four", function () {
       acpiMaster.address,
       ethers.utils.parseUnits("1000", "ether")
     );
+
+    const acpiOneFactory = await ethers.getContractFactory("ACPIOne");
+    acpiOne = await acpiOneFactory.deploy(acpiMaster.address);
+
+    await acpiOne.deployed();
+
+    await acpiMaster.setACPIOne(acpiOne.address);
+
+    const acpiTwoFactory = await ethers.getContractFactory("ACPITwo");
+    acpiTwo = await acpiTwoFactory.deploy(acpiMaster.address);
+
+    await acpiTwo.deployed();
+
+    await acpiMaster.setACPITwo(acpiTwo.address);
+    const acpiThreeFactory = await ethers.getContractFactory("ACPIThree");
+    acpiThree = await acpiThreeFactory.deploy(acpiMaster.address);
+
+    await acpiThree.deployed();
+
+    await acpiMaster.setACPIThree(acpiThree.address);
 
     const acpiFourFactory = await ethers.getContractFactory("ACPIFour");
     acpiFour = await acpiFourFactory.deploy(acpiMaster.address);

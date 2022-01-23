@@ -1,6 +1,5 @@
 import { ethers, upgrades, run, name, symbol, network } from "hardhat";
 
-import { ERC1967Proxy } from "../../typechain-types";
 function sleep(ms: number | undefined) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
@@ -26,11 +25,11 @@ async function main() {
   // Deploying
   const regFactory = await ethers.getContractFactory("REG");
 
-  const instance = (await upgrades.deployProxy(
+  const instance = await upgrades.deployProxy(
     regFactory,
     [name, symbol, TOKEN_ADMIN_PUBLIC],
     { kind: "uups" }
-  )) as ERC1967Proxy;
+  );
 
   await instance.deployed();
 
