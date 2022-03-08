@@ -357,7 +357,6 @@ Project Link: [https://github.com/real-token/Realtoken-protocol-v1-contract-step
 
 
 <!-- MARKDOWN LINKS & IMAGES -->
-<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 [contributors-shield]: https://img.shields.io/github/contributors/real-token/Realtoken-protocol-v1-contract-step0.svg?style=for-the-badge
 [contributors-url]: https://github.com/real-token/Realtoken-protocol-v1-contract-step0/graphs/contributors
 [forks-shield]: https://img.shields.io/github/forks/real-token/Realtoken-protocol-v1-contract-step0.svg?style=for-the-badge
